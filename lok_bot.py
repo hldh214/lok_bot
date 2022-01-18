@@ -325,6 +325,12 @@ class LokFarmer:
     def refresh_kingdom_enter(self):
         self.kingdom_enter = self.api.kingdom_enter()
 
+        # daily vip chest claim
+        vip_last_claim_time = self.kingdom_enter.get('kingdom', {}).get('vip', {}).get('lastClaimTime')
+        vip_time_delta = arrow.now() - arrow.get(vip_last_claim_time)
+        if vip_time_delta.days >= 1:
+            self.api.kingdom_vip_claim()
+
     def refresh_kingdom_task_all(self):
         self.kingdom_task_all = self.api.kingdom_task_all()
 
