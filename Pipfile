@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 arrow = "*"
 fire = "*"
-httpx = "*"
+httpx = {extras = ["http2"], version = "*"}
 loguru = "*"
 tenacity = "*"
 schedule = "*"
