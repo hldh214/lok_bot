@@ -32,7 +32,7 @@ TASK_CODE_ACADEMY = 6  # 学院
 
 # 建筑位置 position
 POSITION_ACADEMY = 5  # 学院
-POSITION_UNION = 7
+POSITION_UNION = 7  # 联盟中心
 
 BUILDING_UPGRADE_BLACKLIST = (POSITION_UNION,)
 
@@ -391,7 +391,7 @@ class LokFarmer:
             return
 
         building_sort_by_level = sorted(
-            [b for b in buildings if b.get('position') not in BUILDING_UPGRADE_BLACKLIST],
+            [b for b in buildings if b.get('position') > 100],
             key=lambda x: x.get('level')
         )
 
