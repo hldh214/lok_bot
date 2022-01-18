@@ -123,7 +123,6 @@ class LokBotApi:
         )
 
     @tenacity.retry(
-        stop=tenacity.stop_never(),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
         retry=tenacity.retry_if_exception_type((httpx.HTTPError, ratelimit.RateLimitException)),
         reraise=True
