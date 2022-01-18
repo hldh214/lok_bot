@@ -95,6 +95,10 @@ class NoAuthException(ApiException):
     pass
 
 
+class NeedCaptchaException(ApiException):
+    pass
+
+
 class OtherException(ApiException):
     pass
 
@@ -151,6 +155,9 @@ class LokBotApi:
 
         if code == 'no_auth':
             raise NoAuthException()
+
+        if code == 'need_captcha':
+            raise NeedCaptchaException()
 
         raise OtherException(response.text)
 
@@ -335,6 +342,8 @@ class LokFarmer:
         """
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
 
+        random.shuffle(buildings)
+
         harvested_code = set()
         for building in buildings:
             code = building.get('code')
@@ -488,7 +497,8 @@ def main(token):
     schedule.every(30).to(60).minutes.do(farmer.harvester)
     schedule.every(60).to(120).minutes.do(farmer.quest_monitor)
     schedule.every(120).to(240).minutes.do(farmer.free_chest)
-    schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
+
+    # schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
 
     threading.Thread(target=farmer.building_farmer).start()
     threading.Thread(target=farmer.academy_farmer).start()
