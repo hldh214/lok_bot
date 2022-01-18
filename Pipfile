@@ -10,6 +10,7 @@ httpx = "*"
 loguru = "*"
 tenacity = "*"
 schedule = "*"
+ratelimit = "*"
 
 [dev-packages]
 
