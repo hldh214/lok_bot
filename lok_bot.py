@@ -260,6 +260,13 @@ class LokBotApi:
             'instant': instant
         })
 
+    def kingdom_vip_info(self):
+        """
+        获取VIP信息
+        :return:
+        """
+        return self.post('kingdom/vip/info')
+
     def kingdom_vip_claim(self):
         """
         领取VIP奖励
@@ -324,12 +331,6 @@ class LokFarmer:
 
     def refresh_kingdom_enter(self):
         self.kingdom_enter = self.api.kingdom_enter()
-
-        # daily vip chest claim
-        vip_last_claim_time = self.kingdom_enter.get('kingdom', {}).get('vip', {}).get('lastClaimTime')
-        vip_time_delta = arrow.now() - arrow.get(vip_last_claim_time)
-        if vip_time_delta.days >= 1:
-            self.api.kingdom_vip_claim()
 
     def refresh_kingdom_task_all(self):
         self.kingdom_task_all = self.api.kingdom_task_all()
@@ -494,6 +495,19 @@ class LokFarmer:
             self.api.item_use(each_item.get('code'), each_item.get('amount'))
             time.sleep(random.randint(1, 3))
 
+    def vip_chest_claim(self):
+        """
+        领取vip宝箱
+        daily
+        :return:
+        """
+        vip_info = self.api.kingdom_vip_info()
+
+        if vip_info.get('vip', {}).get('isClaimed'):
+            return
+
+        self.api.kingdom_vip_claim()
+
 
 def main(token):
     # todo: integrate with websockets and live update for "kingdom_enter"
@@ -501,8 +515,9 @@ def main(token):
 
     schedule.every(60).to(120).minutes.do(farmer.alliance_helper)
     schedule.every(30).to(60).minutes.do(farmer.harvester)
-    schedule.every(60).to(120).minutes.do(farmer.quest_monitor)
-    schedule.every(120).to(240).minutes.do(farmer.free_chest)
+    schedule.every(60).to(100).minutes.do(farmer.quest_monitor)
+    schedule.every(120).to(200).minutes.do(farmer.free_chest)
+    schedule.every(180).to(240).minutes.do(farmer.vip_chest_claim)
 
     # schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
 
