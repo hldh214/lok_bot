@@ -382,7 +382,7 @@ class LokFarmer:
 
     def building_farmer(self, refresh=False):
         """
-        左侧任务 farmer
+        building farmer
         :return:
         """
         if refresh:
@@ -407,12 +407,12 @@ class LokFarmer:
             logger.warning('没有可以升级的建筑')
             return
 
-        building_sort_by_level = sorted(
+        building_sorted_by_level = sorted(
             [b for b in buildings if b.get('position') > 100],
             key=lambda x: x.get('level')
         )
 
-        for each_building in building_sort_by_level:
+        for each_building in building_sorted_by_level:
             try:
                 res = self.api.kingdom_building_upgrade(each_building)
             except OtherException:
@@ -432,6 +432,11 @@ class LokFarmer:
         return
 
     def academy_farmer(self, refresh=False):
+        """
+        research farmer
+        :param refresh:
+        :return:
+        """
         if refresh:
             self.refresh_kingdom_task_all()
             self.refresh_kingdom_enter()
@@ -458,16 +463,30 @@ class LokFarmer:
             logger.warning('没有可以研究的科技')
             return
 
-        lowest_level_research = sorted(
-            filter(lambda x: x.get('code') >= RESEARCH_CODE_FARM, researches),
+        research_sorted_by_level = sorted(
+            # filter(lambda x: x.get('code') >= RESEARCH_CODE_FARM, researches),
+            researches,
             key=lambda x: x.get('level')
-        )[0]
-        res = self.api.kingdom_academy_research(lowest_level_research)
-        threading.Timer(
-            self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
-            self.academy_farmer,
-            [True]
-        ).start()
+        )
+
+        for each_research in research_sorted_by_level:
+            try:
+                res = self.api.kingdom_academy_research(each_research)
+            except OtherException:
+                logger.warning(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
+                time.sleep(random.randint(1, 3))
+                continue
+
+            threading.Timer(
+                self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
+                self.academy_farmer,
+                [True]
+            ).start()
+            return
+
+        logger.warning('没有可以升级的研究, 等待两小时')
+        threading.Timer(2 * 3600, self.academy_farmer, [True]).start()
+        return
 
     def free_chest(self):
         """
