@@ -1,11 +1,13 @@
 FROM python:3-alpine
 
+ARG PYPI_MIRROR=https://pypi.org/simple
+
 WORKDIR /app
 
 COPY . .
 
-RUN pip install pipenv && \
-    PIPENV_VENV_IN_PROJECT=1 pipenv sync && \
+RUN pip install -i ${PYPI_MIRROR} pipenv && \
+    PIPENV_VENV_IN_PROJECT=1 pipenv sync --pypi-mirror ${PYPI_MIRROR} && \
     pipenv --clear && \
     rm -rf /tmp/* && \
     rm -rf /root/.local/* && \
