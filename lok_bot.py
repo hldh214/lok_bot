@@ -131,7 +131,7 @@ class LokBotApi:
         retry=tenacity.retry_if_exception_type((httpx.HTTPError, ratelimit.RateLimitException)),
         reraise=True
     )
-    @ratelimit.limits(calls=1, period=1)
+    @ratelimit.limits(calls=1, period=2)
     def post(self, url, json_data=None):
         if json_data is None:
             json_data = {}
@@ -536,20 +536,22 @@ class LokFarmer:
         self.api.kingdom_vip_claim()
 
 
-def main(token):
+def main(token, building_farmer=True, academy_farmer=False):
     # todo: integrate with websockets and live update for "kingdom_enter"
     farmer = LokFarmer(token)
 
-    schedule.every(60).to(120).minutes.do(farmer.alliance_helper)
-    schedule.every(30).to(60).minutes.do(farmer.harvester)
+    schedule.every(120).to(200).minutes.do(farmer.alliance_helper)
+    schedule.every(40).to(80).minutes.do(farmer.harvester)
     schedule.every(60).to(100).minutes.do(farmer.quest_monitor)
     schedule.every(120).to(200).minutes.do(farmer.free_chest)
     schedule.every(180).to(240).minutes.do(farmer.vip_chest_claim)
+    schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
 
-    # schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
+    if building_farmer:
+        threading.Thread(target=farmer.building_farmer).start()
 
-    threading.Thread(target=farmer.building_farmer).start()
-    threading.Thread(target=farmer.academy_farmer).start()
+    if academy_farmer:
+        threading.Thread(target=farmer.academy_farmer).start()
 
     # schedule.run_all()
     # exit()
