@@ -1,6 +1,9 @@
 FROM python:3-alpine
 
 ARG PYPI_MIRROR=https://pypi.org/simple
+ARG TZ=Asia/Hong_Kong
+
+ENV TZ ${TZ}
 
 WORKDIR /app
 
