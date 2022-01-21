@@ -159,7 +159,7 @@ class LokBotApi:
         if code == 'need_captcha':
             raise NeedCaptchaException()
 
-        raise OtherException(response.text)
+        raise OtherException(code)
 
     def quest_list(self):
         """
@@ -315,6 +315,8 @@ class LokBotApi:
 
 
 class LokFarmer:
+    research_code_blacklist = set()
+
     def __init__(self, access_token):
         self.kingdom_enter = {}
         self.kingdom_task_all = {}
@@ -413,9 +415,15 @@ class LokFarmer:
         )
 
         for each_building in building_sorted_by_level:
+            if each_building.get('position') in self.research_code_blacklist:
+                continue
+
             try:
                 res = self.api.kingdom_building_upgrade(each_building)
-            except OtherException:
+            except OtherException as error_code:
+                if error_code in ('max_level',):
+                    self.research_code_blacklist.add(each_building.get('position'))
+
                 logger.warning(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {each_building}')
                 time.sleep(random.randint(1, 3))
                 continue
