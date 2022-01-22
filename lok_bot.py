@@ -99,6 +99,10 @@ class NeedCaptchaException(ApiException):
     pass
 
 
+class DuplicatedException(ApiException):
+    pass
+
+
 class OtherException(ApiException):
     pass
 
@@ -128,7 +132,11 @@ class LokBotApi:
 
     @tenacity.retry(
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
-        retry=tenacity.retry_if_exception_type((httpx.HTTPError, ratelimit.RateLimitException)),
+        retry=tenacity.retry_if_exception_type((
+                httpx.HTTPError,  # general http error
+                ratelimit.RateLimitException,  # client-side rate limiter
+                DuplicatedException  # server-side rate limiter
+        )),
         reraise=True
     )
     @ratelimit.limits(calls=1, period=2)
@@ -158,6 +166,9 @@ class LokBotApi:
 
         if code == 'need_captcha':
             raise NeedCaptchaException()
+
+        if code == 'duplicated':
+            raise DuplicatedException()
 
         raise OtherException(code)
 
