@@ -335,6 +335,7 @@ class LokBotApi:
     def item_free_chest(self, _type=0):
         """
         领取免费宝箱
+        :type _type: int 0: silver 1: gold
         :return:
         """
         return self.post('item/freechest', {'type': _type})
@@ -530,15 +531,28 @@ class LokFarmer:
         threading.Timer(2 * 3600, self.academy_farmer, [True]).start()
         return
 
-    def free_chest(self):
+    def free_chest_farmer(self, _type=0):
         """
         领取免费宝箱
         :return:
         """
         try:
-            self.api.item_free_chest()
-        except OtherException:
-            return
+            res = self.api.item_free_chest(_type)
+        except OtherException as error_code:
+            if error_code == 'free_chest_not_yet':
+                logger.warning('免费宝箱还没有开启, 等待两小时')
+                threading.Timer(2 * 3600, self.free_chest_farmer).start()
+                return
+
+            raise
+
+        next_gold = arrow.get(res.get('freeChest', {}).get('gold', {}).get('next'))
+        next_silver = arrow.get(res.get('freeChest', {}).get('silver', {}).get('next'))
+
+        if next_gold < next_silver:
+            threading.Timer(self.calc_time_diff_in_seconds(next_gold), self.free_chest_farmer, [1]).start()
+        else:
+            threading.Timer(self.calc_time_diff_in_seconds(next_silver), self.free_chest_farmer, [0]).start()
 
     def use_resource_in_item_list(self):
         """
@@ -577,9 +591,10 @@ def main(token, building_farmer=True, academy_farmer=False):
     schedule.every(120).to(200).minutes.do(farmer.alliance_helper)
     schedule.every(40).to(80).minutes.do(farmer.harvester)
     schedule.every(60).to(100).minutes.do(farmer.quest_monitor)
-    schedule.every(120).to(200).minutes.do(farmer.free_chest)
     schedule.every(180).to(240).minutes.do(farmer.vip_chest_claim)
     schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
+
+    threading.Thread(target=farmer.free_chest_farmer).start()
 
     if building_farmer:
         threading.Thread(target=farmer.building_farmer).start()
