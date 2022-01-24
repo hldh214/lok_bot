@@ -466,10 +466,8 @@ class LokFarmer:
             logger.warning('没有可以升级的建筑')
             return
 
-        building_sorted_by_level = sorted(
-            [b for b in buildings],
-            key=lambda x: x.get('level')
-        )
+        buildings = filter(lambda b: b.get('position') not in BUILDING_UPGRADE_BLACKLIST, buildings)
+        building_sorted_by_level = sorted(buildings, key=lambda x: x.get('level'))
 
         for each_building in building_sorted_by_level:
             try:
