@@ -11,8 +11,12 @@ python3 lok_bot.py YOUR_X_ACCESS_TOKEN
 ## Docker
 
 ```shell
+# build yourself
 docker build -t lok_bot_local --build-arg PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple .
 docker run lok_bot_local YOUR_X_ACCESS_TOKEN
+
+# or use official docker image
+docker run ghcr.io/hldh214/lok_bot YOUR_X_ACCESS_TOKEN
 ```
 
 # X_ACCESS_TOKEN
