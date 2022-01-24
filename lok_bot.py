@@ -455,20 +455,14 @@ class LokFarmer:
             return
 
         building_sorted_by_level = sorted(
-            [b for b in buildings if b.get('position') > 100],
+            [b for b in buildings],
             key=lambda x: x.get('level')
         )
 
         for each_building in building_sorted_by_level:
-            if each_building.get('position') in self.research_code_blacklist:
-                continue
-
             try:
                 res = self.api.kingdom_building_upgrade(each_building)
-            except OtherException as error_code:
-                if error_code in ('max_level',):
-                    self.research_code_blacklist.add(each_building.get('position'))
-
+            except OtherException:
                 logger.warning(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {each_building}')
                 time.sleep(random.randint(1, 3))
                 continue
@@ -523,9 +517,15 @@ class LokFarmer:
         )
 
         for each_research in research_sorted_by_level:
+            if each_research.get('code') in self.research_code_blacklist:
+                continue
+
             try:
                 res = self.api.kingdom_academy_research(each_research)
-            except OtherException:
+            except OtherException as error_code:
+                if error_code in ('max_level',):
+                    self.research_code_blacklist.add(each_research.get('code'))
+
                 logger.warning(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
                 time.sleep(random.randint(1, 3))
                 continue
