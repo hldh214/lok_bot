@@ -5,10 +5,8 @@ import threading
 import time
 
 import arrow
-import cv2
 import fire
 import httpx
-import pytesseract
 import ratelimit
 import schedule
 import tenacity
@@ -389,6 +387,10 @@ class LokFarmer:
     def refresh_kingdom_enter(self):
         self.kingdom_enter = self.api.kingdom_enter()
 
+        next_captcha = self.kingdom_enter.get('captcha', {}).get('next')
+        if next_captcha:
+            logger.warning(f'需要验证码: {next_captcha}')
+
     def refresh_kingdom_task_all(self):
         self.kingdom_task_all = self.api.kingdom_task_all()
 
@@ -608,16 +610,6 @@ def captcha_solver(token):
     farmer = LokFarmer(token)
     captcha = Image.open(io.BytesIO(farmer.api.auth_captcha().content))
     captcha.save('captcha4.png')
-
-    img = cv2.imread('./captcha4.png')
-    gry = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    Image.fromarray(gry).show()
-    cls = cv2.morphologyEx(gry, cv2.MORPH_CLOSE, None)
-    thr = cv2.threshold(cls, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-
-    Image.fromarray(thr).show()
-    txt = pytesseract.image_to_string(thr, config='outputbase digits')
-    print(txt)
 
 
 def main(token, building_farmer=True, academy_farmer=False):
