@@ -387,9 +387,9 @@ class LokFarmer:
     def refresh_kingdom_enter(self):
         self.kingdom_enter = self.api.kingdom_enter()
 
-        next_captcha = self.kingdom_enter.get('captcha', {}).get('next')
-        if next_captcha:
-            logger.warning(f'需要验证码: {next_captcha}')
+        captcha = self.kingdom_enter.get('captcha')
+        if captcha:
+            logger.warning('需要验证码: {}'.format(captcha.get('next')))
 
     def refresh_kingdom_task_all(self):
         self.kingdom_task_all = self.api.kingdom_task_all()
