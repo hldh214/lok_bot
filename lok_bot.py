@@ -1,16 +1,20 @@
+import io
 import json
 import random
 import threading
 import time
 
 import arrow
+import cv2
 import fire
 import httpx
+import pytesseract
 import ratelimit
 import schedule
 import tenacity
 
 from loguru import logger
+from PIL import Image
 
 # 任务状态
 STATUS_PENDING = 1  # 未完成任务
@@ -196,6 +200,12 @@ class LokBotApi:
             raise DuplicatedException()
 
         raise OtherException(code)
+
+    def auth_captcha(self):
+        return self.opener.get('auth/captcha')
+
+    def auth_captcha_confirm(self, value):
+        return self.post('auth/captcha/confirm', {'value': value})
 
     def quest_list(self):
         """
@@ -523,7 +533,7 @@ class LokFarmer:
             try:
                 res = self.api.kingdom_academy_research(each_research)
             except OtherException as error_code:
-                if error_code in ('max_level',):
+                if str(error_code) in ('max_level',):
                     self.research_code_blacklist.add(each_research.get('code'))
 
                 logger.warning(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
@@ -549,7 +559,7 @@ class LokFarmer:
         try:
             res = self.api.item_free_chest(_type)
         except OtherException as error_code:
-            if error_code == 'free_chest_not_yet':
+            if str(error_code) == 'free_chest_not_yet':
                 logger.warning('免费宝箱还没有开启, 等待两小时')
                 threading.Timer(2 * 3600, self.free_chest_farmer).start()
                 return
@@ -592,6 +602,22 @@ class LokFarmer:
             return
 
         self.api.kingdom_vip_claim()
+
+
+def captcha_solver(token):
+    farmer = LokFarmer(token)
+    captcha = Image.open(io.BytesIO(farmer.api.auth_captcha().content))
+    captcha.save('captcha4.png')
+
+    img = cv2.imread('./captcha4.png')
+    gry = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    Image.fromarray(gry).show()
+    cls = cv2.morphologyEx(gry, cv2.MORPH_CLOSE, None)
+    thr = cv2.threshold(cls, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+
+    Image.fromarray(thr).show()
+    txt = pytesseract.image_to_string(thr, config='outputbase digits')
+    print(txt)
 
 
 def main(token, building_farmer=True, academy_farmer=False):

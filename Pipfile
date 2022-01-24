@@ -11,6 +11,9 @@ loguru = "*"
 tenacity = "*"
 schedule = "*"
 ratelimit = "*"
+pillow = "*"
+pytesseract = "*"
+opencv-python = "*"
 
 [dev-packages]
 
