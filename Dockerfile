@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3-slim
 
 ARG PYPI_MIRROR=https://pypi.org/simple
 ARG TZ=Asia/Hong_Kong

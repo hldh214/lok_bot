@@ -605,11 +605,9 @@ class LokFarmer:
 
         self.api.kingdom_vip_claim()
 
-
-def captcha_solver(token):
-    farmer = LokFarmer(token)
-    captcha = Image.open(io.BytesIO(farmer.api.auth_captcha().content))
-    captcha.save('captcha4.png')
+    def captcha_solver(self):
+        captcha = Image.open(io.BytesIO(self.api.auth_captcha().content))
+        captcha.save('captcha4.png')
 
 
 def main(token, building_farmer=True, academy_farmer=False):
