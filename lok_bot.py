@@ -413,7 +413,7 @@ class LokFarmer:
 
         captcha = self.kingdom_enter.get('captcha')
         if captcha and captcha.get('next'):
-            logger.warning('需要验证码: {}'.format(captcha.get('next')))
+            logger.critical('需要验证码: {}'.format(captcha.get('next')))
 
     def refresh_kingdom_task_all(self):
         self.kingdom_task_all = self.api.kingdom_task_all()
@@ -479,7 +479,7 @@ class LokFarmer:
         [self.api.quest_claim_daily_level(q) for q in quest_list_daily.get('rewards') if
          q.get('status') == STATUS_FINISHED]
 
-        logger.warning('所有任务奖励领取完毕, 等待一小时')
+        logger.info('所有任务奖励领取完毕, 等待一小时')
         threading.Timer(3600, self.quest_monitor).start()
         return
 
@@ -517,7 +517,7 @@ class LokFarmer:
             try:
                 res = self.api.kingdom_building_upgrade(each_building)
             except OtherException:
-                logger.warning(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {each_building}')
+                logger.info(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {each_building}')
                 time.sleep(random.randint(1, 3))
                 continue
 
@@ -528,7 +528,7 @@ class LokFarmer:
             ).start()
             return
 
-        logger.warning('没有可以升级的建筑, 等待两小时')
+        logger.info('没有可以升级的建筑, 等待两小时')
         threading.Timer(2 * 3600, self.building_farmer, [True]).start()
         return
 
@@ -580,7 +580,7 @@ class LokFarmer:
                 if str(error_code) in ('max_level',):
                     self.research_code_blacklist.add(each_research.get('code'))
 
-                logger.warning(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
+                logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
                 time.sleep(random.randint(1, 3))
                 continue
 
@@ -591,7 +591,7 @@ class LokFarmer:
             ).start()
             return
 
-        logger.warning('没有可以升级的研究, 等待两小时')
+        logger.info('没有可以升级的研究, 等待两小时')
         threading.Timer(2 * 3600, self.academy_farmer, [True]).start()
         return
 
@@ -604,7 +604,7 @@ class LokFarmer:
             res = self.api.item_free_chest(_type)
         except OtherException as error_code:
             if str(error_code) == 'free_chest_not_yet':
-                logger.warning('免费宝箱还没有开启, 等待两小时')
+                logger.info('免费宝箱还没有开启, 等待两小时')
                 threading.Timer(2 * 3600, self.free_chest_farmer).start()
                 return
 
