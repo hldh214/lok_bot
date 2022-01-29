@@ -483,7 +483,7 @@ class LokFarmer:
         threading.Timer(3600, self.quest_monitor).start()
         return
 
-    def building_farmer(self, refresh=False):
+    def building_farmer(self, refresh=False, task_code=TASK_CODE_SILVER_HAMMER):
         """
         building farmer
         :return:
@@ -494,13 +494,13 @@ class LokFarmer:
 
         current_tasks = self.kingdom_task_all.get('kingdomTasks', [])
 
-        worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_SILVER_HAMMER]
+        worker_used = [t for t in current_tasks if t.get('code') == task_code]
 
         if worker_used:
             threading.Timer(
                 self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')),
                 self.building_farmer,
-                [True]
+                [True, task_code]
             ).start()
             return
 
@@ -524,12 +524,12 @@ class LokFarmer:
             threading.Timer(
                 self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
                 self.building_farmer,
-                [True]
+                [True, task_code]
             ).start()
             return
 
         logger.info('没有可以升级的建筑, 等待两小时')
-        threading.Timer(2 * 3600, self.building_farmer, [True]).start()
+        threading.Timer(2 * 3600, self.building_farmer, [True, task_code]).start()
         return
 
     def academy_farmer(self, refresh=False):
