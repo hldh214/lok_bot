@@ -148,19 +148,15 @@ class LokBotApi:
     def __init__(self, access_token):
         self.opener = httpx.Client(
             headers={
-                'accept': '*/*',
-                'accept-encoding': 'gzip, deflate, br',
-                'accept-language': 'zh-CN,zh;q=0.9',
-                'origin': 'https://play.leagueofkingdoms.com',
-                'referer': 'https://play.leagueofkingdoms.com',
-                'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="97", "Chromium";v="97"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-                'sec-fetch-dest': 'empty',
-                'sec-fetch-mode': 'cors',
-                'sec-fetch-site': 'same-site',
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                              'Chrome/97.0.4692.71 Safari/537.36',
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
+                'Origin': 'https://play.leagueofkingdoms.com',
+                'Referer': 'https://play.leagueofkingdoms.com',
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'same-site',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0',
                 'x-access-token': access_token
             },
             http2=True,
@@ -280,6 +276,13 @@ class LokBotApi:
         :return:
         """
         return self.post('kingdom/arcademy/research/list')
+
+    def kingdom_hospital_recover(self):
+        """
+        医院恢复
+        :return:
+        """
+        return self.post('kingdom/hospital/recover')
 
     def kingdom_resource_harvest(self, position):
         """
