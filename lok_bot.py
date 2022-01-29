@@ -222,6 +222,12 @@ class LokBotApi:
     def auth_captcha_confirm(self, value):
         return self.post('auth/captcha/confirm', {'value': value})
 
+    def alliance_research_list(self):
+        return self.post('alliance/research/list')
+
+    def alliance_research_donate_all(self, code):
+        return self.post('alliance/research/donateAll', {'code': code})
+
     def quest_list(self):
         """
         获取任务列表
@@ -647,6 +653,19 @@ class LokFarmer:
 
         self.api.kingdom_vip_claim()
 
+    def alliance_farmer(self):
+        research_list = self.api.alliance_research_list()
+
+        code = research_list.get('recommendResearch')
+
+        if not code:
+            code = 31101003  # 骑兵攻击力 1
+
+        try:
+            self.api.alliance_research_donate_all(code)
+        except OtherException:
+            pass
+
     def captcha_solver(self):
         captcha = Image.open(io.BytesIO(self.api.auth_captcha().content))
         captcha.save('captcha4.png')
@@ -660,6 +679,7 @@ def main(token, building_farmer=True, academy_farmer=False):
     schedule.every(40).to(80).minutes.do(farmer.harvester)
     schedule.every(180).to(240).minutes.do(farmer.vip_chest_claim)
     schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
+    schedule.every(120).to(240).minutes.do(farmer.alliance_farmer)
 
     threading.Thread(target=farmer.free_chest_farmer).start()
 
