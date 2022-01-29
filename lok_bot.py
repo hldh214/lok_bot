@@ -455,13 +455,33 @@ class LokFarmer:
         :return:
         """
         quest_list = self.api.quest_list()
+
+        # main quest(currently only one)
+        [self.api.quest_claim(q) for q in quest_list.get('mainQuests') if q.get('status') == STATUS_FINISHED]
+
+        # side quest(max 5)
+        if len([self.api.quest_claim(q) for q in quest_list.get('sideQuests') if
+                q.get('status') == STATUS_FINISHED]) >= 5:
+            # 若五个均为已完成, 则翻页
+            threading.Thread(target=self.quest_monitor).start()
+            return
+
         quest_list_daily = self.api.quest_list_daily().get('dailyQuest')
 
-        [self.api.quest_claim(q) for q in quest_list.get('mainQuests') if q.get('status') == STATUS_FINISHED]
-        [self.api.quest_claim(q) for q in quest_list.get('sideQuests') if q.get('status') == STATUS_FINISHED]
-        [self.api.quest_claim_daily(q) for q in quest_list_daily.get('quests') if q.get('status') == STATUS_FINISHED]
+        # daily quest(max 5)
+        if len([self.api.quest_claim_daily(q) for q in quest_list_daily.get('quests') if
+                q.get('status') == STATUS_FINISHED]) >= 5:
+            # 若五个均为已完成, 则翻页
+            threading.Thread(target=self.quest_monitor).start()
+            return
+
+        # daily quest reward
         [self.api.quest_claim_daily_level(q) for q in quest_list_daily.get('rewards') if
          q.get('status') == STATUS_FINISHED]
+
+        logger.warning('所有任务奖励领取完毕, 等待一小时')
+        threading.Timer(3600, self.quest_monitor).start()
+        return
 
     def building_farmer(self, refresh=False):
         """
@@ -638,11 +658,12 @@ def main(token, building_farmer=True, academy_farmer=False):
 
     schedule.every(120).to(200).minutes.do(farmer.alliance_helper)
     schedule.every(40).to(80).minutes.do(farmer.harvester)
-    schedule.every(60).to(100).minutes.do(farmer.quest_monitor)
     schedule.every(180).to(240).minutes.do(farmer.vip_chest_claim)
     schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
 
     threading.Thread(target=farmer.free_chest_farmer).start()
+
+    threading.Thread(target=farmer.quest_monitor).start()
 
     if building_farmer:
         threading.Thread(target=farmer.building_farmer).start()
