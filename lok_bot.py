@@ -14,6 +14,8 @@ import tenacity
 from loguru import logger
 from PIL import Image
 
+TUTORIAL_CODE_INTRO = 'Intro'  # 过场动画结束后
+
 # 任务状态
 STATUS_PENDING = 1  # 未完成任务
 STATUS_FINISHED = 2  # 已完成待领取奖励
@@ -287,6 +289,13 @@ class LokBotApi:
         """
         return self.post('kingdom/task/claim', {'position': position})
 
+    def kingdom_tutorial_finish(self, code):
+        """
+        完成教程
+        :return:
+        """
+        return self.post('kingdom/tutorial/finish', {'code': code})
+
     def kingdom_academy_research_list(self):
         """
         获取研究列表
@@ -522,7 +531,11 @@ class LokFarmer:
         for each_building in building_sorted_by_level:
             try:
                 res = self.api.kingdom_building_upgrade(each_building)
-            except OtherException:
+            except OtherException as error_code:
+                if str(error_code) == 'full_task':
+                    logger.warning('任务已满, 可能是因为没有黄金工人, 线程结束')
+                    return
+
                 logger.info(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {each_building}')
                 time.sleep(random.randint(1, 3))
                 continue
@@ -686,7 +699,8 @@ def main(token, building_farmer=True, academy_farmer=False):
     threading.Thread(target=farmer.quest_monitor).start()
 
     if building_farmer:
-        threading.Thread(target=farmer.building_farmer).start()
+        threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_SILVER_HAMMER)).start()
+        threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_GOLD_HAMMER)).start()
 
     if academy_farmer:
         threading.Thread(target=farmer.academy_farmer).start()
