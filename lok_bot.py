@@ -21,6 +21,9 @@ STATUS_PENDING = 1  # 未完成任务
 STATUS_FINISHED = 2  # 已完成待领取奖励
 STATUS_CLAIMED = 3  # 已领取奖励
 
+BUILDING_STATE_NORMAL = 1  # 正常
+BUILDING_STATE_UPGRADING = 2  # 升级中
+
 # 建筑类型 code
 CODE_FOOD = 40100202  # 玉米
 CODE_LUMBER = 40100203  # 木材
@@ -525,7 +528,12 @@ class LokFarmer:
             logger.warning('没有可以升级的建筑')
             return
 
-        buildings = filter(lambda b: b.get('position') not in BUILDING_UPGRADE_BLACKLIST, buildings)
+        buildings = filter(
+            lambda b:
+            b.get('position') not in BUILDING_UPGRADE_BLACKLIST and
+            b.get('state') == BUILDING_STATE_NORMAL,
+            buildings
+        )
         building_sorted_by_level = sorted(buildings, key=lambda x: x.get('level'))
 
         for each_building in building_sorted_by_level:
