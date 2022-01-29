@@ -713,7 +713,8 @@ def main(token, building_farmer=True, academy_farmer=False):
     if academy_farmer:
         threading.Thread(target=farmer.academy_farmer).start()
 
-    # schedule.run_all()
+    schedule.run_all()
+
     # exit()
 
     while True:
