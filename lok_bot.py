@@ -90,8 +90,32 @@ POSITION_UNDER_LEVEL_15 = (
 
 BUILDING_UPGRADE_BLACKLIST = (POSITION_UNION,)
 
-RESEARCH_CODE_BATTLE = 30101001
-RESEARCH_CODE_FARM = 30102001
+RESEARCH_CODE = {
+    'battle': [
+        {'name': 'infantry_hp_1', 'code': 30101001, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'archery_hp_1', 'code': 30101002, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'cavalry_hp_1', 'code': 30101003, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'infantry_hp_1', 'code': 30101001, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'archery_hp_1', 'code': 30101002, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'cavalry_hp_1', 'code': 30101003, 'minimum_required_level': 2, 'max_level': 5},
+
+    ],
+    'production': [
+        {'name': 'food_production_1', 'code': 30102001, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'lumber_production_1', 'code': 30102002, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'stone_production_1', 'code': 30102003, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'gold_production_1', 'code': 30102004, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'food_capacity_1', 'code': 30102005, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'lumber_capacity_1', 'code': 30102006, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'stone_capacity_1', 'code': 30102007, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'gold_capacity_1', 'code': 30102008, 'minimum_required_level': 2, 'max_level': 5},
+    ],
+    'advanced': [],
+}
 
 ITEM_CODE_FOOD_1K = 10101013
 ITEM_CODE_FOOD_5K = 10101014
@@ -426,8 +450,6 @@ class LokBotApi:
 
 
 class LokFarmer:
-    research_code_blacklist = set()
-
     def __init__(self, access_token):
         self.kingdom_enter = {}
         self.kingdom_task_all = {}
@@ -575,15 +597,17 @@ class LokFarmer:
         threading.Timer(2 * 3600, self.building_farmer, [True, task_code]).start()
         return
 
-    def academy_farmer(self, refresh=False):
+    def academy_farmer(self, refresh=False, to_max_level=False):
         """
         research farmer
         :param refresh:
+        :param to_max_level:
         :return:
         """
         if refresh:
             self.refresh_kingdom_task_all()
-            self.refresh_kingdom_enter()
+
+        max_level_flag = 'max_level' if to_max_level else 'minimum_required_level'
 
         current_tasks = self.kingdom_task_all.get('kingdomTasks', [])
 
@@ -601,28 +625,19 @@ class LokFarmer:
             # 如果已完成, 则领取奖励并继续
             self.api.kingdom_task_claim(POSITION_ACADEMY)
 
-        researches = self.api.kingdom_academy_research_list().get('researches', [])
+        current_researches = self.api.kingdom_academy_research_list().get('researches', [])
 
-        if not researches:
-            logger.warning('没有可以研究的科技')
-            return
+        production_researches = RESEARCH_CODE['production']
 
-        research_sorted_by_level = sorted(
-            # filter(lambda x: x.get('code') >= RESEARCH_CODE_FARM, researches),
-            researches,
-            key=lambda x: x.get('level')
-        )
+        for each_research in production_researches:
+            current_research = [each for each in current_researches if each.get('code') == each_research.get('code')]
 
-        for each_research in research_sorted_by_level:
-            if each_research.get('code') in self.research_code_blacklist:
+            if current_research and current_research[0].get('level') >= each_research.get(max_level_flag):
                 continue
 
             try:
                 res = self.api.kingdom_academy_research(each_research)
-            except OtherException as error_code:
-                if str(error_code) in ('max_level',):
-                    self.research_code_blacklist.add(each_research.get('code'))
-
+            except OtherException:
                 logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
                 time.sleep(random.randint(1, 3))
                 continue
@@ -708,7 +723,7 @@ class LokFarmer:
         captcha.save('captcha4.png')
 
 
-def main(token, building_farmer=True, academy_farmer=False):
+def main(token):
     # todo: integrate with websockets and live update for "kingdom_enter"
     farmer = LokFarmer(token)
 
@@ -722,12 +737,10 @@ def main(token, building_farmer=True, academy_farmer=False):
 
     threading.Thread(target=farmer.quest_monitor).start()
 
-    if building_farmer:
-        threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_SILVER_HAMMER)).start()
-        threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_GOLD_HAMMER)).start()
+    threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_SILVER_HAMMER)).start()
+    threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_GOLD_HAMMER)).start()
 
-    if academy_farmer:
-        threading.Thread(target=farmer.academy_farmer).start()
+    threading.Thread(target=farmer.academy_farmer).start()
 
     schedule.run_all()
 
