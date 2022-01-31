@@ -156,6 +156,10 @@ class DuplicatedException(ApiException):
     pass
 
 
+class ExceedLimitPacketException(ApiException):
+    pass
+
+
 class OtherException(ApiException):
     pass
 
@@ -180,13 +184,22 @@ class LokBotApi:
         )
 
     @tenacity.retry(
+        stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
-        retry=tenacity.retry_if_exception_type((
-                httpx.HTTPError,  # general http error
-                ratelimit.RateLimitException,  # client-side rate limiter
-                DuplicatedException  # server-side rate limiter
-        )),
+        retry=tenacity.retry_if_exception_type(httpx.HTTPError),  # general http error
         reraise=True
+    )
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),  # client-side rate limiter
+    )
+    @tenacity.retry(
+        wait=tenacity.wait_random_exponential(multiplier=1, max=60),
+        retry=tenacity.retry_if_exception_type(DuplicatedException),  # server-side rate limiter(wait ~2s)
+    )
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(3600),
+        retry=tenacity.retry_if_exception_type(ExceedLimitPacketException),  # server-side rate limiter(wait 1h)
     )
     @ratelimit.limits(calls=1, period=2)
     def post(self, url, json_data=None):
@@ -218,6 +231,9 @@ class LokBotApi:
 
         if code == 'duplicated':
             raise DuplicatedException()
+
+        if code == 'exceed_limit_packet':
+            raise ExceedLimitPacketException()
 
         raise OtherException(code)
 
