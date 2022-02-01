@@ -790,8 +790,8 @@ def main(token):
 
     threading.Thread(target=farmer.quest_monitor).start()
 
-    threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_SILVER_HAMMER)).start()
-    threading.Thread(target=farmer.building_farmer, args=(False, TASK_CODE_GOLD_HAMMER)).start()
+    threading.Thread(target=farmer.building_farmer, args=(TASK_CODE_SILVER_HAMMER,)).start()
+    threading.Thread(target=farmer.building_farmer, args=(TASK_CODE_GOLD_HAMMER,)).start()
 
     threading.Thread(target=farmer.academy_farmer).start()
 
