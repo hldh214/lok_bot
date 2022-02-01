@@ -124,6 +124,18 @@ RESEARCH_CODE = {
         {'name': 'stone_gathering_speed_1', 'code': 30102011, 'minimum_required_level': 2, 'max_level': 5},
 
         {'name': 'gold_gathering_speed_1', 'code': 30102012, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'crystal_gathering_speed_1', 'code': 30102013, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'infantry_storage', 'code': 30102014, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'archery_storage', 'code': 30102015, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'cavalry_storage', 'code': 30102016, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'research_speed_1', 'code': 30102017, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'construct_speed_1', 'code': 30102018, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'resource_protect', 'code': 30102019, 'minimum_required_level': 2, 'max_level': 5},
     ],
     'advanced': [],
 }
@@ -171,7 +183,7 @@ USABLE_ITEM_CODE_LIST = (
 )
 
 legacy_logger = logging.getLogger(__name__)
-legacy_logger.setLevel(logging.DEBUG)
+legacy_logger.setLevel(logging.WARNING)
 ch = logging.StreamHandler(stream=sys.stdout)
 ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
