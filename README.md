@@ -22,3 +22,7 @@ docker run ghcr.io/hldh214/lok_bot YOUR_X_ACCESS_TOKEN
 # X_ACCESS_TOKEN
 
 `x-access-token` in request header
+
+# References
+
+https://github.com/miguelgrinberg/python-socketio/blob/v4.6.1/docs/client.rst

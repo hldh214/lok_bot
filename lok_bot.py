@@ -1,6 +1,8 @@
 import io
 import json
+import logging
 import random
+import sys
 import threading
 import time
 
@@ -9,10 +11,13 @@ import fire
 import httpx
 import ratelimit
 import schedule
+import socketio
 import tenacity
 
 from loguru import logger
 from PIL import Image
+
+API_BASE_URL = 'https://api-lok-live.leagueofkingdoms.com/api/'
 
 TUTORIAL_CODE_INTRO = 'Intro'  # 过场动画结束后
 
@@ -113,6 +118,12 @@ RESEARCH_CODE = {
         {'name': 'stone_capacity_1', 'code': 30102007, 'minimum_required_level': 2, 'max_level': 5},
 
         {'name': 'gold_capacity_1', 'code': 30102008, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'food_gathering_speed_1', 'code': 30102009, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'lumber_gathering_speed_1', 'code': 30102010, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'stone_gathering_speed_1', 'code': 30102011, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'gold_gathering_speed_1', 'code': 30102012, 'minimum_required_level': 2, 'max_level': 5},
     ],
     'advanced': [],
 }
@@ -151,17 +162,21 @@ ITEM_CODE_GOLD_1M = 10101046
 
 USABLE_ITEM_CODE_LIST = (
     ITEM_CODE_FOOD_1K, ITEM_CODE_FOOD_5K, ITEM_CODE_FOOD_10K, ITEM_CODE_FOOD_50K, ITEM_CODE_FOOD_100K,
-    ITEM_CODE_FOOD_500K, ITEM_CODE_FOOD_1M,
 
     ITEM_CODE_LUMBER_1K, ITEM_CODE_LUMBER_5K, ITEM_CODE_LUMBER_10K, ITEM_CODE_LUMBER_50K, ITEM_CODE_LUMBER_100K,
-    ITEM_CODE_LUMBER_500K, ITEM_CODE_LUMBER_1M,
 
     ITEM_CODE_STONE_1K, ITEM_CODE_STONE_5K, ITEM_CODE_STONE_10K, ITEM_CODE_STONE_50K, ITEM_CODE_STONE_100K,
-    ITEM_CODE_STONE_500K, ITEM_CODE_STONE_1M,
 
     ITEM_CODE_GOLD_1K, ITEM_CODE_GOLD_5K, ITEM_CODE_GOLD_10K, ITEM_CODE_GOLD_50K, ITEM_CODE_GOLD_100K,
-    ITEM_CODE_GOLD_500K, ITEM_CODE_GOLD_1M,
 )
+
+legacy_logger = logging.getLogger(__name__)
+legacy_logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler(stream=sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+legacy_logger.addHandler(ch)
 
 
 class ApiException(Exception):
@@ -204,7 +219,7 @@ class LokBotApi:
                 'x-access-token': access_token
             },
             http2=True,
-            base_url='https://api-lok-live.leagueofkingdoms.com/api/'
+            base_url=API_BASE_URL
         )
 
     @tenacity.retry(
@@ -451,12 +466,14 @@ class LokBotApi:
 
 class LokFarmer:
     def __init__(self, access_token):
-        self.kingdom_enter = {}
-        self.kingdom_task_all = {}
+        self.access_token = access_token
         self.api = LokBotApi(access_token)
+        self.kingdom_enter = self.api.kingdom_enter()
 
-        self.refresh_kingdom_enter()
-        self.refresh_kingdom_task_all()
+        captcha = self.kingdom_enter.get('captcha')
+        if captcha and captcha.get('next'):
+            logger.critical('需要验证码: {}'.format(captcha.get('next')))
+            exit(1)
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -464,15 +481,45 @@ class LokFarmer:
 
         return time_diff.seconds + random.randint(10, 20)
 
-    def refresh_kingdom_enter(self):
-        self.kingdom_enter = self.api.kingdom_enter()
+    @tenacity.retry(
+        stop=tenacity.stop_after_attempt(4),
+        wait=tenacity.wait_random_exponential(multiplier=1, max=60),
+        reraise=True
+    )
+    def sock_thread(self, url='https://sock-lok-live.leagueofkingdoms.com/socket.io/'):
+        """
+        websocket connection of the kingdom
+        :return:
+        """
+        sio = socketio.Client(reconnection=False, logger=legacy_logger, engineio_logger=legacy_logger)
 
-        captcha = self.kingdom_enter.get('captcha')
-        if captcha and captcha.get('next'):
-            logger.critical('需要验证码: {}'.format(captcha.get('next')))
+        @sio.on('/building/update')
+        def on_building_update(data):
+            logger.info(f'on_building_update: {data}')
+            buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
 
-    def refresh_kingdom_task_all(self):
-        self.kingdom_task_all = self.api.kingdom_task_all()
+            if not buildings:
+                return
+
+            self.kingdom_enter['kingdom']['buildings'] = [
+                                                             building for building in buildings if
+                                                             building.get('position') != data.get('position')
+                                                         ] + [data]
+
+            return
+
+        sio.connect(url, transports=["websocket"])
+
+        sio.emit('/kingdom/enter', {'token': self.access_token})
+
+        sio.wait()
+
+    def socf_thread(self):
+        """
+        websocket connection of the field
+        :return:
+        """
+        pass
 
     def alliance_helper(self):
         """
@@ -539,16 +586,13 @@ class LokFarmer:
         threading.Timer(3600, self.quest_monitor).start()
         return
 
-    def building_farmer(self, refresh=False, task_code=TASK_CODE_SILVER_HAMMER):
+    def building_farmer(self, task_code=TASK_CODE_SILVER_HAMMER):
         """
         building farmer
+        :param task_code:
         :return:
         """
-        if refresh:
-            self.refresh_kingdom_task_all()
-            self.refresh_kingdom_enter()
-
-        current_tasks = self.kingdom_task_all.get('kingdomTasks', [])
+        current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
         worker_used = [t for t in current_tasks if t.get('code') == task_code]
 
@@ -556,7 +600,7 @@ class LokFarmer:
             threading.Timer(
                 self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')),
                 self.building_farmer,
-                [True, task_code]
+                [task_code]
             ).start()
             return
 
@@ -589,27 +633,23 @@ class LokFarmer:
             threading.Timer(
                 self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
                 self.building_farmer,
-                [True, task_code]
+                [task_code]
             ).start()
             return
 
         logger.info('没有可以升级的建筑, 等待两小时')
-        threading.Timer(2 * 3600, self.building_farmer, [True, task_code]).start()
+        threading.Timer(2 * 3600, self.building_farmer, [task_code]).start()
         return
 
-    def academy_farmer(self, refresh=False, to_max_level=False):
+    def academy_farmer(self, to_max_level=False):
         """
         research farmer
-        :param refresh:
         :param to_max_level:
         :return:
         """
-        if refresh:
-            self.refresh_kingdom_task_all()
-
         max_level_flag = 'max_level' if to_max_level else 'minimum_required_level'
 
-        current_tasks = self.kingdom_task_all.get('kingdomTasks', [])
+        current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
         worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_ACADEMY]
 
@@ -618,7 +658,7 @@ class LokFarmer:
                 threading.Timer(
                     self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')),
                     self.academy_farmer,
-                    [True]
+                    [to_max_level]
                 ).start()
                 return
 
@@ -645,12 +685,12 @@ class LokFarmer:
             threading.Timer(
                 self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
                 self.academy_farmer,
-                [True]
+                [to_max_level]
             ).start()
             return
 
         logger.info('没有可以升级的研究, 等待两小时')
-        threading.Timer(2 * 3600, self.academy_farmer, [True]).start()
+        threading.Timer(2 * 3600, self.academy_farmer, [to_max_level]).start()
         return
 
     def free_chest_farmer(self, _type=0):
@@ -724,7 +764,6 @@ class LokFarmer:
 
 
 def main(token):
-    # todo: integrate with websockets and live update for "kingdom_enter"
     farmer = LokFarmer(token)
 
     schedule.every(120).to(200).minutes.do(farmer.alliance_helper)
@@ -732,6 +771,8 @@ def main(token):
     schedule.every(180).to(240).minutes.do(farmer.vip_chest_claim)
     schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
     schedule.every(120).to(240).minutes.do(farmer.alliance_farmer)
+
+    threading.Thread(target=farmer.sock_thread).start()
 
     threading.Thread(target=farmer.free_chest_farmer).start()
 
