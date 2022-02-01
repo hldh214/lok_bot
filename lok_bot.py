@@ -629,8 +629,10 @@ class LokFarmer:
             buildings
         )
         building_sorted_by_level = sorted(buildings, key=lambda x: x.get('level'))
+        building_position_lt_100 = [b for b in building_sorted_by_level if b.get('position') < 100]
+        building_position_gt_100 = [b for b in building_sorted_by_level if b.get('position') > 100]
 
-        for each_building in building_sorted_by_level:
+        for each_building in building_position_gt_100 + building_position_lt_100:
             try:
                 res = self.api.kingdom_building_upgrade(each_building)
             except OtherException as error_code:
