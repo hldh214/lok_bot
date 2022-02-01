@@ -679,27 +679,32 @@ class LokFarmer:
 
         current_researches = self.api.kingdom_academy_research_list().get('researches', [])
 
-        production_researches = RESEARCH_CODE['production']
+        for category_name, each_category in RESEARCH_CODE.items():
+            logger.info(f'开始 {category_name} 分类下的研究')
+            for each_research in each_category:
+                current_research = [each for each in current_researches if
+                                    each.get('code') == each_research.get('code')]
 
-        for each_research in production_researches:
-            current_research = [each for each in current_researches if each.get('code') == each_research.get('code')]
+                if current_research and current_research[0].get('level') >= each_research.get(max_level_flag):
+                    continue
 
-            if current_research and current_research[0].get('level') >= each_research.get(max_level_flag):
-                continue
+                try:
+                    res = self.api.kingdom_academy_research(each_research)
+                except OtherException as error_code:
+                    if str(error_code) == 'not_enough_condition':
+                        logger.warning(f'分类 {category_name} 下的研究已达到目前可升级的最大等级, 尝试下一个分类')
+                        break
 
-            try:
-                res = self.api.kingdom_academy_research(each_research)
-            except OtherException:
-                logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
-                time.sleep(random.randint(1, 3))
-                continue
+                    logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
+                    time.sleep(random.randint(1, 3))
+                    continue
 
-            threading.Timer(
-                self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
-                self.academy_farmer,
-                [to_max_level]
-            ).start()
-            return
+                threading.Timer(
+                    self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
+                    self.academy_farmer,
+                    [to_max_level]
+                ).start()
+                return
 
         logger.info('没有可以升级的研究, 等待两小时')
         threading.Timer(2 * 3600, self.academy_farmer, [to_max_level]).start()
