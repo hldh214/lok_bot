@@ -100,10 +100,19 @@ RESEARCH_CODE = {
         {'name': 'archery_hp_1', 'code': 30101002, 'minimum_required_level': 2, 'max_level': 5},
         {'name': 'cavalry_hp_1', 'code': 30101003, 'minimum_required_level': 2, 'max_level': 5},
 
-        {'name': 'infantry_hp_1', 'code': 30101001, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'archery_hp_1', 'code': 30101002, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'cavalry_hp_1', 'code': 30101003, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'infantry_defense_1', 'code': 30101004, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'archery_defense_1', 'code': 30101005, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'cavalry_defense_1', 'code': 30101006, 'minimum_required_level': 2, 'max_level': 5},
 
+        {'name': 'infantry_attack_1', 'code': 30101007, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'archery_attack_1', 'code': 30101008, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'cavalry_attack_1', 'code': 30101009, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'infantry_speed_1', 'code': 30101010, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'archery_speed_1', 'code': 30101011, 'minimum_required_level': 2, 'max_level': 5},
+        {'name': 'cavalry_speed_1', 'code': 30101012, 'minimum_required_level': 2, 'max_level': 5},
+
+        {'name': 'troops_load', 'code': 30101013, 'minimum_required_level': 2, 'max_level': 5},
     ],
     'production': [
         {'name': 'food_production_1', 'code': 30102001, 'minimum_required_level': 2, 'max_level': 5},
