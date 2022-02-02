@@ -107,6 +107,44 @@ USABLE_ITEM_CODE_LIST = (
 )
 
 RESEARCH_CODE_MAP = {
+    # 生产优先
+    'production': {
+        'food_production': 30102001,
+        'wood_production': 30102002,
+        'stone_production': 30102003,
+        'gold_production': 30102004,
+        'food_capacity': 30102005,
+        'wood_capacity': 30102006,
+        'stone_capacity': 30102007,
+        'gold_capacity': 30102008,
+        'food_gathering_speed': 30102009,
+        'wood_gathering_speed': 30102010,
+        'stone_gathering_speed': 30102011,
+        'gold_gathering_speed': 30102012,
+        'crystal_gathering_speed': 30102013,
+        'infantry_storage': 30102014,
+        'ranged_storage': 30102015,
+        'cavalry_storage': 30102016,
+        'research_speed': 30102017,
+        'construction_speed': 30102018,
+        'resource_protect': 30102019,
+        'advanced_food_production': 30102020,
+        'advanced_wood_production': 30102021,
+        'advanced_stone_production': 30102022,
+        'advanced_gold_production': 30102023,
+        'advanced_food_capacity': 30102024,
+        'advanced_wood_capacity': 30102025,
+        'advanced_stone_capacity': 30102026,
+        'advanced_gold_capacity': 30102027,
+        'advanced_research_speed': 30102028,
+        'advanced_construction_speed': 30102029,
+        'advanced_food_gathering_speed': 30102030,
+        'advanced_wood_gathering_speed': 30102031,
+        'advanced_stone_gathering_speed': 30102032,
+        'advanced_gold_gathering_speed': 30102033,
+        'advanced_crystal_gathering_speed': 30102034,
+    },
+    # 训练其次
     'battle': {
         'infantry_hp': 30101001,
         'ranged_hp': 30101002,
@@ -163,42 +201,6 @@ RESEARCH_CODE_MAP = {
         'crusader': 30101053,
         'sniper': 30101054,
         'dragoon': 30101055,
-    },
-    'production': {
-        'food_production': 30102001,
-        'wood_production': 30102002,
-        'stone_production': 30102003,
-        'gold_production': 30102004,
-        'food_capacity': 30102005,
-        'wood_capacity': 30102006,
-        'stone_capacity': 30102007,
-        'gold_capacity': 30102008,
-        'food_gathering_speed': 30102009,
-        'wood_gathering_speed': 30102010,
-        'stone_gathering_speed': 30102011,
-        'gold_gathering_speed': 30102012,
-        'crystal_gathering_speed': 30102013,
-        'infantry_storage': 30102014,
-        'ranged_storage': 30102015,
-        'cavalry_storage': 30102016,
-        'research_speed': 30102017,
-        'construction_speed': 30102018,
-        'resource_protect': 30102019,
-        'advanced_food_production': 30102020,
-        'advanced_wood_production': 30102021,
-        'advanced_stone_production': 30102022,
-        'advanced_gold_production': 30102023,
-        'advanced_food_capacity': 30102024,
-        'advanced_wood_capacity': 30102025,
-        'advanced_stone_capacity': 30102026,
-        'advanced_gold_capacity': 30102027,
-        'advanced_research_speed': 30102028,
-        'advanced_construction_speed': 30102029,
-        'advanced_food_gathering_speed': 30102030,
-        'advanced_wood_gathering_speed': 30102031,
-        'advanced_stone_gathering_speed': 30102032,
-        'advanced_gold_gathering_speed': 30102033,
-        'advanced_crystal_gathering_speed': 30102034,
     },
     'advanced': {
         'resource_production': 30103001,
@@ -262,7 +264,7 @@ def load_research_json():
         current_research_json = json.load(
             open(project_root.joinpath(f'lokbot/assets/research/{research_category}.json'))
         )
-        for research_name, research_code in research:
+        for research_name, research_code in research.items():
             result[research_code] = current_research_json[research_name]
 
     return result
@@ -296,7 +298,7 @@ def is_researchable(research_code, exist_researches, academy_level, each_categor
     current_research_json = research_json.get(research_code)
 
     # already finished
-    if exist_research and exist_research[0].get('level') >= current_research_json[-1].get('level'):
+    if exist_research and exist_research[0].get('level') >= int(current_research_json[-1].get('level')):
         return False
 
     current_level_info = current_research_json[0]
@@ -304,7 +306,7 @@ def is_researchable(research_code, exist_researches, academy_level, each_categor
         current_level_info = current_research_json[exist_research[0].get('level') - 1]
 
     for requirement in current_level_info.get('requirements'):
-        req_level = requirement.get('level')
+        req_level = int(requirement.get('level'))
         req_type = requirement.get('type')
 
         # 判断学院等级
