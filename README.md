@@ -5,7 +5,7 @@ Yet another League of Kingdoms farming bot
 # Usage
 
 ```shell
-python3 lok_bot.py YOUR_X_ACCESS_TOKEN
+python3 -m lokbot
 ```
 
 ## Docker

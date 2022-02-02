@@ -11,7 +11,6 @@ loguru = "*"
 tenacity = "*"
 schedule = "*"
 ratelimit = "*"
-pillow = "*"
 python-socketio = {version = "<5", extras = ["client"]}
 
 [dev-packages]
