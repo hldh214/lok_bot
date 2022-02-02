@@ -106,58 +106,142 @@ USABLE_ITEM_CODE_LIST = (
     ITEM_CODE_GOLD_1K, ITEM_CODE_GOLD_5K, ITEM_CODE_GOLD_10K, ITEM_CODE_GOLD_50K, ITEM_CODE_GOLD_100K,
 )
 
-RESEARCH_CODE = {
-    'battle': [
-        {'name': 'infantry_hp_1', 'code': 30101001, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'archery_hp_1', 'code': 30101002, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'cavalry_hp_1', 'code': 30101003, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'infantry_defense_1', 'code': 30101004, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'archery_defense_1', 'code': 30101005, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'cavalry_defense_1', 'code': 30101006, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'infantry_attack_1', 'code': 30101007, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'archery_attack_1', 'code': 30101008, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'cavalry_attack_1', 'code': 30101009, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'infantry_speed_1', 'code': 30101010, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'archery_speed_1', 'code': 30101011, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'cavalry_speed_1', 'code': 30101012, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'troops_load', 'code': 30101013, 'minimum_required_level': 2, 'max_level': 5},
-    ],
-    'production': [
-        {'name': 'food_production_1', 'code': 30102001, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'lumber_production_1', 'code': 30102002, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'stone_production_1', 'code': 30102003, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'gold_production_1', 'code': 30102004, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'food_capacity_1', 'code': 30102005, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'lumber_capacity_1', 'code': 30102006, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'stone_capacity_1', 'code': 30102007, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'gold_capacity_1', 'code': 30102008, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'food_gathering_speed_1', 'code': 30102009, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'lumber_gathering_speed_1', 'code': 30102010, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'stone_gathering_speed_1', 'code': 30102011, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'gold_gathering_speed_1', 'code': 30102012, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'crystal_gathering_speed_1', 'code': 30102013, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'infantry_storage', 'code': 30102014, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'archery_storage', 'code': 30102015, 'minimum_required_level': 2, 'max_level': 5},
-        {'name': 'cavalry_storage', 'code': 30102016, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'research_speed_1', 'code': 30102017, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'construct_speed_1', 'code': 30102018, 'minimum_required_level': 2, 'max_level': 5},
-
-        {'name': 'resource_protect', 'code': 30102019, 'minimum_required_level': 2, 'max_level': 5},
-    ],
-    'advanced': [],
+RESEARCH_CODE_MAP = {
+    'battle': {
+        'infantry_hp': 30101001,
+        'ranged_hp': 30101002,
+        'cavalry_hp': 30101003,
+        'infantry_def': 30101004,
+        'ranged_def': 30101005,
+        'cavalry_def': 30101006,
+        'infantry_atk': 30101007,
+        'ranged_atk': 30101008,
+        'cavalry_atk': 30101009,
+        'infantry_spd': 30101010,
+        'ranged_spd': 30101011,
+        'cavalry_spd': 30101012,
+        'troops_storage': 30101013,
+        'warrior': 30101014,
+        'longbow_man': 30101015,
+        'horseman': 30101016,
+        'infantry_training_amount': 30101017,
+        'ranged_training_amount': 30101018,
+        'cavalry_training_amount': 30101019,
+        'infantry_training_speed': 30101020,
+        'ranged_training_speed': 30101021,
+        'cavalry_training_speed': 30101022,
+        'infantry_training_cost': 30101023,
+        'ranged_training_cost': 30101024,
+        'cavalry_training_cost': 30101025,
+        'march_size': 30101026,
+        'march_limit': 30101027,
+        'knight': 30101028,
+        'ranger': 30101029,
+        'heavy_cavalry': 30101030,
+        'troops_spd': 30101031,
+        'troops_hp': 30101032,
+        'troops_def': 30101033,
+        'troops_atk': 30101034,
+        'hospital_capacity': 30101035,
+        'healing_time_reduced': 30101036,
+        'guardian': 30101037,
+        'crossbow_man': 30101038,
+        'iron_cavalry': 30101039,
+        'rally_attack_amount': 30101040,
+        'advanced_infantry_hp': 30101041,
+        'advanced_ranged_hp': 30101042,
+        'advanced_cavalry_hp': 30101043,
+        'advanced_infantry_def': 30101044,
+        'advanced_ranged_def': 30101045,
+        'advanced_cavalry_def': 30101046,
+        'advanced_infantry_atk': 30101047,
+        'advanced_ranged_atk': 30101048,
+        'advanced_cavalry_atk': 30101049,
+        'advanced_infantry_spd': 30101050,
+        'advanced_ranged_spd': 30101051,
+        'advanced_cavalry_spd': 30101052,
+        'crusader': 30101053,
+        'sniper': 30101054,
+        'dragoon': 30101055,
+    },
+    'production': {
+        'food_production': 30102001,
+        'wood_production': 30102002,
+        'stone_production': 30102003,
+        'gold_production': 30102004,
+        'food_capacity': 30102005,
+        'wood_capacity': 30102006,
+        'stone_capacity': 30102007,
+        'gold_capacity': 30102008,
+        'food_gathering_speed': 30102009,
+        'wood_gathering_speed': 30102010,
+        'stone_gathering_speed': 30102011,
+        'gold_gathering_speed': 30102012,
+        'crystal_gathering_speed': 30102013,
+        'infantry_storage': 30102014,
+        'ranged_storage': 30102015,
+        'cavalry_storage': 30102016,
+        'research_speed': 30102017,
+        'construction_speed': 30102018,
+        'resource_protect': 30102019,
+        'advanced_food_production': 30102020,
+        'advanced_wood_production': 30102021,
+        'advanced_stone_production': 30102022,
+        'advanced_gold_production': 30102023,
+        'advanced_food_capacity': 30102024,
+        'advanced_wood_capacity': 30102025,
+        'advanced_stone_capacity': 30102026,
+        'advanced_gold_capacity': 30102027,
+        'advanced_research_speed': 30102028,
+        'advanced_construction_speed': 30102029,
+        'advanced_food_gathering_speed': 30102030,
+        'advanced_wood_gathering_speed': 30102031,
+        'advanced_stone_gathering_speed': 30102032,
+        'advanced_gold_gathering_speed': 30102033,
+        'advanced_crystal_gathering_speed': 30102034,
+    },
+    'advanced': {
+        'resource_production': 30103001,
+        'infantry_hp_against_archer': 30103002,
+        'infantry_def_against_archer': 30103003,
+        'infantry_atk_against_archer': 30103004,
+        'archer_hp_against_cavalry': 30103005,
+        'archer_def_against_cavalry': 30103006,
+        'archer_atk_against_cavalry': 30103007,
+        'cavalry_hp_against_infantry': 30103008,
+        'cavalry_def_against_infantry': 30103009,
+        'cavalry_atk_against_infantry': 30103010,
+        'resource_capacity': 30103011,
+        'castle_defending_infantrys_hp': 30103012,
+        'castle_defending_infantrys_def': 30103013,
+        'castle_defending_infantrys_atk': 30103014,
+        'castle_defending_archers_hp': 30103015,
+        'castle_defending_archers_def': 30103016,
+        'castle_defending_archers_atk': 30103017,
+        'castle_defending_cavalrys_hp': 30103018,
+        'castle_defending_cavalrys_def': 30103019,
+        'castle_defending_cavalrys_atk': 30103020,
+        'resource_protect': 30103021,
+        'infantrys_hp_when_composed_of_infantry_only': 30103022,
+        'infantrys_def_when_composed_of_infantry_only': 30103023,
+        'infantrys_atk_when_composed_of_infantry_only': 30103024,
+        'archers_hp_when_composed_of_archer_only': 30103025,
+        'archers_def_when_composed_of_archer_only': 30103026,
+        'archers_atk_when_composed_of_archer_only': 30103027,
+        'cavalrys_hp_when_composed_of_cavalry_only': 30103028,
+        'cavalrys_def_when_composed_of_cavalry_only': 30103029,
+        'cavalrys_atk_when_composed_of_cavalry_only': 30103030,
+        'troop_speed_when_participating_a_rally': 30103031,
+        'infantrys_hp_when_participating_a_rally': 30103032,
+        'infantrys_def_when_participating_a_rally': 30103033,
+        'infantrys_atk_when_participating_a_rally': 30103034,
+        'archers_hp_when_participating_a_rally': 30103035,
+        'archers_def_when_participating_a_rally': 30103036,
+        'archers_atk_when_participating_a_rally': 30103037,
+        'cavalrys_hp_when_participating_a_rally': 30103038,
+        'cavalrys_def_when_participating_a_rally': 30103039,
+        'cavalrys_atk_when_participating_a_rally': 30103040,
+    },
 }
 
 
@@ -167,6 +251,19 @@ def load_building_json():
     for building_type, building_code in BUILDING_CODE_MAP.items():
         current_building_json = json.load(open(project_root.joinpath(f'lokbot/assets/buildings/{building_type}.json')))
         result[building_code] = current_building_json
+
+    return result
+
+
+def load_research_json():
+    result = {}
+
+    for research_category, research in RESEARCH_CODE_MAP.items():
+        current_research_json = json.load(
+            open(project_root.joinpath(f'lokbot/assets/research/{research_category}.json'))
+        )
+        for research_name, research_code in research:
+            result[research_code] = current_research_json[research_name]
 
     return result
 
@@ -194,7 +291,37 @@ def is_building_upgradeable(building, buildings):
     return True
 
 
+def is_researchable(research_code, exist_researches, academy_level, each_category):
+    exist_research = [each for each in exist_researches if each.get('code') == research_code]
+    current_research_json = research_json.get(research_code)
+
+    # already finished
+    if exist_research and exist_research[0].get('level') >= current_research_json[-1].get('level'):
+        return False
+
+    current_level_info = current_research_json[0]
+    if exist_research:
+        current_level_info = current_research_json[exist_research[0].get('level') - 1]
+
+    for requirement in current_level_info.get('requirements'):
+        req_level = requirement.get('level')
+        req_type = requirement.get('type')
+
+        # 判断学院等级
+        if req_type == 'academy' and req_level > academy_level:
+            return False
+
+        # 判断前置研究是否完成
+        if req_type != 'academy' and not [each for each in exist_researches if
+                                          each.get('code') == each_category.get(req_type)
+                                          and each.get('level') >= req_level]:
+            return False
+
+    return True
+
+
 building_json = load_building_json()
+research_json = load_research_json()
 
 
 class LokFarmer:
@@ -374,8 +501,6 @@ class LokFarmer:
         :param to_max_level:
         :return:
         """
-        max_level_flag = 'max_level' if to_max_level else 'minimum_required_level'
-
         current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
         worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_ACADEMY]
@@ -392,25 +517,24 @@ class LokFarmer:
             # 如果已完成, 则领取奖励并继续
             self.api.kingdom_task_claim(BUILDING_POSITION_MAP['academy'])
 
-        current_researches = self.api.kingdom_academy_research_list().get('researches', [])
+        exist_researches = self.api.kingdom_academy_research_list().get('researches', [])
+        buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
+        academy_level = [b for b in buildings if b.get('code') == BUILDING_CODE_MAP['academy']][0].get('level')
 
-        for category_name, each_category in RESEARCH_CODE.items():
+        for category_name, each_category in RESEARCH_CODE_MAP.items():
             logger.info(f'开始 {category_name} 分类下的研究')
-            for each_research in each_category:
-                current_research = [each for each in current_researches if
-                                    each.get('code') == each_research.get('code')]
-
-                if current_research and current_research[0].get('level') >= each_research.get(max_level_flag):
+            for research_name, research_code in each_category.items():
+                if not is_researchable(research_code, exist_researches, academy_level, each_category):
                     continue
 
                 try:
-                    res = self.api.kingdom_academy_research(each_research)
+                    res = self.api.kingdom_academy_research({'code': research_code})
                 except OtherException as error_code:
                     if str(error_code) == 'not_enough_condition':
                         logger.warning(f'分类 {category_name} 下的研究已达到目前可升级的最大等级, 尝试下一个分类')
                         break
 
-                    logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {each_research}')
+                    logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {research_name}({research_code})')
                     continue
 
                 threading.Timer(
