@@ -172,9 +172,11 @@ def load_building_json():
 
 
 def is_building_upgradeable(building, buildings):
-    building_code = building.get('code')
+    if building.get('state') != BUILDING_STATE_NORMAL:
+        return False
+
     building_level = building.get('level')
-    current_building_json = building_json.get(building_code)
+    current_building_json = building_json.get(building.get('code'))
 
     if not current_building_json:
         return False
@@ -340,8 +342,6 @@ class LokFarmer:
         if not buildings:
             logger.warning('没有可以升级的建筑')
             return
-
-        buildings = filter(lambda b: b.get('state') == BUILDING_STATE_NORMAL, buildings)
 
         for building in buildings:
             if not is_building_upgradeable(building, buildings):
