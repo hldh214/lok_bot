@@ -18,4 +18,7 @@ RUN pip install -i ${PYPI_MIRROR} pipenv && \
 
 ENV PATH="/app/.venv/bin:$PATH"
 
+HEALTHCHECK --retries=1 \
+    CMD if grep -q Exception loguru.log; then exit 1; else exit 0; fi
+
 ENTRYPOINT ["python", "lok_bot.py"]

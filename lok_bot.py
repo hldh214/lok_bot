@@ -192,6 +192,7 @@ stdout_channel.setFormatter(formatter)
 
 file_channel = logging.FileHandler('builtin_logger.log')
 file_channel.setFormatter(formatter)
+file_channel.setLevel(logging.DEBUG)
 
 builtin_logger.addHandler(stdout_channel)
 builtin_logger.addHandler(file_channel)
