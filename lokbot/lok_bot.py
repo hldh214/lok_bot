@@ -195,7 +195,7 @@ builtin_logger.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-file_channel = logging.FileHandler('builtin_logger.log')
+file_channel = logging.FileHandler('../builtin_logger.log')
 file_channel.setFormatter(formatter)
 
 builtin_logger.addHandler(file_channel)

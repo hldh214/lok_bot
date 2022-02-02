@@ -1,0 +1,876 @@
+{
+  "1": {
+    "valid": false,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 3000
+      },
+      {
+        "type": "stone",
+        "value": 3000
+      },
+      {
+        "type": "gold",
+        "value": 1500
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 1
+      },
+      {
+        "type": "quarry",
+        "level": 1
+      }
+    ],
+    "time": 1,
+    "power": 430
+  },
+  "2": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 4020
+      },
+      {
+        "type": "stone",
+        "value": 4020
+      },
+      {
+        "type": "gold",
+        "value": 2010
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 2
+      },
+      {
+        "type": "quarry",
+        "level": 2
+      }
+    ],
+    "time": 3,
+    "power": 1137
+  },
+  "3": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 5387
+      },
+      {
+        "type": "stone",
+        "value": 5387
+      },
+      {
+        "type": "gold",
+        "value": 2693
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 3
+      },
+      {
+        "type": "quarry",
+        "level": 3
+      }
+    ],
+    "time": 40,
+    "power": 2142
+  },
+  "4": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 7219
+      },
+      {
+        "type": "stone",
+        "value": 7219
+      },
+      {
+        "type": "gold",
+        "value": 3609
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 4
+      },
+      {
+        "type": "quarry",
+        "level": 4
+      }
+    ],
+    "time": 240,
+    "power": 3482
+  },
+  "5": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 9673
+      },
+      {
+        "type": "stone",
+        "value": 9673
+      },
+      {
+        "type": "gold",
+        "value": 4836
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 5
+      },
+      {
+        "type": "quarry",
+        "level": 5
+      }
+    ],
+    "time": 960,
+    "power": 5226
+  },
+  "6": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 12962
+      },
+      {
+        "type": "stone",
+        "value": 12962
+      },
+      {
+        "type": "gold",
+        "value": 6480
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 6
+      },
+      {
+        "type": "quarry",
+        "level": 6
+      }
+    ],
+    "time": 1440,
+    "power": 7431
+  },
+  "7": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 17369
+      },
+      {
+        "type": "stone",
+        "value": 17369
+      },
+      {
+        "type": "gold",
+        "value": 8683
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 7
+      },
+      {
+        "type": "quarry",
+        "level": 7
+      }
+    ],
+    "time": 2160,
+    "power": 10183
+  },
+  "8": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 23274
+      },
+      {
+        "type": "stone",
+        "value": 23274
+      },
+      {
+        "type": "gold",
+        "value": 11635
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 8
+      },
+      {
+        "type": "quarry",
+        "level": 8
+      }
+    ],
+    "time": 3240,
+    "power": 13605
+  },
+  "9": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 31187
+      },
+      {
+        "type": "stone",
+        "value": 31187
+      },
+      {
+        "type": "gold",
+        "value": 15591
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 9
+      },
+      {
+        "type": "quarry",
+        "level": 9
+      }
+    ],
+    "time": 4860,
+    "power": 17805
+  },
+  "10": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 41791
+      },
+      {
+        "type": "stone",
+        "value": 41791
+      },
+      {
+        "type": "gold",
+        "value": 20892
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 10
+      },
+      {
+        "type": "quarry",
+        "level": 10
+      }
+    ],
+    "time": 7290,
+    "power": 22928
+  },
+  "11": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 56000
+      },
+      {
+        "type": "stone",
+        "value": 56000
+      },
+      {
+        "type": "gold",
+        "value": 27995
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 11
+      },
+      {
+        "type": "quarry",
+        "level": 11
+      }
+    ],
+    "time": 10935,
+    "power": 29130
+  },
+  "12": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 75040
+      },
+      {
+        "type": "stone",
+        "value": 75040
+      },
+      {
+        "type": "gold",
+        "value": 37513
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 12
+      },
+      {
+        "type": "quarry",
+        "level": 12
+      }
+    ],
+    "time": 16403,
+    "power": 36647
+  },
+  "13": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 100554
+      },
+      {
+        "type": "stone",
+        "value": 100554
+      },
+      {
+        "type": "gold",
+        "value": 50267
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 13
+      },
+      {
+        "type": "quarry",
+        "level": 13
+      }
+    ],
+    "time": 24605,
+    "power": 45697
+  },
+  "14": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 134742
+      },
+      {
+        "type": "stone",
+        "value": 134742
+      },
+      {
+        "type": "gold",
+        "value": 67358
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 14
+      },
+      {
+        "type": "quarry",
+        "level": 14
+      }
+    ],
+    "time": 36908,
+    "power": 56548
+  },
+  "15": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 180554
+      },
+      {
+        "type": "stone",
+        "value": 180554
+      },
+      {
+        "type": "gold",
+        "value": 90260
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 15
+      },
+      {
+        "type": "quarry",
+        "level": 15
+      }
+    ],
+    "time": 55362,
+    "power": 69561
+  },
+  "16": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 241942
+      },
+      {
+        "type": "stone",
+        "value": 241942
+      },
+      {
+        "type": "gold",
+        "value": 120948
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 16
+      },
+      {
+        "type": "quarry",
+        "level": 16
+      }
+    ],
+    "time": 66434,
+    "power": 85121
+  },
+  "17": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 324202
+      },
+      {
+        "type": "stone",
+        "value": 324202
+      },
+      {
+        "type": "gold",
+        "value": 162070
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 17
+      },
+      {
+        "type": "quarry",
+        "level": 17
+      }
+    ],
+    "time": 79721,
+    "power": 103675
+  },
+  "18": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 434431
+      },
+      {
+        "type": "stone",
+        "value": 434431
+      },
+      {
+        "type": "gold",
+        "value": 217174
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 18
+      },
+      {
+        "type": "quarry",
+        "level": 18
+      }
+    ],
+    "time": 95665,
+    "power": 125779
+  },
+  "19": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 582138
+      },
+      {
+        "type": "stone",
+        "value": 582138
+      },
+      {
+        "type": "gold",
+        "value": 291013
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 19
+      },
+      {
+        "type": "quarry",
+        "level": 19
+      }
+    ],
+    "time": 114798,
+    "power": 152063
+  },
+  "20": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 780065
+      },
+      {
+        "type": "stone",
+        "value": 780065
+      },
+      {
+        "type": "gold",
+        "value": 389957
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 20
+      },
+      {
+        "type": "quarry",
+        "level": 20
+      }
+    ],
+    "time": 137758,
+    "power": 183279
+  },
+  "21": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 1045287
+      },
+      {
+        "type": "stone",
+        "value": 1045287
+      },
+      {
+        "type": "gold",
+        "value": 522542
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 21
+      },
+      {
+        "type": "quarry",
+        "level": 21
+      }
+    ],
+    "time": 165310,
+    "power": 220306
+  },
+  "22": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 1400685
+      },
+      {
+        "type": "stone",
+        "value": 1400685
+      },
+      {
+        "type": "gold",
+        "value": 700206
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 22
+      },
+      {
+        "type": "quarry",
+        "level": 22
+      }
+    ],
+    "time": 198372,
+    "power": 264208
+  },
+  "23": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 1876918
+      },
+      {
+        "type": "stone",
+        "value": 1876918
+      },
+      {
+        "type": "gold",
+        "value": 938276
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 23
+      },
+      {
+        "type": "quarry",
+        "level": 23
+      }
+    ],
+    "time": 238046,
+    "power": 316147
+  },
+  "24": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 2515070
+      },
+      {
+        "type": "stone",
+        "value": 2515070
+      },
+      {
+        "type": "gold",
+        "value": 1257290
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 24
+      },
+      {
+        "type": "quarry",
+        "level": 24
+      }
+    ],
+    "time": 285655,
+    "power": 377580
+  },
+  "25": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 3370194
+      },
+      {
+        "type": "stone",
+        "value": 3370194
+      },
+      {
+        "type": "gold",
+        "value": 1684769
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 25
+      },
+      {
+        "type": "quarry",
+        "level": 25
+      }
+    ],
+    "time": 342786,
+    "power": 450130
+  },
+  "26": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 4516060
+      },
+      {
+        "type": "stone",
+        "value": 4516060
+      },
+      {
+        "type": "gold",
+        "value": 2257590
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 26
+      },
+      {
+        "type": "quarry",
+        "level": 26
+      }
+    ],
+    "time": 411343,
+    "power": 535794
+  },
+  "27": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 6051520
+      },
+      {
+        "type": "stone",
+        "value": 6051520
+      },
+      {
+        "type": "gold",
+        "value": 3025171
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 27
+      },
+      {
+        "type": "quarry",
+        "level": 27
+      }
+    ],
+    "time": 493612,
+    "power": 636859
+  },
+  "28": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 8109037
+      },
+      {
+        "type": "stone",
+        "value": 8109037
+      },
+      {
+        "type": "gold",
+        "value": 4053729
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 28
+      },
+      {
+        "type": "quarry",
+        "level": 28
+      }
+    ],
+    "time": 592334,
+    "power": 755971
+  },
+  "29": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 10866110
+      },
+      {
+        "type": "stone",
+        "value": 10866110
+      },
+      {
+        "type": "gold",
+        "value": 5431997
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 29
+      },
+      {
+        "type": "quarry",
+        "level": 29
+      }
+    ],
+    "time": 710801,
+    "power": 896308
+  },
+  "30": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 14560587
+      },
+      {
+        "type": "stone",
+        "value": 14560587
+      },
+      {
+        "type": "gold",
+        "value": 7278876
+      },
+      {
+        "type": "golden_pillar",
+        "value": 1
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 30
+      },
+      {
+        "type": "quarry",
+        "level": 30
+      }
+    ],
+    "time": 852961,
+    "power": 1061556
+  }
+}

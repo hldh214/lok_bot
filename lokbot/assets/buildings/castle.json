@@ -1,0 +1,987 @@
+{
+  "1": {
+    "valid": false,
+    "resources": [
+      {
+        "type": "food",
+        "value": 5000
+      },
+      {
+        "type": "lumber",
+        "value": 5000
+      },
+      {
+        "type": "stone",
+        "value": 5000
+      },
+      {
+        "type": "gold",
+        "value": 3000
+      }
+    ],
+    "requirements": [],
+    "time": 1,
+    "power": 670
+  },
+  "2": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 7100
+      },
+      {
+        "type": "lumber",
+        "value": 7100
+      },
+      {
+        "type": "stone",
+        "value": 7100
+      },
+      {
+        "type": "gold",
+        "value": 4260
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 1
+      },
+      {
+        "type": "barrack",
+        "level": 1
+      }
+    ],
+    "time": 3,
+    "power": 1801
+  },
+  "3": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 10082
+      },
+      {
+        "type": "lumber",
+        "value": 10082
+      },
+      {
+        "type": "stone",
+        "value": 10082
+      },
+      {
+        "type": "gold",
+        "value": 6049
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 2
+      },
+      {
+        "type": "trading_post",
+        "level": 2
+      }
+    ],
+    "time": 60,
+    "power": 3446
+  },
+  "4": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 14316
+      },
+      {
+        "type": "lumber",
+        "value": 14316
+      },
+      {
+        "type": "stone",
+        "value": 14316
+      },
+      {
+        "type": "gold",
+        "value": 8590
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 3
+      },
+      {
+        "type": "storage",
+        "level": 3
+      }
+    ],
+    "time": 300,
+    "power": 5726
+  },
+  "5": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 20329
+      },
+      {
+        "type": "lumber",
+        "value": 20329
+      },
+      {
+        "type": "stone",
+        "value": 20329
+      },
+      {
+        "type": "gold",
+        "value": 12198
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 4
+      },
+      {
+        "type": "watch_tower",
+        "level": 4
+      }
+    ],
+    "time": 1500,
+    "power": 8745
+  },
+  "6": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 28867
+      },
+      {
+        "type": "lumber",
+        "value": 28867
+      },
+      {
+        "type": "stone",
+        "value": 28867
+      },
+      {
+        "type": "gold",
+        "value": 17321
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 5
+      },
+      {
+        "type": "hospital",
+        "level": 5
+      }
+    ],
+    "time": 2880,
+    "power": 12689
+  },
+  "7": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 40991
+      },
+      {
+        "type": "lumber",
+        "value": 40991
+      },
+      {
+        "type": "stone",
+        "value": 40991
+      },
+      {
+        "type": "gold",
+        "value": 24596
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 6
+      },
+      {
+        "type": "barrack",
+        "level": 6
+      }
+    ],
+    "time": 4320,
+    "power": 17769
+  },
+  "8": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 58207
+      },
+      {
+        "type": "lumber",
+        "value": 58207
+      },
+      {
+        "type": "stone",
+        "value": 58207
+      },
+      {
+        "type": "gold",
+        "value": 34926
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 7
+      },
+      {
+        "type": "academy",
+        "level": 7
+      }
+    ],
+    "time": 6480,
+    "power": 24246
+  },
+  "9": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 82654
+      },
+      {
+        "type": "lumber",
+        "value": 82654
+      },
+      {
+        "type": "stone",
+        "value": 82654
+      },
+      {
+        "type": "gold",
+        "value": 49595
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 8
+      },
+      {
+        "type": "treasure_house",
+        "level": 8
+      }
+    ],
+    "time": 9720,
+    "power": 32436
+  },
+  "10": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 117369
+      },
+      {
+        "type": "lumber",
+        "value": 117369
+      },
+      {
+        "type": "stone",
+        "value": 117369
+      },
+      {
+        "type": "gold",
+        "value": 70425
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 9
+      },
+      {
+        "type": "trading_post",
+        "level": 9
+      }
+    ],
+    "time": 14580,
+    "power": 42713
+  },
+  "11": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 166664
+      },
+      {
+        "type": "lumber",
+        "value": 166664
+      },
+      {
+        "type": "stone",
+        "value": 166664
+      },
+      {
+        "type": "gold",
+        "value": 100004
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 10
+      },
+      {
+        "type": "storage",
+        "level": 10
+      }
+    ],
+    "time": 21870,
+    "power": 55548
+  },
+  "12": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 236663
+      },
+      {
+        "type": "lumber",
+        "value": 236663
+      },
+      {
+        "type": "stone",
+        "value": 236663
+      },
+      {
+        "type": "gold",
+        "value": 142006
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 11
+      },
+      {
+        "type": "watch_tower",
+        "level": 11
+      }
+    ],
+    "time": 32805,
+    "power": 71552
+  },
+  "13": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 336061
+      },
+      {
+        "type": "lumber",
+        "value": 336061
+      },
+      {
+        "type": "stone",
+        "value": 336061
+      },
+      {
+        "type": "gold",
+        "value": 201649
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 12
+      },
+      {
+        "type": "hospital",
+        "level": 12
+      }
+    ],
+    "time": 49208,
+    "power": 91383
+  },
+  "14": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 477207
+      },
+      {
+        "type": "lumber",
+        "value": 477207
+      },
+      {
+        "type": "stone",
+        "value": 477207
+      },
+      {
+        "type": "gold",
+        "value": 286342
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 13
+      },
+      {
+        "type": "barrack",
+        "level": 13
+      }
+    ],
+    "time": 73812,
+    "power": 115891
+  },
+  "15": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 677634
+      },
+      {
+        "type": "lumber",
+        "value": 677634
+      },
+      {
+        "type": "stone",
+        "value": 677634
+      },
+      {
+        "type": "gold",
+        "value": 406606
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 14
+      },
+      {
+        "type": "academy",
+        "level": 14
+      }
+    ],
+    "time": 110718,
+    "power": 146139
+  },
+  "16": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 962240
+      },
+      {
+        "type": "lumber",
+        "value": 962240
+      },
+      {
+        "type": "stone",
+        "value": 962240
+      },
+      {
+        "type": "gold",
+        "value": 577381
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 15
+      },
+      {
+        "type": "treasure_house",
+        "level": 15
+      }
+    ],
+    "time": 132862,
+    "power": 183379
+  },
+  "17": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1366381
+      },
+      {
+        "type": "lumber",
+        "value": 1366381
+      },
+      {
+        "type": "stone",
+        "value": 1366381
+      },
+      {
+        "type": "gold",
+        "value": 819881
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 16
+      },
+      {
+        "type": "trading_post",
+        "level": 16
+      }
+    ],
+    "time": 159434,
+    "power": 229104
+  },
+  "18": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1940261
+      },
+      {
+        "type": "lumber",
+        "value": 1940261
+      },
+      {
+        "type": "stone",
+        "value": 1940261
+      },
+      {
+        "type": "gold",
+        "value": 1164231
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 17
+      },
+      {
+        "type": "storage",
+        "level": 17
+      }
+    ],
+    "time": 191321,
+    "power": 285149
+  },
+  "19": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 2755171
+      },
+      {
+        "type": "lumber",
+        "value": 2755171
+      },
+      {
+        "type": "stone",
+        "value": 2755171
+      },
+      {
+        "type": "gold",
+        "value": 1653208
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 18
+      },
+      {
+        "type": "watch_tower",
+        "level": 18
+      }
+    ],
+    "time": 229585,
+    "power": 353802
+  },
+  "20": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 3912343
+      },
+      {
+        "type": "lumber",
+        "value": 3912343
+      },
+      {
+        "type": "stone",
+        "value": 3912343
+      },
+      {
+        "type": "gold",
+        "value": 2347555
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 19
+      },
+      {
+        "type": "hospital",
+        "level": 19
+      }
+    ],
+    "time": 275502,
+    "power": 437699
+  },
+  "21": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 5555527
+      },
+      {
+        "type": "lumber",
+        "value": 5555527
+      },
+      {
+        "type": "stone",
+        "value": 5555527
+      },
+      {
+        "type": "gold",
+        "value": 3333528
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 20
+      },
+      {
+        "type": "barrack",
+        "level": 20
+      }
+    ],
+    "time": 330602,
+    "power": 540165
+  },
+  "22": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 7888848
+      },
+      {
+        "type": "lumber",
+        "value": 7888848
+      },
+      {
+        "type": "stone",
+        "value": 7888848
+      },
+      {
+        "type": "gold",
+        "value": 4733610
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 21
+      },
+      {
+        "type": "academy",
+        "level": 21
+      }
+    ],
+    "time": 396722,
+    "power": 665165
+  },
+  "23": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 11202164
+      },
+      {
+        "type": "lumber",
+        "value": 11202164
+      },
+      {
+        "type": "stone",
+        "value": 11202164
+      },
+      {
+        "type": "gold",
+        "value": 6721726
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 22
+      },
+      {
+        "type": "treasure_house",
+        "level": 22
+      }
+    ],
+    "time": 476066,
+    "power": 817433
+  },
+  "24": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 15907073
+      },
+      {
+        "type": "lumber",
+        "value": 15907073
+      },
+      {
+        "type": "stone",
+        "value": 15907073
+      },
+      {
+        "type": "gold",
+        "value": 9544851
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 23
+      },
+      {
+        "type": "trading_post",
+        "level": 23
+      }
+    ],
+    "time": 571279,
+    "power": 1002810
+  },
+  "25": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 22588044
+      },
+      {
+        "type": "lumber",
+        "value": 22588044
+      },
+      {
+        "type": "stone",
+        "value": 22588044
+      },
+      {
+        "type": "gold",
+        "value": 13553688
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 24
+      },
+      {
+        "type": "storage",
+        "level": 24
+      }
+    ],
+    "time": 685535,
+    "power": 1228260
+  },
+  "26": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 32075022
+      },
+      {
+        "type": "lumber",
+        "value": 32075022
+      },
+      {
+        "type": "stone",
+        "value": 32075022
+      },
+      {
+        "type": "gold",
+        "value": 19246237
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 25
+      },
+      {
+        "type": "watch_tower",
+        "level": 25
+      }
+    ],
+    "time": 1028303,
+    "power": 1502230
+  },
+  "27": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 45546531
+      },
+      {
+        "type": "lumber",
+        "value": 45546531
+      },
+      {
+        "type": "stone",
+        "value": 45546531
+      },
+      {
+        "type": "gold",
+        "value": 27329657
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 26
+      },
+      {
+        "type": "hospital",
+        "level": 26
+      }
+    ],
+    "time": 1542455,
+    "power": 1834940
+  },
+  "28": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 64676074
+      },
+      {
+        "type": "lumber",
+        "value": 64676074
+      },
+      {
+        "type": "stone",
+        "value": 64676074
+      },
+      {
+        "type": "gold",
+        "value": 38808113
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 27
+      },
+      {
+        "type": "barrack",
+        "level": 27
+      }
+    ],
+    "time": 2313683,
+    "power": 2238629
+  },
+  "29": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 91840025
+      },
+      {
+        "type": "lumber",
+        "value": 91840025
+      },
+      {
+        "type": "stone",
+        "value": 91840025
+      },
+      {
+        "type": "gold",
+        "value": 55107520
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 28
+      },
+      {
+        "type": "academy",
+        "level": 28
+      }
+    ],
+    "time": 3470525,
+    "power": 2728248
+  },
+  "30": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 130412836
+      },
+      {
+        "type": "lumber",
+        "value": 130412836
+      },
+      {
+        "type": "stone",
+        "value": 130412836
+      },
+      {
+        "type": "gold",
+        "value": 78252678
+      },
+      {
+        "type": "golden_pillar",
+        "value": 1
+      }
+    ],
+    "requirements": [
+      {
+        "type": "wall",
+        "level": 29
+      },
+      {
+        "type": "treasure_house",
+        "level": 29
+      }
+    ],
+    "time": 13882100,
+    "power": 3321651
+  }
+}

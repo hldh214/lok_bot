@@ -4,4 +4,4 @@
 # ... except for dependencies and source
 !Pipfile
 !Pipfile.lock
-!lok_bot.py
+!lokbot

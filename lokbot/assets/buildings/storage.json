@@ -1,0 +1,996 @@
+{
+  "1": {
+    "valid": false,
+    "resources": [
+      {
+        "type": "food",
+        "value": 3000
+      },
+      {
+        "type": "lumber",
+        "value": 3000
+      },
+      {
+        "type": "stone",
+        "value": 3000
+      },
+      {
+        "type": "gold",
+        "value": 1000
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 1
+      },
+      {
+        "type": "farm",
+        "level": 1
+      }
+    ],
+    "time": 1,
+    "power": 500
+  },
+  "2": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 4020
+      },
+      {
+        "type": "lumber",
+        "value": 4020
+      },
+      {
+        "type": "stone",
+        "value": 4020
+      },
+      {
+        "type": "gold",
+        "value": 1340
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 2
+      },
+      {
+        "type": "farm",
+        "level": 2
+      }
+    ],
+    "time": 3,
+    "power": 1320
+  },
+  "3": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 5387
+      },
+      {
+        "type": "lumber",
+        "value": 5387
+      },
+      {
+        "type": "stone",
+        "value": 5387
+      },
+      {
+        "type": "gold",
+        "value": 1796
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 3
+      },
+      {
+        "type": "farm",
+        "level": 3
+      }
+    ],
+    "time": 40,
+    "power": 2480
+  },
+  "4": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 7219
+      },
+      {
+        "type": "lumber",
+        "value": 7219
+      },
+      {
+        "type": "stone",
+        "value": 7219
+      },
+      {
+        "type": "gold",
+        "value": 2407
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 4
+      },
+      {
+        "type": "farm",
+        "level": 4
+      }
+    ],
+    "time": 240,
+    "power": 4040
+  },
+  "5": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 9673
+      },
+      {
+        "type": "lumber",
+        "value": 9673
+      },
+      {
+        "type": "stone",
+        "value": 9673
+      },
+      {
+        "type": "gold",
+        "value": 3225
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 5
+      },
+      {
+        "type": "farm",
+        "level": 5
+      }
+    ],
+    "time": 960,
+    "power": 6052
+  },
+  "6": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 12962
+      },
+      {
+        "type": "lumber",
+        "value": 12962
+      },
+      {
+        "type": "stone",
+        "value": 12962
+      },
+      {
+        "type": "gold",
+        "value": 4322
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 6
+      },
+      {
+        "type": "farm",
+        "level": 6
+      }
+    ],
+    "time": 1440,
+    "power": 8599
+  },
+  "7": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 17369
+      },
+      {
+        "type": "lumber",
+        "value": 17369
+      },
+      {
+        "type": "stone",
+        "value": 17369
+      },
+      {
+        "type": "gold",
+        "value": 5791
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 7
+      },
+      {
+        "type": "farm",
+        "level": 7
+      }
+    ],
+    "time": 2160,
+    "power": 11774
+  },
+  "8": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 23274
+      },
+      {
+        "type": "lumber",
+        "value": 23274
+      },
+      {
+        "type": "stone",
+        "value": 23274
+      },
+      {
+        "type": "gold",
+        "value": 7760
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 8
+      },
+      {
+        "type": "farm",
+        "level": 8
+      }
+    ],
+    "time": 3240,
+    "power": 15706
+  },
+  "9": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 31187
+      },
+      {
+        "type": "lumber",
+        "value": 31187
+      },
+      {
+        "type": "stone",
+        "value": 31187
+      },
+      {
+        "type": "gold",
+        "value": 10398
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 9
+      },
+      {
+        "type": "farm",
+        "level": 9
+      }
+    ],
+    "time": 4860,
+    "power": 20536
+  },
+  "10": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 41791
+      },
+      {
+        "type": "lumber",
+        "value": 41791
+      },
+      {
+        "type": "stone",
+        "value": 41791
+      },
+      {
+        "type": "gold",
+        "value": 13933
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 10
+      },
+      {
+        "type": "farm",
+        "level": 10
+      }
+    ],
+    "time": 7290,
+    "power": 26449
+  },
+  "11": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 56000
+      },
+      {
+        "type": "lumber",
+        "value": 56000
+      },
+      {
+        "type": "stone",
+        "value": 56000
+      },
+      {
+        "type": "gold",
+        "value": 18670
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 11
+      },
+      {
+        "type": "farm",
+        "level": 11
+      }
+    ],
+    "time": 10935,
+    "power": 33613
+  },
+  "12": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 75040
+      },
+      {
+        "type": "lumber",
+        "value": 75040
+      },
+      {
+        "type": "stone",
+        "value": 75040
+      },
+      {
+        "type": "gold",
+        "value": 25018
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 12
+      },
+      {
+        "type": "farm",
+        "level": 12
+      }
+    ],
+    "time": 16403,
+    "power": 42273
+  },
+  "13": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 100554
+      },
+      {
+        "type": "lumber",
+        "value": 100554
+      },
+      {
+        "type": "stone",
+        "value": 100554
+      },
+      {
+        "type": "gold",
+        "value": 33524
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 13
+      },
+      {
+        "type": "farm",
+        "level": 13
+      }
+    ],
+    "time": 24605,
+    "power": 52693
+  },
+  "14": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 134742
+      },
+      {
+        "type": "lumber",
+        "value": 134742
+      },
+      {
+        "type": "stone",
+        "value": 134742
+      },
+      {
+        "type": "gold",
+        "value": 44922
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 14
+      },
+      {
+        "type": "farm",
+        "level": 14
+      }
+    ],
+    "time": 36908,
+    "power": 65228
+  },
+  "15": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 180554
+      },
+      {
+        "type": "lumber",
+        "value": 180554
+      },
+      {
+        "type": "stone",
+        "value": 180554
+      },
+      {
+        "type": "gold",
+        "value": 60195
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 15
+      },
+      {
+        "type": "farm",
+        "level": 15
+      }
+    ],
+    "time": 55362,
+    "power": 80255
+  },
+  "16": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 241942
+      },
+      {
+        "type": "lumber",
+        "value": 241942
+      },
+      {
+        "type": "stone",
+        "value": 241942
+      },
+      {
+        "type": "gold",
+        "value": 80661
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 16
+      },
+      {
+        "type": "farm",
+        "level": 16
+      }
+    ],
+    "time": 66434,
+    "power": 98215
+  },
+  "17": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 324202
+      },
+      {
+        "type": "lumber",
+        "value": 324202
+      },
+      {
+        "type": "stone",
+        "value": 324202
+      },
+      {
+        "type": "gold",
+        "value": 108086
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 17
+      },
+      {
+        "type": "farm",
+        "level": 17
+      }
+    ],
+    "time": 79721,
+    "power": 119655
+  },
+  "18": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 434431
+      },
+      {
+        "type": "lumber",
+        "value": 434431
+      },
+      {
+        "type": "stone",
+        "value": 434431
+      },
+      {
+        "type": "gold",
+        "value": 144835
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 18
+      },
+      {
+        "type": "farm",
+        "level": 18
+      }
+    ],
+    "time": 95665,
+    "power": 145196
+  },
+  "19": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 582138
+      },
+      {
+        "type": "lumber",
+        "value": 582138
+      },
+      {
+        "type": "stone",
+        "value": 582138
+      },
+      {
+        "type": "gold",
+        "value": 194079
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 19
+      },
+      {
+        "type": "farm",
+        "level": 19
+      }
+    ],
+    "time": 114798,
+    "power": 175578
+  },
+  "20": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 780065
+      },
+      {
+        "type": "lumber",
+        "value": 780065
+      },
+      {
+        "type": "stone",
+        "value": 780065
+      },
+      {
+        "type": "gold",
+        "value": 260066
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 20
+      },
+      {
+        "type": "farm",
+        "level": 20
+      }
+    ],
+    "time": 137758,
+    "power": 183279
+  },
+  "21": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1045287
+      },
+      {
+        "type": "lumber",
+        "value": 1045287
+      },
+      {
+        "type": "stone",
+        "value": 1045287
+      },
+      {
+        "type": "gold",
+        "value": 348488
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 21
+      },
+      {
+        "type": "farm",
+        "level": 21
+      }
+    ],
+    "time": 165310,
+    "power": 254378
+  },
+  "22": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1400685
+      },
+      {
+        "type": "lumber",
+        "value": 1400685
+      },
+      {
+        "type": "stone",
+        "value": 1400685
+      },
+      {
+        "type": "gold",
+        "value": 466974
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 22
+      },
+      {
+        "type": "farm",
+        "level": 22
+      }
+    ],
+    "time": 198372,
+    "power": 305034
+  },
+  "23": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1876918
+      },
+      {
+        "type": "lumber",
+        "value": 1876918
+      },
+      {
+        "type": "stone",
+        "value": 1876918
+      },
+      {
+        "type": "gold",
+        "value": 625745
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 23
+      },
+      {
+        "type": "farm",
+        "level": 23
+      }
+    ],
+    "time": 238046,
+    "power": 365030
+  },
+  "24": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 2515070
+      },
+      {
+        "type": "lumber",
+        "value": 2515070
+      },
+      {
+        "type": "stone",
+        "value": 2515070
+      },
+      {
+        "type": "gold",
+        "value": 838498
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 24
+      },
+      {
+        "type": "farm",
+        "level": 24
+      }
+    ],
+    "time": 285655,
+    "power": 435967
+  },
+  "25": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 3370194
+      },
+      {
+        "type": "lumber",
+        "value": 3370194
+      },
+      {
+        "type": "stone",
+        "value": 3370194
+      },
+      {
+        "type": "gold",
+        "value": 1123587
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 25
+      },
+      {
+        "type": "farm",
+        "level": 25
+      }
+    ],
+    "time": 342786,
+    "power": 519767
+  },
+  "26": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 4516060
+      },
+      {
+        "type": "lumber",
+        "value": 4516060
+      },
+      {
+        "type": "stone",
+        "value": 4516060
+      },
+      {
+        "type": "gold",
+        "value": 1505607
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 26
+      },
+      {
+        "type": "farm",
+        "level": 26
+      }
+    ],
+    "time": 411343,
+    "power": 618688
+  },
+  "27": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 6051520
+      },
+      {
+        "type": "lumber",
+        "value": 6051520
+      },
+      {
+        "type": "stone",
+        "value": 6051520
+      },
+      {
+        "type": "gold",
+        "value": 2017513
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 27
+      },
+      {
+        "type": "farm",
+        "level": 27
+      }
+    ],
+    "time": 493612,
+    "power": 735394
+  },
+  "28": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 8109037
+      },
+      {
+        "type": "lumber",
+        "value": 8109037
+      },
+      {
+        "type": "stone",
+        "value": 8109037
+      },
+      {
+        "type": "gold",
+        "value": 2703467
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 28
+      },
+      {
+        "type": "farm",
+        "level": 28
+      }
+    ],
+    "time": 592334,
+    "power": 872973
+  },
+  "29": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 10866110
+      },
+      {
+        "type": "lumber",
+        "value": 10866110
+      },
+      {
+        "type": "stone",
+        "value": 10866110
+      },
+      {
+        "type": "gold",
+        "value": 3622646
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 29
+      },
+      {
+        "type": "farm",
+        "level": 29
+      }
+    ],
+    "time": 710801,
+    "power": 1035013
+  },
+  "30": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 14560587
+      },
+      {
+        "type": "lumber",
+        "value": 14560587
+      },
+      {
+        "type": "stone",
+        "value": 14560587
+      },
+      {
+        "type": "gold",
+        "value": 4854346
+      },
+      {
+        "type": "golden_pillar",
+        "value": 1
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 30
+      },
+      {
+        "type": "farm",
+        "level": 30
+      }
+    ],
+    "time": 852961,
+    "power": 1225785
+  }
+}

@@ -1,0 +1,1104 @@
+{
+  "1": {
+    "valid": false,
+    "resources": [
+      {
+        "type": "food",
+        "value": 5000
+      },
+      {
+        "type": "lumber",
+        "value": 5000
+      },
+      {
+        "type": "stone",
+        "value": 5000
+      },
+      {
+        "type": "gold",
+        "value": 3000
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 1
+      },
+      {
+        "type": "barrack",
+        "level": 1
+      }
+    ],
+    "time": 1,
+    "power": 670
+  },
+  "2": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 6800
+      },
+      {
+        "type": "lumber",
+        "value": 6800
+      },
+      {
+        "type": "stone",
+        "value": 6800
+      },
+      {
+        "type": "gold",
+        "value": 4080
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 2
+      },
+      {
+        "type": "barrack",
+        "level": 2
+      }
+    ],
+    "time": 3,
+    "power": 1773
+  },
+  "3": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 9248
+      },
+      {
+        "type": "lumber",
+        "value": 9248
+      },
+      {
+        "type": "stone",
+        "value": 9248
+      },
+      {
+        "type": "gold",
+        "value": 5549
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 3
+      },
+      {
+        "type": "barrack",
+        "level": 3
+      }
+    ],
+    "time": 60,
+    "power": 3349
+  },
+  "4": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 12577
+      },
+      {
+        "type": "lumber",
+        "value": 12577
+      },
+      {
+        "type": "stone",
+        "value": 12577
+      },
+      {
+        "type": "gold",
+        "value": 7547
+      },
+      {
+        "type": "alliance_badge",
+        "value": 10
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 4
+      },
+      {
+        "type": "barrack",
+        "level": 4
+      }
+    ],
+    "time": 240,
+    "power": 5469
+  },
+  "5": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 17105
+      },
+      {
+        "type": "lumber",
+        "value": 17105
+      },
+      {
+        "type": "stone",
+        "value": 17105
+      },
+      {
+        "type": "gold",
+        "value": 10264
+      },
+      {
+        "type": "alliance_badge",
+        "value": 20
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 5
+      },
+      {
+        "type": "barrack",
+        "level": 5
+      }
+    ],
+    "time": 800,
+    "power": 8242
+  },
+  "6": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 23263
+      },
+      {
+        "type": "lumber",
+        "value": 23263
+      },
+      {
+        "type": "stone",
+        "value": 23263
+      },
+      {
+        "type": "gold",
+        "value": 13959
+      },
+      {
+        "type": "alliance_badge",
+        "value": 30
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 6
+      },
+      {
+        "type": "barrack",
+        "level": 6
+      }
+    ],
+    "time": 1920,
+    "power": 11794
+  },
+  "7": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 31638
+      },
+      {
+        "type": "lumber",
+        "value": 31638
+      },
+      {
+        "type": "stone",
+        "value": 31638
+      },
+      {
+        "type": "gold",
+        "value": 18984
+      },
+      {
+        "type": "alliance_badge",
+        "value": 40
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 7
+      },
+      {
+        "type": "barrack",
+        "level": 7
+      }
+    ],
+    "time": 2880,
+    "power": 16265
+  },
+  "8": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 43028
+      },
+      {
+        "type": "lumber",
+        "value": 43028
+      },
+      {
+        "type": "stone",
+        "value": 43028
+      },
+      {
+        "type": "gold",
+        "value": 25818
+      },
+      {
+        "type": "alliance_badge",
+        "value": 50
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 8
+      },
+      {
+        "type": "barrack",
+        "level": 8
+      }
+    ],
+    "time": 4320,
+    "power": 21837
+  },
+  "9": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 58518
+      },
+      {
+        "type": "lumber",
+        "value": 58518
+      },
+      {
+        "type": "stone",
+        "value": 58518
+      },
+      {
+        "type": "gold",
+        "value": 35112
+      },
+      {
+        "type": "alliance_badge",
+        "value": 70
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 9
+      },
+      {
+        "type": "barrack",
+        "level": 9
+      }
+    ],
+    "time": 6480,
+    "power": 28707
+  },
+  "10": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 79584
+      },
+      {
+        "type": "lumber",
+        "value": 79584
+      },
+      {
+        "type": "stone",
+        "value": 79584
+      },
+      {
+        "type": "gold",
+        "value": 47752
+      },
+      {
+        "type": "alliance_badge",
+        "value": 90
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 10
+      },
+      {
+        "type": "barrack",
+        "level": 10
+      }
+    ],
+    "time": 9720,
+    "power": 37182
+  },
+  "11": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 108234
+      },
+      {
+        "type": "lumber",
+        "value": 108234
+      },
+      {
+        "type": "stone",
+        "value": 108234
+      },
+      {
+        "type": "gold",
+        "value": 64943
+      },
+      {
+        "type": "alliance_badge",
+        "value": 110
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 11
+      },
+      {
+        "type": "barrack",
+        "level": 11
+      }
+    ],
+    "time": 14580,
+    "power": 47530
+  },
+  "12": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 147198
+      },
+      {
+        "type": "lumber",
+        "value": 147198
+      },
+      {
+        "type": "stone",
+        "value": 147198
+      },
+      {
+        "type": "gold",
+        "value": 88322
+      },
+      {
+        "type": "alliance_badge",
+        "value": 130
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 12
+      },
+      {
+        "type": "barrack",
+        "level": 12
+      }
+    ],
+    "time": 21870,
+    "power": 60139
+  },
+  "13": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 200189
+      },
+      {
+        "type": "lumber",
+        "value": 200189
+      },
+      {
+        "type": "stone",
+        "value": 200189
+      },
+      {
+        "type": "gold",
+        "value": 120118
+      },
+      {
+        "type": "alliance_badge",
+        "value": 150
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 13
+      },
+      {
+        "type": "barrack",
+        "level": 13
+      }
+    ],
+    "time": 32805,
+    "power": 75427
+  },
+  "14": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 272257
+      },
+      {
+        "type": "lumber",
+        "value": 272257
+      },
+      {
+        "type": "stone",
+        "value": 272257
+      },
+      {
+        "type": "gold",
+        "value": 163360
+      },
+      {
+        "type": "alliance_badge",
+        "value": 200
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 14
+      },
+      {
+        "type": "barrack",
+        "level": 14
+      }
+    ],
+    "time": 49208,
+    "power": 93948
+  },
+  "15": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 370270
+      },
+      {
+        "type": "lumber",
+        "value": 370270
+      },
+      {
+        "type": "stone",
+        "value": 370270
+      },
+      {
+        "type": "gold",
+        "value": 222170
+      },
+      {
+        "type": "alliance_badge",
+        "value": 250
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 15
+      },
+      {
+        "type": "barrack",
+        "level": 15
+      }
+    ],
+    "time": 73812,
+    "power": 116295
+  },
+  "16": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 503567
+      },
+      {
+        "type": "lumber",
+        "value": 503567
+      },
+      {
+        "type": "stone",
+        "value": 503567
+      },
+      {
+        "type": "gold",
+        "value": 302151
+      },
+      {
+        "type": "alliance_badge",
+        "value": 300
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 16
+      },
+      {
+        "type": "barrack",
+        "level": 16
+      }
+    ],
+    "time": 88574,
+    "power": 143215
+  },
+  "17": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 684851
+      },
+      {
+        "type": "lumber",
+        "value": 684851
+      },
+      {
+        "type": "stone",
+        "value": 684851
+      },
+      {
+        "type": "gold",
+        "value": 410925
+      },
+      {
+        "type": "alliance_badge",
+        "value": 350
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 17
+      },
+      {
+        "type": "barrack",
+        "level": 17
+      }
+    ],
+    "time": 106289,
+    "power": 175581
+  },
+  "18": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 931397
+      },
+      {
+        "type": "lumber",
+        "value": 931397
+      },
+      {
+        "type": "stone",
+        "value": 931397
+      },
+      {
+        "type": "gold",
+        "value": 558858
+      },
+      {
+        "type": "alliance_badge",
+        "value": 400
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 18
+      },
+      {
+        "type": "barrack",
+        "level": 18
+      }
+    ],
+    "time": 127547,
+    "power": 214444
+  },
+  "19": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1266700
+      },
+      {
+        "type": "lumber",
+        "value": 1266700
+      },
+      {
+        "type": "stone",
+        "value": 1266700
+      },
+      {
+        "type": "gold",
+        "value": 760047
+      },
+      {
+        "type": "alliance_badge",
+        "value": 450
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 19
+      },
+      {
+        "type": "barrack",
+        "level": 19
+      }
+    ],
+    "time": 153056,
+    "power": 260997
+  },
+  "20": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1722712
+      },
+      {
+        "type": "lumber",
+        "value": 1722712
+      },
+      {
+        "type": "stone",
+        "value": 1722712
+      },
+      {
+        "type": "gold",
+        "value": 1033664
+      },
+      {
+        "type": "alliance_badge",
+        "value": 500
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 20
+      },
+      {
+        "type": "barrack",
+        "level": 20
+      }
+    ],
+    "time": 183667,
+    "power": 316675
+  },
+  "21": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 2342888
+      },
+      {
+        "type": "lumber",
+        "value": 2342888
+      },
+      {
+        "type": "stone",
+        "value": 2342888
+      },
+      {
+        "type": "gold",
+        "value": 1405783
+      },
+      {
+        "type": "alliance_badge",
+        "value": 600
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 21
+      },
+      {
+        "type": "barrack",
+        "level": 21
+      }
+    ],
+    "time": 220400,
+    "power": 383214
+  },
+  "22": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 3186328
+      },
+      {
+        "type": "lumber",
+        "value": 3186328
+      },
+      {
+        "type": "stone",
+        "value": 3186328
+      },
+      {
+        "type": "gold",
+        "value": 1911865
+      },
+      {
+        "type": "alliance_badge",
+        "value": 700
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 22
+      },
+      {
+        "type": "barrack",
+        "level": 22
+      }
+    ],
+    "time": 264480,
+    "power": 462623
+  },
+  "23": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 4333406
+      },
+      {
+        "type": "lumber",
+        "value": 4333406
+      },
+      {
+        "type": "stone",
+        "value": 4333406
+      },
+      {
+        "type": "gold",
+        "value": 2600136
+      },
+      {
+        "type": "alliance_badge",
+        "value": 800
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 23
+      },
+      {
+        "type": "barrack",
+        "level": 23
+      }
+    ],
+    "time": 317376,
+    "power": 557341
+  },
+  "24": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 5893432
+      },
+      {
+        "type": "lumber",
+        "value": 5893432
+      },
+      {
+        "type": "stone",
+        "value": 5893432
+      },
+      {
+        "type": "gold",
+        "value": 3536185
+      },
+      {
+        "type": "alliance_badge",
+        "value": 900
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 24
+      },
+      {
+        "type": "barrack",
+        "level": 24
+      }
+    ],
+    "time": 380851,
+    "power": 670164
+  },
+  "25": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 8015068
+      },
+      {
+        "type": "lumber",
+        "value": 8015068
+      },
+      {
+        "type": "stone",
+        "value": 8015068
+      },
+      {
+        "type": "gold",
+        "value": 4809212
+      },
+      {
+        "type": "alliance_badge",
+        "value": 1000
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 25
+      },
+      {
+        "type": "barrack",
+        "level": 25
+      }
+    ],
+    "time": 457021,
+    "power": 804464
+  },
+  "26": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 10900492
+      },
+      {
+        "type": "lumber",
+        "value": 10900492
+      },
+      {
+        "type": "stone",
+        "value": 10900492
+      },
+      {
+        "type": "gold",
+        "value": 6540528
+      },
+      {
+        "type": "alliance_badge",
+        "value": 1500
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 26
+      },
+      {
+        "type": "barrack",
+        "level": 26
+      }
+    ],
+    "time": 685532,
+    "power": 964165
+  },
+  "27": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 14824669
+      },
+      {
+        "type": "lumber",
+        "value": 14824669
+      },
+      {
+        "type": "stone",
+        "value": 14824669
+      },
+      {
+        "type": "gold",
+        "value": 8895118
+      },
+      {
+        "type": "alliance_badge",
+        "value": 2000
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 27
+      },
+      {
+        "type": "barrack",
+        "level": 27
+      }
+    ],
+    "time": 1028298,
+    "power": 1153980
+  },
+  "28": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 20161550
+      },
+      {
+        "type": "lumber",
+        "value": 20161550
+      },
+      {
+        "type": "stone",
+        "value": 20161550
+      },
+      {
+        "type": "gold",
+        "value": 12097360
+      },
+      {
+        "type": "alliance_badge",
+        "value": 2500
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 28
+      },
+      {
+        "type": "barrack",
+        "level": 28
+      }
+    ],
+    "time": 1542447,
+    "power": 1379398
+  },
+  "29": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 27419708
+      },
+      {
+        "type": "lumber",
+        "value": 27419708
+      },
+      {
+        "type": "stone",
+        "value": 27419708
+      },
+      {
+        "type": "gold",
+        "value": 16452410
+      },
+      {
+        "type": "alliance_badge",
+        "value": 3000
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 29
+      },
+      {
+        "type": "barrack",
+        "level": 29
+      }
+    ],
+    "time": 2313671,
+    "power": 1646933
+  },
+  "30": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 37290803
+      },
+      {
+        "type": "lumber",
+        "value": 37290803
+      },
+      {
+        "type": "stone",
+        "value": 37290803
+      },
+      {
+        "type": "gold",
+        "value": 22375278
+      },
+      {
+        "type": "alliance_badge",
+        "value": 5000
+      },
+      {
+        "type": "golden_pillar",
+        "value": 1
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 30
+      },
+      {
+        "type": "barrack",
+        "level": 30
+      }
+    ],
+    "time": 3470507,
+    "power": 1964229
+  }
+}

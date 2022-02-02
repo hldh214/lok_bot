@@ -1,0 +1,996 @@
+{
+  "1": {
+    "valid": false,
+    "resources": [
+      {
+        "type": "food",
+        "value": 5000
+      },
+      {
+        "type": "lumber",
+        "value": 3500
+      },
+      {
+        "type": "stone",
+        "value": 3500
+      },
+      {
+        "type": "gold",
+        "value": 2000
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 1
+      },
+      {
+        "type": "barrack",
+        "level": 1
+      }
+    ],
+    "time": 1,
+    "power": 590
+  },
+  "2": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 6850
+      },
+      {
+        "type": "lumber",
+        "value": 4795
+      },
+      {
+        "type": "stone",
+        "value": 4795
+      },
+      {
+        "type": "gold",
+        "value": 2740
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 2
+      },
+      {
+        "type": "barrack",
+        "level": 2
+      }
+    ],
+    "time": 3,
+    "power": 1566
+  },
+  "3": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 9385
+      },
+      {
+        "type": "lumber",
+        "value": 6569
+      },
+      {
+        "type": "stone",
+        "value": 6569
+      },
+      {
+        "type": "gold",
+        "value": 3754
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 3
+      },
+      {
+        "type": "barrack",
+        "level": 3
+      }
+    ],
+    "time": 60,
+    "power": 2969
+  },
+  "4": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 12857
+      },
+      {
+        "type": "lumber",
+        "value": 9000
+      },
+      {
+        "type": "stone",
+        "value": 9000
+      },
+      {
+        "type": "gold",
+        "value": 5143
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 4
+      },
+      {
+        "type": "barrack",
+        "level": 4
+      }
+    ],
+    "time": 240,
+    "power": 4869
+  },
+  "5": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 17614
+      },
+      {
+        "type": "lumber",
+        "value": 12330
+      },
+      {
+        "type": "stone",
+        "value": 12330
+      },
+      {
+        "type": "gold",
+        "value": 7046
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 5
+      },
+      {
+        "type": "barrack",
+        "level": 5
+      }
+    ],
+    "time": 800,
+    "power": 7351
+  },
+  "6": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 24131
+      },
+      {
+        "type": "lumber",
+        "value": 16892
+      },
+      {
+        "type": "stone",
+        "value": 16892
+      },
+      {
+        "type": "gold",
+        "value": 9653
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 6
+      },
+      {
+        "type": "barrack",
+        "level": 6
+      }
+    ],
+    "time": 1920,
+    "power": 10535
+  },
+  "7": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 33059
+      },
+      {
+        "type": "lumber",
+        "value": 23142
+      },
+      {
+        "type": "stone",
+        "value": 23142
+      },
+      {
+        "type": "gold",
+        "value": 13225
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 7
+      },
+      {
+        "type": "barrack",
+        "level": 7
+      }
+    ],
+    "time": 2880,
+    "power": 14557
+  },
+  "8": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 45291
+      },
+      {
+        "type": "lumber",
+        "value": 31705
+      },
+      {
+        "type": "stone",
+        "value": 31705
+      },
+      {
+        "type": "gold",
+        "value": 18118
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 8
+      },
+      {
+        "type": "barrack",
+        "level": 8
+      }
+    ],
+    "time": 4320,
+    "power": 19592
+  },
+  "9": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 62049
+      },
+      {
+        "type": "lumber",
+        "value": 43436
+      },
+      {
+        "type": "stone",
+        "value": 43436
+      },
+      {
+        "type": "gold",
+        "value": 24822
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 9
+      },
+      {
+        "type": "barrack",
+        "level": 9
+      }
+    ],
+    "time": 6480,
+    "power": 25832
+  },
+  "10": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 85007
+      },
+      {
+        "type": "lumber",
+        "value": 59507
+      },
+      {
+        "type": "stone",
+        "value": 59507
+      },
+      {
+        "type": "gold",
+        "value": 34006
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 10
+      },
+      {
+        "type": "barrack",
+        "level": 10
+      }
+    ],
+    "time": 9720,
+    "power": 33548
+  },
+  "11": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 116460
+      },
+      {
+        "type": "lumber",
+        "value": 81525
+      },
+      {
+        "type": "stone",
+        "value": 81525
+      },
+      {
+        "type": "gold",
+        "value": 46588
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 11
+      },
+      {
+        "type": "barrack",
+        "level": 11
+      }
+    ],
+    "time": 14580,
+    "power": 43034
+  },
+  "12": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 159550
+      },
+      {
+        "type": "lumber",
+        "value": 111689
+      },
+      {
+        "type": "stone",
+        "value": 111689
+      },
+      {
+        "type": "gold",
+        "value": 63826
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 12
+      },
+      {
+        "type": "barrack",
+        "level": 12
+      }
+    ],
+    "time": 21870,
+    "power": 54604
+  },
+  "13": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 218584
+      },
+      {
+        "type": "lumber",
+        "value": 153014
+      },
+      {
+        "type": "stone",
+        "value": 153014
+      },
+      {
+        "type": "gold",
+        "value": 87442
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 13
+      },
+      {
+        "type": "barrack",
+        "level": 13
+      }
+    ],
+    "time": 32805,
+    "power": 68702
+  },
+  "14": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 299460
+      },
+      {
+        "type": "lumber",
+        "value": 209629
+      },
+      {
+        "type": "stone",
+        "value": 209629
+      },
+      {
+        "type": "gold",
+        "value": 119796
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 14
+      },
+      {
+        "type": "barrack",
+        "level": 14
+      }
+    ],
+    "time": 49208,
+    "power": 85839
+  },
+  "15": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 410260
+      },
+      {
+        "type": "lumber",
+        "value": 287192
+      },
+      {
+        "type": "stone",
+        "value": 287192
+      },
+      {
+        "type": "gold",
+        "value": 164121
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 15
+      },
+      {
+        "type": "barrack",
+        "level": 15
+      }
+    ],
+    "time": 73812,
+    "power": 106598
+  },
+  "16": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 562056
+      },
+      {
+        "type": "lumber",
+        "value": 393453
+      },
+      {
+        "type": "stone",
+        "value": 393453
+      },
+      {
+        "type": "gold",
+        "value": 224846
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 16
+      },
+      {
+        "type": "barrack",
+        "level": 16
+      }
+    ],
+    "time": 88574,
+    "power": 131678
+  },
+  "17": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 770017
+      },
+      {
+        "type": "lumber",
+        "value": 539031
+      },
+      {
+        "type": "stone",
+        "value": 539031
+      },
+      {
+        "type": "gold",
+        "value": 308039
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 17
+      },
+      {
+        "type": "barrack",
+        "level": 17
+      }
+    ],
+    "time": 106289,
+    "power": 161942
+  },
+  "18": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1054923
+      },
+      {
+        "type": "lumber",
+        "value": 738472
+      },
+      {
+        "type": "stone",
+        "value": 738472
+      },
+      {
+        "type": "gold",
+        "value": 422013
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 18
+      },
+      {
+        "type": "barrack",
+        "level": 18
+      }
+    ],
+    "time": 127547,
+    "power": 198386
+  },
+  "19": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1445245
+      },
+      {
+        "type": "lumber",
+        "value": 1011707
+      },
+      {
+        "type": "stone",
+        "value": 1011707
+      },
+      {
+        "type": "gold",
+        "value": 578158
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 19
+      },
+      {
+        "type": "barrack",
+        "level": 19
+      }
+    ],
+    "time": 153056,
+    "power": 242237
+  },
+  "20": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 1979986
+      },
+      {
+        "type": "lumber",
+        "value": 1386039
+      },
+      {
+        "type": "stone",
+        "value": 1386039
+      },
+      {
+        "type": "gold",
+        "value": 792076
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 20
+      },
+      {
+        "type": "barrack",
+        "level": 20
+      }
+    ],
+    "time": 183667,
+    "power": 294874
+  },
+  "21": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 2712581
+      },
+      {
+        "type": "lumber",
+        "value": 1898873
+      },
+      {
+        "type": "stone",
+        "value": 1898873
+      },
+      {
+        "type": "gold",
+        "value": 1085144
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 21
+      },
+      {
+        "type": "barrack",
+        "level": 21
+      }
+    ],
+    "time": 220400,
+    "power": 358022
+  },
+  "22": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 3716236
+      },
+      {
+        "type": "lumber",
+        "value": 2601456
+      },
+      {
+        "type": "stone",
+        "value": 2601456
+      },
+      {
+        "type": "gold",
+        "value": 1486647
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 22
+      },
+      {
+        "type": "barrack",
+        "level": 22
+      }
+    ],
+    "time": 264480,
+    "power": 433678
+  },
+  "23": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 5091243
+      },
+      {
+        "type": "lumber",
+        "value": 3563995
+      },
+      {
+        "type": "stone",
+        "value": 3563995
+      },
+      {
+        "type": "gold",
+        "value": 2036706
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 23
+      },
+      {
+        "type": "barrack",
+        "level": 23
+      }
+    ],
+    "time": 317376,
+    "power": 524223
+  },
+  "24": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 6975003
+      },
+      {
+        "type": "lumber",
+        "value": 4882673
+      },
+      {
+        "type": "stone",
+        "value": 4882673
+      },
+      {
+        "type": "gold",
+        "value": 2790287
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 24
+      },
+      {
+        "type": "barrack",
+        "level": 24
+      }
+    ],
+    "time": 380851,
+    "power": 632490
+  },
+  "25": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 9555754
+      },
+      {
+        "type": "lumber",
+        "value": 6689262
+      },
+      {
+        "type": "stone",
+        "value": 6689262
+      },
+      {
+        "type": "gold",
+        "value": 3822693
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 25
+      },
+      {
+        "type": "barrack",
+        "level": 25
+      }
+    ],
+    "time": 457021,
+    "power": 761790
+  },
+  "26": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 13091383
+      },
+      {
+        "type": "lumber",
+        "value": 9164289
+      },
+      {
+        "type": "stone",
+        "value": 9164289
+      },
+      {
+        "type": "gold",
+        "value": 5237089
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 26
+      },
+      {
+        "type": "barrack",
+        "level": 26
+      }
+    ],
+    "time": 548425,
+    "power": 916137
+  },
+  "27": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 17935195
+      },
+      {
+        "type": "lumber",
+        "value": 12555076
+      },
+      {
+        "type": "stone",
+        "value": 12555076
+      },
+      {
+        "type": "gold",
+        "value": 7174812
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 27
+      },
+      {
+        "type": "barrack",
+        "level": 27
+      }
+    ],
+    "time": 658110,
+    "power": 1100237
+  },
+  "28": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 24571217
+      },
+      {
+        "type": "lumber",
+        "value": 17200454
+      },
+      {
+        "type": "stone",
+        "value": 17200454
+      },
+      {
+        "type": "gold",
+        "value": 9829492
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 28
+      },
+      {
+        "type": "barrack",
+        "level": 28
+      }
+    ],
+    "time": 789732,
+    "power": 1319676
+  },
+  "29": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 33662567
+      },
+      {
+        "type": "lumber",
+        "value": 23564622
+      },
+      {
+        "type": "stone",
+        "value": 23564622
+      },
+      {
+        "type": "gold",
+        "value": 13466404
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 29
+      },
+      {
+        "type": "barrack",
+        "level": 29
+      }
+    ],
+    "time": 947678,
+    "power": 1581072
+  },
+  "30": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "food",
+        "value": 46117717
+      },
+      {
+        "type": "lumber",
+        "value": 32283532
+      },
+      {
+        "type": "stone",
+        "value": 32283532
+      },
+      {
+        "type": "gold",
+        "value": 18448973
+      },
+      {
+        "type": "golden_pillar",
+        "value": 1
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 30
+      },
+      {
+        "type": "barrack",
+        "level": 30
+      }
+    ],
+    "time": 1137214,
+    "power": 1892288
+  }
+}

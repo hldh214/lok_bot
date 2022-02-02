@@ -1,0 +1,876 @@
+{
+  "1": {
+    "valid": false,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 6000
+      },
+      {
+        "type": "stone",
+        "value": 6000
+      },
+      {
+        "type": "gold",
+        "value": 10000
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 1
+      },
+      {
+        "type": "gold_mine",
+        "level": 1
+      }
+    ],
+    "time": 1,
+    "power": 740
+  },
+  "2": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 8280
+      },
+      {
+        "type": "stone",
+        "value": 8280
+      },
+      {
+        "type": "gold",
+        "value": 13800
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 2
+      },
+      {
+        "type": "gold_mine",
+        "level": 2
+      }
+    ],
+    "time": 3,
+    "power": 1970
+  },
+  "3": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 11426
+      },
+      {
+        "type": "stone",
+        "value": 11426
+      },
+      {
+        "type": "gold",
+        "value": 19044
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 3
+      },
+      {
+        "type": "gold_mine",
+        "level": 3
+      }
+    ],
+    "time": 60,
+    "power": 3737
+  },
+  "4": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 15768
+      },
+      {
+        "type": "stone",
+        "value": 15768
+      },
+      {
+        "type": "gold",
+        "value": 26281
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 4
+      },
+      {
+        "type": "gold_mine",
+        "level": 4
+      }
+    ],
+    "time": 300,
+    "power": 6137
+  },
+  "5": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 21760
+      },
+      {
+        "type": "stone",
+        "value": 21760
+      },
+      {
+        "type": "gold",
+        "value": 36268
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 5
+      },
+      {
+        "type": "gold_mine",
+        "level": 5
+      }
+    ],
+    "time": 1500,
+    "power": 9290
+  },
+  "6": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 30029
+      },
+      {
+        "type": "stone",
+        "value": 30029
+      },
+      {
+        "type": "gold",
+        "value": 50050
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 6
+      },
+      {
+        "type": "gold_mine",
+        "level": 6
+      }
+    ],
+    "time": 2400,
+    "power": 13356
+  },
+  "7": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 41440
+      },
+      {
+        "type": "stone",
+        "value": 41440
+      },
+      {
+        "type": "gold",
+        "value": 69069
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 7
+      },
+      {
+        "type": "gold_mine",
+        "level": 7
+      }
+    ],
+    "time": 3600,
+    "power": 18515
+  },
+  "8": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 57187
+      },
+      {
+        "type": "stone",
+        "value": 57187
+      },
+      {
+        "type": "gold",
+        "value": 95315
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 8
+      },
+      {
+        "type": "gold_mine",
+        "level": 8
+      }
+    ],
+    "time": 5400,
+    "power": 24992
+  },
+  "9": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 78918
+      },
+      {
+        "type": "stone",
+        "value": 78918
+      },
+      {
+        "type": "gold",
+        "value": 131535
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 9
+      },
+      {
+        "type": "gold_mine",
+        "level": 9
+      }
+    ],
+    "time": 8100,
+    "power": 33062
+  },
+  "10": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 108907
+      },
+      {
+        "type": "stone",
+        "value": 108907
+      },
+      {
+        "type": "gold",
+        "value": 181518
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 10
+      },
+      {
+        "type": "gold_mine",
+        "level": 10
+      }
+    ],
+    "time": 12150,
+    "power": 43055
+  },
+  "11": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 150292
+      },
+      {
+        "type": "stone",
+        "value": 150292
+      },
+      {
+        "type": "gold",
+        "value": 250495
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 11
+      },
+      {
+        "type": "gold_mine",
+        "level": 11
+      }
+    ],
+    "time": 18225,
+    "power": 55360
+  },
+  "12": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 207403
+      },
+      {
+        "type": "stone",
+        "value": 207403
+      },
+      {
+        "type": "gold",
+        "value": 345683
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 12
+      },
+      {
+        "type": "gold_mine",
+        "level": 12
+      }
+    ],
+    "time": 27338,
+    "power": 70463
+  },
+  "13": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 286216
+      },
+      {
+        "type": "stone",
+        "value": 286216
+      },
+      {
+        "type": "gold",
+        "value": 477043
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 13
+      },
+      {
+        "type": "gold_mine",
+        "level": 13
+      }
+    ],
+    "time": 41007,
+    "power": 88923
+  },
+  "14": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 394978
+      },
+      {
+        "type": "stone",
+        "value": 394978
+      },
+      {
+        "type": "gold",
+        "value": 658319
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 14
+      },
+      {
+        "type": "gold_mine",
+        "level": 14
+      }
+    ],
+    "time": 61511,
+    "power": 111448
+  },
+  "15": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 545070
+      },
+      {
+        "type": "stone",
+        "value": 545070
+      },
+      {
+        "type": "gold",
+        "value": 908480
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 15
+      },
+      {
+        "type": "gold_mine",
+        "level": 15
+      }
+    ],
+    "time": 92267,
+    "power": 138830
+  },
+  "16": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 752197
+      },
+      {
+        "type": "stone",
+        "value": 752197
+      },
+      {
+        "type": "gold",
+        "value": 1253702
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 16
+      },
+      {
+        "type": "gold_mine",
+        "level": 16
+      }
+    ],
+    "time": 110720,
+    "power": 172030
+  },
+  "17": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 1038032
+      },
+      {
+        "type": "stone",
+        "value": 1038032
+      },
+      {
+        "type": "gold",
+        "value": 1730109
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 17
+      },
+      {
+        "type": "gold_mine",
+        "level": 17
+      }
+    ],
+    "time": 132864,
+    "power": 212230
+  },
+  "18": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 1432484
+      },
+      {
+        "type": "stone",
+        "value": 1432484
+      },
+      {
+        "type": "gold",
+        "value": 2387550
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 18
+      },
+      {
+        "type": "gold_mine",
+        "level": 18
+      }
+    ],
+    "time": 159437,
+    "power": 260851
+  },
+  "19": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 1976828
+      },
+      {
+        "type": "stone",
+        "value": 1976828
+      },
+      {
+        "type": "gold",
+        "value": 3294819
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 19
+      },
+      {
+        "type": "gold_mine",
+        "level": 19
+      }
+    ],
+    "time": 191324,
+    "power": 319522
+  },
+  "20": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 2728023
+      },
+      {
+        "type": "stone",
+        "value": 2728023
+      },
+      {
+        "type": "gold",
+        "value": 4546850
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 20
+      },
+      {
+        "type": "gold_mine",
+        "level": 20
+      }
+    ],
+    "time": 229589,
+    "power": 390226
+  },
+  "21": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 3764672
+      },
+      {
+        "type": "stone",
+        "value": 3764672
+      },
+      {
+        "type": "gold",
+        "value": 6274653
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 21
+      },
+      {
+        "type": "gold_mine",
+        "level": 21
+      }
+    ],
+    "time": 275507,
+    "power": 475370
+  },
+  "22": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 5195247
+      },
+      {
+        "type": "stone",
+        "value": 5195247
+      },
+      {
+        "type": "gold",
+        "value": 8659021
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 22
+      },
+      {
+        "type": "gold_mine",
+        "level": 22
+      }
+    ],
+    "time": 330608,
+    "power": 577715
+  },
+  "23": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 7169441
+      },
+      {
+        "type": "stone",
+        "value": 7169441
+      },
+      {
+        "type": "gold",
+        "value": 11949449
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 23
+      },
+      {
+        "type": "gold_mine",
+        "level": 23
+      }
+    ],
+    "time": 396730,
+    "power": 700680
+  },
+  "24": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 9893829
+      },
+      {
+        "type": "stone",
+        "value": 9893829
+      },
+      {
+        "type": "gold",
+        "value": 16490240
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 24
+      },
+      {
+        "type": "gold_mine",
+        "level": 24
+      }
+    ],
+    "time": 476076,
+    "power": 848237
+  },
+  "25": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 13653484
+      },
+      {
+        "type": "stone",
+        "value": 13653484
+      },
+      {
+        "type": "gold",
+        "value": 22756531
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 25
+      },
+      {
+        "type": "gold_mine",
+        "level": 25
+      }
+    ],
+    "time": 571291,
+    "power": 1025137
+  },
+  "26": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 18841808
+      },
+      {
+        "type": "stone",
+        "value": 18841808
+      },
+      {
+        "type": "gold",
+        "value": 31404013
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 26
+      },
+      {
+        "type": "gold_mine",
+        "level": 26
+      }
+    ],
+    "time": 856937,
+    "power": 1237052
+  },
+  "27": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 26001695
+      },
+      {
+        "type": "stone",
+        "value": 26001695
+      },
+      {
+        "type": "gold",
+        "value": 43337538
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 27
+      },
+      {
+        "type": "gold_mine",
+        "level": 27
+      }
+    ],
+    "time": 1285406,
+    "power": 1490728
+  },
+  "28": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 35882339
+      },
+      {
+        "type": "stone",
+        "value": 35882339
+      },
+      {
+        "type": "gold",
+        "value": 59805802
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 28
+      },
+      {
+        "type": "gold_mine",
+        "level": 28
+      }
+    ],
+    "time": 1928109,
+    "power": 1794196
+  },
+  "29": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 49517628
+      },
+      {
+        "type": "stone",
+        "value": 49517628
+      },
+      {
+        "type": "gold",
+        "value": 82532007
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 29
+      },
+      {
+        "type": "gold_mine",
+        "level": 29
+      }
+    ],
+    "time": 2892164,
+    "power": 2156995
+  },
+  "30": {
+    "valid": true,
+    "resources": [
+      {
+        "type": "lumber",
+        "value": 68334327
+      },
+      {
+        "type": "stone",
+        "value": 68334327
+      },
+      {
+        "type": "gold",
+        "value": 113894170
+      },
+      {
+        "type": "golden_pillar",
+        "value": 1
+      }
+    ],
+    "requirements": [
+      {
+        "type": "castle",
+        "level": 30
+      },
+      {
+        "type": "gold_mine",
+        "level": 30
+      }
+    ],
+    "time": 11568656,
+    "power": 2590517
+  }
+}
