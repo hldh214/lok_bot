@@ -2,7 +2,6 @@ import io
 import json
 import logging
 import random
-import sys
 import threading
 import time
 
@@ -183,18 +182,13 @@ USABLE_ITEM_CODE_LIST = (
 )
 
 builtin_logger = logging.getLogger(__name__)
-builtin_logger.setLevel(logging.WARNING)
+builtin_logger.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-stdout_channel = logging.StreamHandler(sys.stdout)
-stdout_channel.setFormatter(formatter)
-
 file_channel = logging.FileHandler('builtin_logger.log')
 file_channel.setFormatter(formatter)
-file_channel.setLevel(logging.DEBUG)
 
-builtin_logger.addHandler(stdout_channel)
 builtin_logger.addHandler(file_channel)
 
 logger.add('loguru.log')
