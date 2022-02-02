@@ -182,13 +182,21 @@ USABLE_ITEM_CODE_LIST = (
     ITEM_CODE_GOLD_1K, ITEM_CODE_GOLD_5K, ITEM_CODE_GOLD_10K, ITEM_CODE_GOLD_50K, ITEM_CODE_GOLD_100K,
 )
 
-legacy_logger = logging.getLogger(__name__)
-legacy_logger.setLevel(logging.WARNING)
-ch = logging.StreamHandler(stream=sys.stdout)
-ch.setLevel(logging.DEBUG)
+builtin_logger = logging.getLogger(__name__)
+builtin_logger.setLevel(logging.WARNING)
+
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-legacy_logger.addHandler(ch)
+
+stdout_channel = logging.StreamHandler(sys.stdout)
+stdout_channel.setFormatter(formatter)
+
+file_channel = logging.FileHandler('builtin_logger.log')
+file_channel.setFormatter(formatter)
+
+builtin_logger.addHandler(stdout_channel)
+builtin_logger.addHandler(file_channel)
+
+logger.add('loguru.log')
 
 
 class ApiException(Exception):
@@ -503,7 +511,7 @@ class LokFarmer:
         websocket connection of the kingdom
         :return:
         """
-        sio = socketio.Client(reconnection=False, logger=legacy_logger, engineio_logger=legacy_logger)
+        sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
         @sio.on('/building/update')
         def on_building_update(data):
