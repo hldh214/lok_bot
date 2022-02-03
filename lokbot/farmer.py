@@ -246,6 +246,13 @@ RESEARCH_CODE_MAP = {
     },
 }
 
+RESOURCE_IDX_MAP = {
+    'food': 0,
+    'lumber': 1,
+    'stone': 2,
+    'gold': 3,
+}
+
 
 def load_building_json():
     result = {}
@@ -270,58 +277,6 @@ def load_research_json():
     return result
 
 
-def is_building_upgradeable(building, buildings):
-    if building.get('state') != BUILDING_STATE_NORMAL:
-        return False
-
-    building_level = building.get('level')
-    current_building_json = building_json.get(building.get('code'))
-
-    if not current_building_json:
-        return False
-
-    # todo: add insufficient resources check
-    next_level_building_json = current_building_json.get(str(building_level + 1))
-    for requirement in next_level_building_json.get('requirements'):
-        req_level = requirement.get('level')
-        req_type = requirement.get('type')
-        req_code = BUILDING_CODE_MAP.get(req_type)
-
-        if not [b for b in buildings if b.get('code') == req_code and b.get('level') >= req_level]:
-            return False
-
-    return True
-
-
-def is_researchable(research_code, exist_researches, academy_level, each_category):
-    exist_research = [each for each in exist_researches if each.get('code') == research_code]
-    current_research_json = research_json.get(research_code)
-
-    # already finished
-    if exist_research and exist_research[0].get('level') >= int(current_research_json[-1].get('level')):
-        return False
-
-    current_level_info = current_research_json[0]
-    if exist_research:
-        current_level_info = current_research_json[exist_research[0].get('level') - 1]
-
-    for requirement in current_level_info.get('requirements'):
-        req_level = int(requirement.get('level'))
-        req_type = requirement.get('type')
-
-        # 判断学院等级
-        if req_type == 'academy' and req_level > academy_level:
-            return False
-
-        # 判断前置研究是否完成
-        if req_type != 'academy' and not [each for each in exist_researches if
-                                          each.get('code') == each_category.get(req_type)
-                                          and each.get('level') >= req_level]:
-            return False
-
-    return True
-
-
 building_json = load_building_json()
 research_json = load_research_json()
 
@@ -344,6 +299,69 @@ class LokFarmer:
         time_diff = arrow.get(expected_ended) - arrow.utcnow()
 
         return time_diff.seconds + random.randint(10, 20)
+
+    def _is_building_upgradeable(self, building, buildings):
+        if building.get('state') != BUILDING_STATE_NORMAL:
+            return False
+
+        building_level = building.get('level')
+        current_building_json = building_json.get(building.get('code'))
+
+        if not current_building_json:
+            return False
+
+        next_level_building_json = current_building_json.get(str(building_level + 1))
+        for requirement in next_level_building_json.get('requirements'):
+            req_level = requirement.get('level')
+            req_type = requirement.get('type')
+            req_code = BUILDING_CODE_MAP.get(req_type)
+
+            if not [b for b in buildings if b.get('code') == req_code and b.get('level') >= req_level]:
+                return False
+
+        for res_requirement in next_level_building_json.get('resources'):
+            req_value = res_requirement.get('value')
+            req_type = res_requirement.get('type')
+
+            if self.resources[RESOURCE_IDX_MAP[req_type]] < req_value:
+                return False
+
+        return True
+
+    def _is_researchable(self, research_code, exist_researches, academy_level, each_category):
+        exist_research = [each for each in exist_researches if each.get('code') == research_code]
+        current_research_json = research_json.get(research_code)
+
+        # already finished
+        if exist_research and exist_research[0].get('level') >= int(current_research_json[-1].get('level')):
+            return False
+
+        current_level_info = current_research_json[0]
+        if exist_research:
+            current_level_info = current_research_json[exist_research[0].get('level') - 1]
+
+        for requirement in current_level_info.get('requirements'):
+            req_level = int(requirement.get('level'))
+            req_type = requirement.get('type')
+
+            # 判断学院等级
+            if req_type == 'academy' and req_level > academy_level:
+                return False
+
+            # 判断前置研究是否完成
+            if req_type != 'academy' and not [each for each in exist_researches if
+                                              each.get('code') == each_category.get(req_type)
+                                              and each.get('level') >= req_level]:
+                return False
+
+        for res_requirement in current_level_info.get('resources'):
+            req_value = res_requirement.get('value')
+            req_type = res_requirement.get('type')
+
+            if self.resources[RESOURCE_IDX_MAP[req_type]] < req_value:
+                return False
+
+        return True
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -483,7 +501,7 @@ class LokFarmer:
             return
 
         for building in buildings:
-            if not is_building_upgradeable(building, buildings):
+            if not self._is_building_upgradeable(building, buildings):
                 continue
 
             try:
@@ -538,7 +556,7 @@ class LokFarmer:
         for category_name, each_category in RESEARCH_CODE_MAP.items():
             logger.info(f'开始 {category_name} 分类下的研究')
             for research_name, research_code in each_category.items():
-                if not is_researchable(research_code, exist_researches, academy_level, each_category):
+                if not self._is_researchable(research_code, exist_researches, academy_level, each_category):
                     continue
 
                 try:
