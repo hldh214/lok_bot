@@ -367,8 +367,8 @@ class LokFarmer:
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
 
         self.kingdom_enter['kingdom']['buildings'] = [
-                                                         building for building in buildings if
-                                                         building.get('position') != building.get('position')
+                                                         b for b in buildings if
+                                                         b.get('position') != building.get('position')
                                                      ] + [building]
 
     @tenacity.retry(
