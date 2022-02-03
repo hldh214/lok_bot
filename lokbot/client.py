@@ -184,6 +184,11 @@ class LokBotApi:
         """
         return self.post('kingdom/resource/harvest', {'position': position})
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),  # client-side rate limiter
+    )
+    @ratelimit.limits(calls=1, period=6)
     def kingdom_building_upgrade(self, building, instant=0):
         """
         建筑升级
