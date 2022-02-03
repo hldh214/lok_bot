@@ -304,6 +304,10 @@ class LokFarmer:
         if building.get('state') != BUILDING_STATE_NORMAL:
             return False
 
+        # 暂时忽略联盟中心
+        if building.get('code') == BUILDING_CODE_MAP['hall_of_alliance']:
+            return False
+
         building_level = building.get('level')
         current_building_json = building_json.get(building.get('code'))
 
