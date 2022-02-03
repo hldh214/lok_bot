@@ -1,9 +1,8 @@
 FROM python:3-slim
 
 ARG PYPI_MIRROR=https://pypi.org/simple
-ARG TZ=Asia/Hong_Kong
 
-ENV TZ ${TZ}
+ENV TZ=Asia/Hong_Kong
 
 WORKDIR /app
 
@@ -19,6 +18,6 @@ RUN pip install -i ${PYPI_MIRROR} pipenv && \
 ENV PATH="/app/.venv/bin:$PATH"
 
 HEALTHCHECK --retries=1 \
-    CMD if grep -q Exception loguru.log; then exit 1; else exit 0; fi
+    CMD if grep -q Exception output.log; then exit 1; else exit 0; fi
 
-ENTRYPOINT ["python", "-m", "lokbot"]
+ENTRYPOINT ["/bin/sh", "-c", "python -m lokbot $TOKEN 2>&1 | tee output.log"]
