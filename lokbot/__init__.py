@@ -1,5 +1,6 @@
 import logging
 import pathlib
+import sys
 
 from loguru import logger
 
@@ -15,4 +16,6 @@ file_channel.setFormatter(formatter)
 
 builtin_logger.addHandler(file_channel)
 
+logger.remove()
 logger.add(project_root.joinpath('loguru.log'))
+logger.add(sys.stdout, colorize=True)
