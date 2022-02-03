@@ -2,7 +2,7 @@ FROM python:3-slim
 
 ARG PYPI_MIRROR=https://pypi.org/simple
 
-ENV TZ=Asia/Hong_Kong
+ENV TZ=Asia/Hong_Kong TOKEN=""
 
 WORKDIR /app
 
