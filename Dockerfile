@@ -18,6 +18,6 @@ RUN pip install -i ${PYPI_MIRROR} pipenv && \
 ENV PATH="/app/.venv/bin:$PATH"
 
 HEALTHCHECK --retries=1 \
-    CMD if grep -q Exception output.log; then exit 1; else exit 0; fi
+    CMD ./docker-healthcheck.sh
 
 ENTRYPOINT ["/bin/sh", "-c", "python -m lokbot $TOKEN 2>&1 | tee output.log"]

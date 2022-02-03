@@ -5,3 +5,4 @@
 !Pipfile
 !Pipfile.lock
 !lokbot
+!docker-healthcheck.sh
