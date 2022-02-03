@@ -363,6 +363,14 @@ class LokFarmer:
 
         return True
 
+    def _update_building(self, building):
+        buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
+
+        self.kingdom_enter['kingdom']['buildings'] = [
+                                                         building for building in buildings if
+                                                         building.get('position') != building.get('position')
+                                                     ] + [building]
+
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
@@ -378,15 +386,7 @@ class LokFarmer:
         @sio.on('/building/update')
         def on_building_update(data):
             logger.info(f'on_building_update: {data}')
-            buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
-
-            if not buildings:
-                return
-
-            self.kingdom_enter['kingdom']['buildings'] = [
-                                                             building for building in buildings if
-                                                             building.get('position') != data.get('position')
-                                                         ] + [data]
+            self._update_building(data)
 
             return
 
@@ -515,6 +515,9 @@ class LokFarmer:
                 continue
 
             self.resources = res.get('resources')
+
+            building['state'] = BUILDING_STATE_UPGRADING
+            self._update_building(building)
 
             threading.Timer(
                 self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
