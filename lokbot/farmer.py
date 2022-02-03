@@ -336,11 +336,11 @@ class LokFarmer:
         if exist_research and exist_research[0].get('level') >= int(current_research_json[-1].get('level')):
             return False
 
-        current_level_info = current_research_json[0]
+        next_level_research_json = current_research_json[0]
         if exist_research:
-            current_level_info = current_research_json[exist_research[0].get('level') - 1]
+            next_level_research_json = current_research_json[exist_research[0].get('level')]
 
-        for requirement in current_level_info.get('requirements'):
+        for requirement in next_level_research_json.get('requirements'):
             req_level = int(requirement.get('level'))
             req_type = requirement.get('type')
 
@@ -354,7 +354,7 @@ class LokFarmer:
                                               and each.get('level') >= req_level]:
                 return False
 
-        for res_requirement in current_level_info.get('resources'):
+        for res_requirement in next_level_research_json.get('resources'):
             req_value = int(res_requirement.get('value'))
             req_type = res_requirement.get('type')
 
