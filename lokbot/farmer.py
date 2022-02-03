@@ -331,6 +331,8 @@ class LokFarmer:
         self.access_token = access_token
         self.api = LokBotApi(access_token)
         self.kingdom_enter = self.api.kingdom_enter()
+        # [food, lumber, stone, gold]
+        self.resources = self.kingdom_enter.get('kingdom').get('resources')
 
         captcha = self.kingdom_enter.get('captcha')
         if captcha and captcha.get('next'):
@@ -369,6 +371,11 @@ class LokFarmer:
                                                          ] + [data]
 
             return
+
+        @sio.on('/resource/upgrade')
+        def on_resource_update(data):
+            logger.info(f'on_resource_update: {data}')
+            self.resources[data.get('resourceIdx')] = data.get('value')
 
         sio.connect(url, transports=["websocket"])
 
@@ -412,7 +419,10 @@ class LokFarmer:
                 continue
 
             harvested_code.add(code)
-            self.api.kingdom_resource_harvest(position)
+
+            res = self.api.kingdom_resource_harvest(position)
+
+            self.resources = res.get('resources')
 
     def quest_monitor(self):
         """
@@ -485,6 +495,8 @@ class LokFarmer:
 
                 logger.info(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {building}')
                 continue
+
+            self.resources = res.get('resources')
 
             threading.Timer(
                 self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
