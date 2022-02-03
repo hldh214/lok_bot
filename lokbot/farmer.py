@@ -355,7 +355,7 @@ class LokFarmer:
                 return False
 
         for res_requirement in current_level_info.get('resources'):
-            req_value = res_requirement.get('value')
+            req_value = int(res_requirement.get('value'))
             req_type = res_requirement.get('type')
 
             if self.resources[RESOURCE_IDX_MAP[req_type]] < req_value:
