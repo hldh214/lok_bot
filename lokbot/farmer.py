@@ -246,6 +246,137 @@ RESEARCH_CODE_MAP = {
     },
 }
 
+RESEARCH_MINIMUM_LEVEL_MAP = {
+    'production': {
+        "food_production": 2,
+        "wood_production": 2,
+        "stone_production": 2,
+        "gold_production": 2,
+        "food_capacity": 2,
+        "wood_capacity": 2,
+        "stone_capacity": 2,
+        "gold_capacity": 2,
+        "food_gathering_speed": 2,
+        "wood_gathering_speed": 2,
+        "stone_gathering_speed": 2,
+        "gold_gathering_speed": 2,
+        "crystal_gathering_speed": 2,
+        "infantry_storage": 2,
+        "ranged_storage": 2,
+        "cavalry_storage": 2,
+        "research_speed": 2,
+        "construction_speed": 2,
+        "resource_protect": 2,
+        "advanced_food_production": 3,
+        "advanced_wood_production": 3,
+        "advanced_stone_production": 3,
+        "advanced_gold_production": 3,
+        "advanced_food_capacity": 3,
+        "advanced_wood_capacity": 3,
+        "advanced_stone_capacity": 3,
+        "advanced_gold_capacity": 3,
+        "advanced_research_speed": 3,
+        "advanced_construction_speed": 3,
+        "advanced_food_gathering_speed": 3,
+        "advanced_wood_gathering_speed": 3,
+        "advanced_stone_gathering_speed": 3,
+        "advanced_gold_gathering_speed": 3
+    },
+    'battle': {
+        "infantry_hp": 2,
+        "ranged_hp": 2,
+        "cavalry_hp": 2,
+        "infantry_def": 2,
+        "ranged_def": 2,
+        "cavalry_def": 2,
+        "infantry_atk": 2,
+        "ranged_atk": 2,
+        "cavalry_atk": 2,
+        "infantry_spd": 2,
+        "ranged_spd": 2,
+        "cavalry_spd": 2,
+        "troops_storage": 3,
+        "warrior": 1,
+        "longbow_man": 1,
+        "horseman": 1,
+        "infantry_training_amount": 2,
+        "ranged_training_amount": 2,
+        "cavalry_training_amount": 2,
+        "infantry_training_speed": 2,
+        "ranged_training_speed": 2,
+        "cavalry_training_speed": 2,
+        "infantry_training_cost": 3,
+        "ranged_training_cost": 3,
+        "cavalry_training_cost": 3,
+        "march_size": 2,
+        "march_limit": 1,
+        "knight": 1,
+        "ranger": 1,
+        "heavy_cavalry": 1,
+        "troops_spd": 3,
+        "troops_hp": 3,
+        "troops_def": 3,
+        "troops_atk": 3,
+        "hospital_capacity": 3,
+        "healing_time_reduced": 3,
+        "guardian": 1,
+        "crossbow_man": 1,
+        "iron_cavalry": 1,
+        "rally_attack_amount": 5,
+        "advanced_infantry_hp": 5,
+        "advanced_ranged_hp": 5,
+        "advanced_cavalry_hp": 5,
+        "advanced_infantry_def": 5,
+        "advanced_ranged_def": 5,
+        "advanced_cavalry_def": 5,
+        "advanced_infantry_atk": 5,
+        "advanced_ranged_atk": 5,
+        "advanced_cavalry_atk": 5,
+        "advanced_infantry_spd": 5,
+        "advanced_ranged_spd": 5,
+        "advanced_cavalry_spd": 5
+    },
+    'advanced': {
+        "resource_production": 3,
+        "infantry_hp_against_archer": 3,
+        "infantry_def_against_archer": 3,
+        "archer_hp_against_cavalry": 3,
+        "archer_def_against_cavalry": 3,
+        "cavalry_hp_against_infantry": 3,
+        "cavalry_def_against_infantry": 3,
+        "infantry_atk_against_archer": 3,
+        "archer_atk_against_cavalry": 3,
+        "cavalry_atk_against_infantry": 3,
+        "resource_capacity": 3,
+        "castle_defending_infantrys_hp": 3,
+        "castle_defending_infantrys_def": 3,
+        "castle_defending_archers_hp": 3,
+        "castle_defending_archers_def": 3,
+        "castle_defending_cavalrys_hp": 3,
+        "castle_defending_cavalrys_def": 3,
+        "castle_defending_infantrys_atk": 3,
+        "castle_defending_archers_atk": 3,
+        "castle_defending_cavalrys_atk": 3,
+        "resource_protect": 3,
+        "infantrys_hp_when_composed_of_infantry_only": 3,
+        "infantrys_def_when_composed_of_infantry_only": 3,
+        "archers_hp_when_composed_of_archer_only": 3,
+        "archers_def_when_composed_of_archer_only": 3,
+        "cavalrys_hp_when_composed_of_cavalry_only": 3,
+        "cavalrys_def_when_composed_of_cavalry_only": 3,
+        "infantrys_atk_when_composed_of_infantry_only": 3,
+        "archers_atk_when_composed_of_archer_only": 3,
+        "cavalrys_atk_when_composed_of_cavalry_only": 3,
+        "troop_speed_when_participating_a_rally": 3,
+        "infantrys_hp_when_participating_a_rally": 3,
+        "infantrys_def_when_participating_a_rally": 3,
+        "archers_hp_when_participating_a_rally": 3,
+        "archers_def_when_participating_a_rally": 3,
+        "cavalrys_hp_when_participating_a_rally": 3,
+        "cavalrys_def_when_participating_a_rally": 3
+    }
+}
+
 RESOURCE_IDX_MAP = {
     'food': 0,
     'lumber': 1,
@@ -332,12 +463,21 @@ class LokFarmer:
 
         return True
 
-    def _is_researchable(self, research_code, exist_researches, academy_level, each_category):
+    def _is_researchable(self, academy_level, category_name, research_name, exist_researches, to_max_level=False):
+        research_category = RESEARCH_CODE_MAP.get(category_name)
+        research_code = research_category.get(research_name)
+
         exist_research = [each for each in exist_researches if each.get('code') == research_code]
         current_research_json = research_json.get(research_code)
 
         # already finished
         if exist_research and exist_research[0].get('level') >= int(current_research_json[-1].get('level')):
+            return False
+
+        # minimum required level only
+        if not to_max_level and \
+                exist_research and \
+                exist_research[0].get('level') >= RESEARCH_MINIMUM_LEVEL_MAP.get(category_name).get(research_name, 0):
             return False
 
         next_level_research_json = current_research_json[0]
@@ -354,7 +494,7 @@ class LokFarmer:
 
             # 判断前置研究是否完成
             if req_type != 'academy' and not [each for each in exist_researches if
-                                              each.get('code') == each_category.get(req_type)
+                                              each.get('code') == research_category.get(req_type)
                                               and each.get('level') >= req_level]:
                 return False
 
@@ -566,7 +706,9 @@ class LokFarmer:
         for category_name, each_category in RESEARCH_CODE_MAP.items():
             logger.info(f'开始 {category_name} 分类下的研究')
             for research_name, research_code in each_category.items():
-                if not self._is_researchable(research_code, exist_researches, academy_level, each_category):
+                if not self._is_researchable(
+                        academy_level, category_name, research_name, exist_researches, to_max_level
+                ):
                     continue
 
                 try:
