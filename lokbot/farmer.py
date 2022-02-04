@@ -576,6 +576,8 @@ class LokFarmer:
                     logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {research_name}({research_code})')
                     continue
 
+                self.resources = res.get('resources')
+
                 threading.Timer(
                     self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
                     self.academy_farmer,
