@@ -284,7 +284,7 @@ research_json = load_research_json()
 class LokFarmer:
     def __init__(self, access_token):
         self.access_token = access_token
-        self.api = LokBotApi(access_token)
+        self.api = LokBotApi(access_token, self._request_callback)
         self.kingdom_enter = self.api.kingdom_enter()
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
@@ -375,6 +375,13 @@ class LokFarmer:
                                                          b.get('position') != building.get('position')
                                                      ] + [building]
 
+    def _request_callback(self, json_response):
+        resources = json_response.get('resources')
+
+        if resources and len(resources) == 4:
+            logger.info(f'资源更新: {resources}')
+            self.resources = resources
+
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
@@ -442,9 +449,7 @@ class LokFarmer:
 
             harvested_code.add(code)
 
-            res = self.api.kingdom_resource_harvest(position)
-
-            self.resources = res.get('resources')
+            self.api.kingdom_resource_harvest(position)
 
     def quest_monitor(self):
         """
@@ -518,8 +523,6 @@ class LokFarmer:
                 logger.info(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {building}')
                 continue
 
-            self.resources = res.get('resources')
-
             building['state'] = BUILDING_STATE_UPGRADING
             self._update_building(building)
 
@@ -575,8 +578,6 @@ class LokFarmer:
 
                     logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {research_name}({research_code})')
                     continue
-
-                self.resources = res.get('resources')
 
                 threading.Timer(
                     self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),

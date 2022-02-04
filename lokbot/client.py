@@ -12,7 +12,7 @@ API_BASE_URL = 'https://api-lok-live.leagueofkingdoms.com/api/'
 
 
 class LokBotApi:
-    def __init__(self, access_token):
+    def __init__(self, access_token, request_callback=None):
         self.opener = httpx.Client(
             headers={
                 'Accept': '*/*',
@@ -29,6 +29,7 @@ class LokBotApi:
             http2=True,
             base_url=API_BASE_URL
         )
+        self.request_callback = request_callback
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -65,6 +66,9 @@ class LokBotApi:
         }))
 
         if json_response.get('result'):
+            if callable(self.request_callback):
+                self.request_callback(json_response)
+
             return json_response
 
         err = json_response.get('err')
