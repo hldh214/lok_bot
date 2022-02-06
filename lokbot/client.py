@@ -1,3 +1,4 @@
+import base64
 import json
 
 import httpx
@@ -12,7 +13,7 @@ API_BASE_URL = 'https://api-lok-live.leagueofkingdoms.com/api/'
 
 
 class LokBotApi:
-    def __init__(self, access_token, request_callback=None):
+    def __init__(self, access_token, captcha_solver_config, request_callback=None):
         self.opener = httpx.Client(
             headers={
                 'Accept': '*/*',
@@ -30,6 +31,11 @@ class LokBotApi:
             base_url=API_BASE_URL
         )
         self.request_callback = request_callback
+
+        self.captcha_solver = None
+        if 'ttshitu' in captcha_solver_config:
+            from lokbot.captcha_solver import Ttshitu
+            self.captcha_solver = Ttshitu(**captcha_solver_config['ttshitu'])
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -78,7 +84,11 @@ class LokBotApi:
             raise NoAuthException()
 
         if code == 'need_captcha':
-            raise NeedCaptchaException()
+            if not self.captcha_solver:
+                raise NeedCaptchaException()
+
+            self._solve_captcha()
+            raise DuplicatedException()
 
         if code == 'duplicated':
             raise DuplicatedException()
@@ -87,6 +97,11 @@ class LokBotApi:
             raise ExceedLimitPacketException()
 
         raise OtherException(code)
+
+    def _solve_captcha(self):
+        picture_base64 = base64.b64encode(self.auth_captcha().content).decode()
+        captcha = self.captcha_solver.solve(picture_base64)
+        self.auth_captcha_confirm(captcha)
 
     def auth_captcha(self):
         return self.opener.get('auth/captcha')
@@ -143,7 +158,13 @@ class LokBotApi:
         获取基础信息
         :return:
         """
-        return self.post('kingdom/enter')
+        res = self.post('kingdom/enter')
+
+        captcha = res.get('captcha')
+        if captcha and captcha.get('next'):
+            self._solve_captcha()
+
+        return res
 
     def kingdom_task_all(self):
         """

@@ -2,7 +2,7 @@ FROM python:3-slim
 
 ARG PYPI_MIRROR=https://pypi.org/simple
 
-ENV TZ=Asia/Hong_Kong TOKEN=""
+ENV TZ=Asia/Hong_Kong TOKEN="" CAPTCHA_SOLVER_CONFIG="{}"
 
 WORKDIR /app
 
@@ -20,4 +20,4 @@ ENV PATH="/app/.venv/bin:$PATH"
 HEALTHCHECK --retries=1 \
     CMD ./docker-healthcheck.sh
 
-ENTRYPOINT ["/bin/sh", "-c", "python -m lokbot $TOKEN 2>&1 | tee output.log"]
+ENTRYPOINT ["/bin/sh", "-c", "python -m lokbot $TOKEN $CAPTCHA_SOLVER_CONFIG 2>&1 | tee output.log"]

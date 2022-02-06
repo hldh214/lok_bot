@@ -413,17 +413,12 @@ research_json = load_research_json()
 
 
 class LokFarmer:
-    def __init__(self, access_token):
+    def __init__(self, access_token, captcha_solver_config):
         self.access_token = access_token
-        self.api = LokBotApi(access_token, self._request_callback)
+        self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
         self.kingdom_enter = self.api.kingdom_enter()
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
-
-        captcha = self.kingdom_enter.get('captcha')
-        if captcha and captcha.get('next'):
-            logger.critical('需要验证码: {}'.format(captcha.get('next')))
-            exit(1)
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
