@@ -98,10 +98,17 @@ class LokBotApi:
 
         raise OtherException(code)
 
+    @tenacity.retry(
+        stop=tenacity.stop_after_attempt(4),
+        wait=tenacity.wait_random_exponential(multiplier=1, max=60)
+    )
     def _solve_captcha(self):
         picture_base64 = base64.b64encode(self.auth_captcha().content).decode()
         captcha = self.captcha_solver.solve(picture_base64)
-        self.auth_captcha_confirm(captcha)
+        res = self.auth_captcha_confirm(captcha)
+
+        if not res.get('valid'):
+            raise tenacity.TryAgain()
 
     def auth_captcha(self):
         return self.opener.get('auth/captcha')
