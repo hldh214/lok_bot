@@ -519,7 +519,7 @@ class LokFarmer:
         resources = json_response.get('resources')
 
         if resources and len(resources) == 4:
-            logger.info(f'资源更新: {resources}')
+            logger.info(f'resources updated: {resources}')
             self.resources = resources
 
     @tenacity.retry(
@@ -624,7 +624,7 @@ class LokFarmer:
         [self.api.quest_claim_daily_level(q) for q in quest_list_daily.get('rewards') if
          q.get('status') == STATUS_FINISHED]
 
-        logger.info('所有任务奖励领取完毕, 等待一小时')
+        logger.info('quest_monitor: done, sleep for 1h')
         threading.Timer(3600, self.quest_monitor).start()
         return
 
@@ -649,7 +649,7 @@ class LokFarmer:
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
 
         if not buildings:
-            logger.warning('没有可以升级的建筑')
+            logger.warning('building_farmer: no building')
             return
 
         for building in buildings:
@@ -660,10 +660,10 @@ class LokFarmer:
                 res = self.api.kingdom_building_upgrade(building)
             except OtherException as error_code:
                 if str(error_code) == 'full_task':
-                    logger.warning('任务已满, 可能是因为没有黄金工人, 线程结束')
+                    logger.warning('building_farmer: full_task, quit')
                     return
 
-                logger.info(f'建筑升级失败, 尝试下一个建筑, 当前建筑: {building}')
+                logger.info(f'building upgrade failed, try next one, current: {building}')
                 continue
 
             building['state'] = BUILDING_STATE_UPGRADING
@@ -676,7 +676,7 @@ class LokFarmer:
             ).start()
             return
 
-        logger.info('没有可以升级的建筑, 等待两小时')
+        logger.info('building_farmer: no building to upgrade, sleep for 2h')
         threading.Timer(2 * 3600, self.building_farmer, [task_code]).start()
         return
 
@@ -707,7 +707,7 @@ class LokFarmer:
         academy_level = [b for b in buildings if b.get('code') == BUILDING_CODE_MAP['academy']][0].get('level')
 
         for category_name, each_category in RESEARCH_CODE_MAP.items():
-            logger.info(f'开始 {category_name} 分类下的研究')
+            logger.info(f'start researching category: {category_name}')
             for research_name, research_code in each_category.items():
                 if not self._is_researchable(
                         academy_level, category_name, research_name, exist_researches, to_max_level
@@ -718,10 +718,10 @@ class LokFarmer:
                     res = self.api.kingdom_academy_research({'code': research_code})
                 except OtherException as error_code:
                     if str(error_code) == 'not_enough_condition':
-                        logger.warning(f'分类 {category_name} 下的研究已达到目前可升级的最大等级, 尝试下一个分类')
+                        logger.warning(f'category {category_name} reached max level')
                         break
 
-                    logger.info(f'研究升级失败, 尝试下一个研究, 当前研究: {research_name}({research_code})')
+                    logger.info(f'research failed, try next one, current: {research_name}({research_code})')
                     continue
 
                 threading.Timer(
@@ -731,7 +731,7 @@ class LokFarmer:
                 ).start()
                 return
 
-        logger.info('没有可以升级的研究, 等待两小时')
+        logger.info('academy_farmer: no research to do, sleep for 2h')
         threading.Timer(2 * 3600, self.academy_farmer, [to_max_level]).start()
         return
 
@@ -744,7 +744,7 @@ class LokFarmer:
             res = self.api.item_free_chest(_type)
         except OtherException as error_code:
             if str(error_code) == 'free_chest_not_yet':
-                logger.info('免费宝箱还没有开启, 等待两小时')
+                logger.info('free_chest_farmer: free_chest_not_yet, sleep for 2h')
                 threading.Timer(2 * 3600, self.free_chest_farmer).start()
                 return
 

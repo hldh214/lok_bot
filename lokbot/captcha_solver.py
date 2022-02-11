@@ -54,11 +54,3 @@ class Ttshitu(Base):
             return False
 
         return True
-
-
-if __name__ == '__main__':
-    import base64
-
-    t = Ttshitu('php', '6Xmu6Yy6m9XS')
-    # print(t._predict(base64.b64encode(open('../docs/images/captcha/captcha5.png', 'rb').read()).decode()))
-    # print(t._report_error('bX0izRo8ReyzEE_jLsEzCA'))
