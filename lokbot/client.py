@@ -88,6 +88,7 @@ class LokBotApi:
                 raise NeedCaptchaException()
 
             self._solve_captcha()
+
             raise DuplicatedException()
 
         if code == 'duplicated':
@@ -103,11 +104,15 @@ class LokBotApi:
         wait=tenacity.wait_random_exponential(multiplier=1, max=60)
     )
     def _solve_captcha(self):
-        picture_base64 = base64.b64encode(self.auth_captcha().content).decode()
-        captcha = self.captcha_solver.solve(picture_base64)
-        res = self.auth_captcha_confirm(captcha)
+        def get_picture_base64_func():
+            return base64.b64encode(self.auth_captcha().content).decode()
 
-        if not res.get('valid'):
+        def captcha_confirm_func(_captcha):
+            res = self.auth_captcha_confirm(_captcha)
+
+            return res.get('valid')
+
+        if not self.captcha_solver.solve(get_picture_base64_func, captcha_confirm_func):
             raise tenacity.TryAgain()
 
     def auth_captcha(self):
