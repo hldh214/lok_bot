@@ -13,6 +13,11 @@ from lokbot import logger, builtin_logger, project_root
 # 资源 code
 from lokbot.exceptions import OtherException
 
+# 刚进游戏
+TUTORIAL_CODE_INTRO = 'Intro'
+# 完成改名字主线后, 弹出 "学徒的板条箱 $0.99" 购买按钮
+TUTORIAL_CODE_START = 'TutorialStart'
+
 # 任务状态
 STATUS_PENDING = 1  # 未完成任务
 STATUS_FINISHED = 2  # 已完成待领取奖励
@@ -559,7 +564,10 @@ class LokFarmer:
         帮助联盟
         :return:
         """
-        self.api.alliance_help_all()
+        try:
+            self.api.alliance_help_all()
+        except OtherException:
+            pass
 
     def harvester(self):
         """
@@ -780,7 +788,10 @@ class LokFarmer:
         self.api.kingdom_vip_claim()
 
     def alliance_farmer(self):
-        research_list = self.api.alliance_research_list()
+        try:
+            research_list = self.api.alliance_research_list()
+        except OtherException:
+            return
 
         code = research_list.get('recommendResearch')
 
