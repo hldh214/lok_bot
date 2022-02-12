@@ -6,6 +6,17 @@ import schedule
 from lokbot.farmer import LokFarmer, TASK_CODE_SILVER_HAMMER, TASK_CODE_GOLD_HAMMER
 
 
+def find_alliance(farmer: LokFarmer):
+    while True:
+        alliance = farmer.api.alliance_recommend().get('alliance')
+
+        if alliance.get('numMembers') < alliance.get('maxMembers'):
+            farmer.api.alliance_join(alliance.get('_id'))
+            break
+
+        time.sleep(60 * 5)
+
+
 def main(token, captcha_solver_config):
     farmer = LokFarmer(token, captcha_solver_config)
 
