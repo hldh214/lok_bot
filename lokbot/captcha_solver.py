@@ -16,6 +16,22 @@ class Ttshitu(Base):
         self.username = username
         self.password = password
 
+        self._login(username, password)
+
+    def _login(self, username, password):
+        params = {'username': username, 'password': password}
+        url = 'queryAccountInfo.json'
+
+        response = self.client.get(url, params=params)
+        json_response = response.json()
+        logger.debug(json.dumps({
+            'url': url,
+            'params': params,
+            'res': json_response,
+            'elapsed': response.elapsed.total_seconds()
+        }))
+        assert json_response['success'] is True
+
     def _post(self, url, json_data):
         response = self.client.post(url, json=json_data)
         json_response = response.json()
