@@ -281,6 +281,20 @@ class LokBotApi:
         """
         return self.post('alliance/help/all')
 
+    def alliance_recommend(self):
+        """
+        获取推荐的联盟, 配合加入联盟一起使用
+        :return:
+        """
+        return self.post('alliance/recommend')
+
+    def alliance_join(self, alliance_id):
+        """
+        加入联盟
+        :return:
+        """
+        return self.post('alliance/join', {'allianceId': alliance_id})
+
     def item_list(self):
         """
         获取道具列表
