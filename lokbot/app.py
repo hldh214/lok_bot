@@ -20,6 +20,8 @@ def find_alliance(farmer: LokFarmer):
 def main(token, captcha_solver_config):
     farmer = LokFarmer(token, captcha_solver_config)
 
+    threading.Thread(target=farmer.sock_thread).start()
+
     schedule.every(120).to(240).minutes.do(farmer.alliance_helper)
     schedule.every(60).to(120).minutes.do(farmer.harvester)
     schedule.every(200).to(300).minutes.do(farmer.vip_chest_claim)
@@ -27,8 +29,6 @@ def main(token, captcha_solver_config):
     schedule.every(120).to(240).minutes.do(farmer.alliance_farmer)
 
     schedule.run_all()
-
-    threading.Thread(target=farmer.sock_thread).start()
 
     threading.Thread(target=farmer.free_chest_farmer).start()
 
