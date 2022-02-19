@@ -30,14 +30,14 @@ def main(token, captcha_solver_config):
 
     schedule.run_all()
 
-    threading.Thread(target=farmer.free_chest_farmer).start()
+    threading.Thread(target=farmer.free_chest_farmer_thread).start()
 
-    threading.Thread(target=farmer.quest_monitor).start()
+    threading.Thread(target=farmer.quest_monitor_thread).start()
 
-    threading.Thread(target=farmer.building_farmer, args=(TASK_CODE_SILVER_HAMMER,)).start()
-    threading.Thread(target=farmer.building_farmer, args=(TASK_CODE_GOLD_HAMMER,)).start()
+    threading.Thread(target=farmer.building_farmer_thread, args=(TASK_CODE_SILVER_HAMMER,)).start()
+    threading.Thread(target=farmer.building_farmer_thread, args=(TASK_CODE_GOLD_HAMMER,)).start()
 
-    threading.Thread(target=farmer.academy_farmer).start()
+    threading.Thread(target=farmer.academy_farmer_thread).start()
 
     while True:
         schedule.run_pending()

@@ -122,11 +122,13 @@ class LokFarmer:
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
         reraise=True
     )
-    def sock_thread(self, url='https://sock-lok-live.leagueofkingdoms.com/socket.io/'):
+    def sock_thread(self):
         """
         websocket connection of the kingdom
         :return:
         """
+        url = self.kingdom_enter.get('networks').get('kingdoms')[0]
+
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
         @sio.on('/building/update')
@@ -166,12 +168,17 @@ class LokFarmer:
 
         sio.wait()
 
+    @tenacity.retry(
+        stop=tenacity.stop_after_attempt(4),
+        wait=tenacity.wait_random_exponential(multiplier=1, max=60),
+        reraise=True
+    )
     def socf_thread(self):
         """
         websocket connection of the field
         :return:
         """
-        pass
+        url = self.kingdom_enter.get('networks').get('fields')[0]
 
     def alliance_helper(self):
         """
@@ -208,7 +215,7 @@ class LokFarmer:
 
             self.api.kingdom_resource_harvest(position)
 
-    def quest_monitor(self):
+    def quest_monitor_thread(self):
         """
         任务监控
         :return:
@@ -222,7 +229,7 @@ class LokFarmer:
         if len([self.api.quest_claim(q) for q in quest_list.get('sideQuests') if
                 q.get('status') == STATUS_FINISHED]) >= 5:
             # 若五个均为已完成, 则翻页
-            threading.Thread(target=self.quest_monitor).start()
+            threading.Thread(target=self.quest_monitor_thread).start()
             return
 
         quest_list_daily = self.api.quest_list_daily().get('dailyQuest')
@@ -231,7 +238,7 @@ class LokFarmer:
         if len([self.api.quest_claim_daily(q) for q in quest_list_daily.get('quests') if
                 q.get('status') == STATUS_FINISHED]) >= 5:
             # 若五个均为已完成, 则翻页
-            threading.Thread(target=self.quest_monitor).start()
+            threading.Thread(target=self.quest_monitor_thread).start()
             return
 
         # daily quest reward
@@ -239,10 +246,10 @@ class LokFarmer:
          q.get('status') == STATUS_FINISHED]
 
         logger.info('quest_monitor: done, sleep for 1h')
-        threading.Timer(3600, self.quest_monitor).start()
+        threading.Timer(3600, self.quest_monitor_thread).start()
         return
 
-    def building_farmer(self, task_code=TASK_CODE_SILVER_HAMMER):
+    def building_farmer_thread(self, task_code=TASK_CODE_SILVER_HAMMER):
         """
         building farmer
         :param task_code:
@@ -255,7 +262,7 @@ class LokFarmer:
         if worker_used:
             threading.Timer(
                 self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')),
-                self.building_farmer,
+                self.building_farmer_thread,
                 [task_code]
             ).start()
             return
@@ -285,16 +292,16 @@ class LokFarmer:
 
             threading.Timer(
                 self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
-                self.building_farmer,
+                self.building_farmer_thread,
                 [task_code]
             ).start()
             return
 
         logger.info('building_farmer: no building to upgrade, sleep for 2h')
-        threading.Timer(2 * 3600, self.building_farmer, [task_code]).start()
+        threading.Timer(2 * 3600, self.building_farmer_thread, [task_code]).start()
         return
 
-    def academy_farmer(self, to_max_level=False):
+    def academy_farmer_thread(self, to_max_level=False):
         """
         research farmer
         :param to_max_level:
@@ -308,7 +315,7 @@ class LokFarmer:
             if worker_used[0].get('status') != STATUS_CLAIMED:
                 threading.Timer(
                     self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')),
-                    self.academy_farmer,
+                    self.academy_farmer_thread,
                     [to_max_level]
                 ).start()
                 return
@@ -340,16 +347,16 @@ class LokFarmer:
 
                 threading.Timer(
                     self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
-                    self.academy_farmer,
+                    self.academy_farmer_thread,
                     [to_max_level]
                 ).start()
                 return
 
         logger.info('academy_farmer: no research to do, sleep for 2h')
-        threading.Timer(2 * 3600, self.academy_farmer, [to_max_level]).start()
+        threading.Timer(2 * 3600, self.academy_farmer_thread, [to_max_level]).start()
         return
 
-    def free_chest_farmer(self, _type=0):
+    def free_chest_farmer_thread(self, _type=0):
         """
         领取免费宝箱
         :return:
@@ -359,7 +366,7 @@ class LokFarmer:
         except OtherException as error_code:
             if str(error_code) == 'free_chest_not_yet':
                 logger.info('free_chest_farmer: free_chest_not_yet, sleep for 2h')
-                threading.Timer(2 * 3600, self.free_chest_farmer).start()
+                threading.Timer(2 * 3600, self.free_chest_farmer_thread).start()
                 return
 
             raise
@@ -368,9 +375,9 @@ class LokFarmer:
         next_silver = arrow.get(res.get('freeChest', {}).get('silver', {}).get('next'))
 
         if next_gold < next_silver:
-            threading.Timer(self.calc_time_diff_in_seconds(next_gold), self.free_chest_farmer, [1]).start()
+            threading.Timer(self.calc_time_diff_in_seconds(next_gold), self.free_chest_farmer_thread, [1]).start()
         else:
-            threading.Timer(self.calc_time_diff_in_seconds(next_silver), self.free_chest_farmer, [0]).start()
+            threading.Timer(self.calc_time_diff_in_seconds(next_silver), self.free_chest_farmer_thread, [0]).start()
 
     def use_resource_in_item_list(self):
         """
