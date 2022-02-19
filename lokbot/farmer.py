@@ -163,9 +163,7 @@ class LokFarmer:
                 self.api.item_use(code)
 
         sio.connect(url, transports=["websocket"])
-
         sio.emit('/kingdom/enter', {'token': self.access_token})
-
         sio.wait()
 
     @tenacity.retry(
@@ -179,6 +177,14 @@ class LokFarmer:
         :return:
         """
         url = self.kingdom_enter.get('networks').get('fields')[0]
+
+        sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
+
+        sio.connect(url, transports=["websocket"])
+        sio.emit('/field/enter', {'token': self.access_token})
+
+        # todo: 遍历整个地图
+        sio.wait()
 
     def alliance_helper(self):
         """
