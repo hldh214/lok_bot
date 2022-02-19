@@ -101,6 +101,15 @@ ITEM_CODE_GOLD_100K = 10101044
 ITEM_CODE_GOLD_500K = 10101045
 ITEM_CODE_GOLD_1M = 10101046
 
+ITEM_CODE_FOOD_BOOST_8H = 10102001
+ITEM_CODE_FOOD_BOOST_1D = 10102002
+ITEM_CODE_LUMBER_BOOST_8H = 10102003
+ITEM_CODE_LUMBER_BOOST_1D = 10102004
+ITEM_CODE_STONE_BOOST_8H = 10102005
+ITEM_CODE_STONE_BOOST_1D = 10102006
+ITEM_CODE_GOLD_BOOST_8H = 10102007
+ITEM_CODE_GOLD_BOOST_1D = 10102008
+
 USABLE_ITEM_CODE_LIST = (
     ITEM_CODE_FOOD_1K, ITEM_CODE_FOOD_5K, ITEM_CODE_FOOD_10K, ITEM_CODE_FOOD_50K, ITEM_CODE_FOOD_100K,
 
@@ -110,6 +119,13 @@ USABLE_ITEM_CODE_LIST = (
 
     ITEM_CODE_GOLD_1K, ITEM_CODE_GOLD_5K, ITEM_CODE_GOLD_10K, ITEM_CODE_GOLD_50K, ITEM_CODE_GOLD_100K,
 )
+
+USABLE_BOOST_CODE_MAP = {
+    'food': (ITEM_CODE_FOOD_BOOST_8H, ITEM_CODE_FOOD_BOOST_1D),
+    'lumber': (ITEM_CODE_LUMBER_BOOST_8H, ITEM_CODE_LUMBER_BOOST_1D),
+    'stone': (ITEM_CODE_STONE_BOOST_8H, ITEM_CODE_STONE_BOOST_1D),
+    'gold': (ITEM_CODE_GOLD_BOOST_8H, ITEM_CODE_GOLD_BOOST_1D),
+}
 
 RESEARCH_CODE_MAP = {
     # 生产优先
@@ -539,12 +555,31 @@ class LokFarmer:
             logger.info(f'on_building_update: {data}')
             self._update_building(data)
 
-            return
-
         @sio.on('/resource/upgrade')
         def on_resource_update(data):
             logger.info(f'on_resource_update: {data}')
             self.resources[data.get('resourceIdx')] = data.get('value')
+
+        @sio.on('/buff/list')
+        def on_buff_list(data):
+            logger.info(f'on_buff_list: {data}')
+
+            item_list = self.api.item_list().get('items')
+
+            for buff_type, item_code_list in USABLE_BOOST_CODE_MAP.items():
+                already_activated = [item for item in data if item.get('param', {}).get('itemCode') in item_code_list]
+
+                if already_activated:
+                    continue
+
+                item_in_inventory = [item for item in item_list if item.get('code') in item_code_list]
+
+                if not item_in_inventory:
+                    continue
+
+                code = item_in_inventory[0].get('code')
+                logger.info(f'activating buff: {buff_type}, code: {code}')
+                self.api.item_use(code)
 
         sio.connect(url, transports=["websocket"])
 
