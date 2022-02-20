@@ -17,7 +17,10 @@ def find_alliance(farmer: LokFarmer):
         time.sleep(60 * 5)
 
 
-def main(token, captcha_solver_config):
+def main(token, captcha_solver_config=None):
+    if captcha_solver_config is None:
+        captcha_solver_config = {}
+
     farmer = LokFarmer(token, captcha_solver_config)
 
     threading.Thread(target=farmer.sock_thread).start()
