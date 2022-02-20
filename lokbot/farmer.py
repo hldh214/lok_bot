@@ -19,6 +19,7 @@ class LokFarmer:
         self.kingdom_enter = self.api.kingdom_enter()
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
+        self.buff_item_use_lock = threading.RLock()
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -160,7 +161,10 @@ class LokFarmer:
 
                 code = item_in_inventory[0].get('code')
                 logger.info(f'activating buff: {buff_type}, code: {code}')
+                if not self.buff_item_use_lock.acquire(blocking=False):
+                    return
                 self.api.item_use(code)
+                self.buff_item_use_lock.release()
 
         sio.connect(url, transports=["websocket"])
         sio.emit('/kingdom/enter', {'token': self.access_token})
