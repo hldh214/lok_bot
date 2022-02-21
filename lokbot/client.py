@@ -16,15 +16,7 @@ class LokBotApi:
     def __init__(self, access_token, captcha_solver_config, request_callback=None):
         self.opener = httpx.Client(
             headers={
-                'Accept': '*/*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept-Language': 'zh-CN,zh;q=0.9',
-                'Origin': 'https://play.leagueofkingdoms.com',
-                'Referer': 'https://play.leagueofkingdoms.com',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-site',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0',
+                'User-Agent': 'BestHTTP',
                 'x-access-token': access_token
             },
             http2=True,
