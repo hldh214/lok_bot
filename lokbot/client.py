@@ -89,6 +89,11 @@ class LokBotApi:
         if code == 'exceed_limit_packet':
             raise ExceedLimitPacketException()
 
+        if code == 'not_online':
+            self.auth_set_device_info()
+
+            raise tenacity.TryAgain()
+
         raise OtherException(code)
 
     @tenacity.retry(
@@ -112,6 +117,18 @@ class LokBotApi:
 
     def auth_captcha_confirm(self, value):
         return self.post('auth/captcha/confirm', {'value': value})
+
+    def auth_set_device_info(self):
+        return self.post('auth/setDeviceInfo', {
+            "deviceInfo": {
+                "OS": "iOS 15.3.1",
+                "country": "USA",
+                "language": "ChineseSimplified",
+                "version": "1.1407.97.168",
+                "platform": "ios",
+                "build": "global"
+            }
+        })
 
     def alliance_research_list(self):
         return self.post('alliance/research/list')
