@@ -2,9 +2,7 @@ name: Build and release
 
 on:
   push:
-    # Pattern matched against refs/tags
-    tags:
-      - '*'           # Push events to every tag not containing /
+    tags: [ '*' ]
 
 env:
   OUTPUT_EXE_NAME: lokbot

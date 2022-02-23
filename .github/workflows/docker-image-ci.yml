@@ -3,12 +3,9 @@ name: Docker Image CI
 on:
   push:
     branches: [ master ]
+    tags: [ '*' ]
   pull_request:
     branches: [ master ]
-  workflow_run:
-    workflows: [ "Build and release" ]
-    types:
-      - completed
 
 env:
   REGISTRY: ghcr.io
