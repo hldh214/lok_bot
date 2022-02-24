@@ -92,7 +92,7 @@ class LokBotApi:
         if code == 'not_online':
             self.auth_set_device_info()
 
-            raise tenacity.TryAgain()
+            raise DuplicatedException()
 
         raise OtherException(code)
 
