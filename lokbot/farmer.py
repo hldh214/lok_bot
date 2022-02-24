@@ -20,6 +20,7 @@ class LokFarmer:
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
         self.buff_item_use_lock = threading.RLock()
+        self.has_additional_building_queue = self.kingdom_enter.get('kingdom').get('vip', {}).get('level') >= 5
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -174,6 +175,10 @@ class LokFarmer:
         def on_buff_list(data):
             logger.info(f'on_buff_list: {data}')
 
+            self.has_additional_building_queue = len([
+                item for item in data if item.get('param', {}).get('itemCode') == ITEM_CODE_GOLDEN_HAMMER
+            ]) > 0
+
             item_list = self.api.item_list().get('items')
 
             for buff_type, item_code_list in USABLE_BOOST_CODE_MAP.items():
@@ -192,6 +197,10 @@ class LokFarmer:
                 if not self.buff_item_use_lock.acquire(blocking=False):
                     return
                 self.api.item_use(code)
+
+                if code == ITEM_CODE_GOLDEN_HAMMER:
+                    self.has_additional_building_queue = True
+
                 self.buff_item_use_lock.release()
 
         sio.connect(url, transports=["websocket"])
@@ -293,6 +302,9 @@ class LokFarmer:
         :param task_code:
         :return:
         """
+        if task_code == TASK_CODE_GOLD_HAMMER and not self.has_additional_building_queue:
+            return
+
         current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
         worker_used = [t for t in current_tasks if t.get('code') == task_code]
