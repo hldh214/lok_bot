@@ -183,6 +183,9 @@ class LokBotApi:
 
         captcha = res.get('captcha')
         if captcha and captcha.get('next'):
+            if not self.captcha_solver:
+                raise NeedCaptchaException()
+
             self._solve_captcha()
 
         return res
