@@ -54,14 +54,23 @@ class LokBotApi:
 
         response = self.opener.post(url, data={'json': json.dumps(json_data)})
 
-        json_response = response.json()
-
-        logger.debug(json.dumps({
+        log_data = {
             'url': url,
             'data': json_data,
-            'res': json_response,
-            'elapsed': response.elapsed.total_seconds()
-        }))
+            'elapsed': response.elapsed.total_seconds(),
+        }
+
+        try:
+            json_response = response.json()
+        except json.JSONDecodeError:
+            log_data.update({'res': response.text})
+            logger.error(log_data)
+
+            raise
+
+        log_data.update({'res': json_response})
+
+        logger.debug(json.dumps(log_data))
 
         if json_response.get('result'):
             if callable(self.request_callback):
