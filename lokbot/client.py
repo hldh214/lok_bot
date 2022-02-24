@@ -251,6 +251,19 @@ class LokBotApi:
             'instant': instant
         })
 
+    def kingdom_building_build(self, building, instant=0):
+        """
+        建筑建造
+        :param building:
+        :param instant:
+        :return:
+        """
+        return self.post('kingdom/building/build', {
+            'position': building.get('position'),
+            'buildingCode': building.get('code'),
+            'instant': instant
+        })
+
     def kingdom_academy_research(self, research, instant=0):
         """
         学院研究升级

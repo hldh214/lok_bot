@@ -123,7 +123,10 @@ class LokFarmer:
             return 'continue'
 
         try:
-            res = self.api.kingdom_building_upgrade(building)
+            if building.get('level') == 0:
+                res = self.api.kingdom_building_build(building)
+            else:
+                res = self.api.kingdom_building_upgrade(building)
         except OtherException as error_code:
             if str(error_code) == 'full_task':
                 logger.warning('building_farmer: full_task, quit')
