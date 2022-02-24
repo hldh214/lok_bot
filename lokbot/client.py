@@ -335,3 +335,12 @@ class LokBotApi:
         :return:
         """
         return self.post('event/roulette/spin')
+
+    def field_worldmap_devrank(self):
+        """
+        Returns the land rank (length: 65535)
+        level: 0~9 for lvl 1-10
+        {"result": true, "lands": "000000011122334455 ..."}
+        :return:
+        """
+        return self.post('field/worldmap/devrank')
