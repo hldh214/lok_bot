@@ -50,6 +50,38 @@ BUILDING_CODE_MAP = {
     'watch_tower': 40100103,
 }
 
+BUILD_POSITION_UNLOCK_MAP = {
+    # level: (pos1, pos2, ..., posN)
+    0: (
+        {'position': 104, 'code': BUILDING_CODE_MAP['farm']},
+        {'position': 105, 'code': BUILDING_CODE_MAP['barrack']},
+        {'position': 106, 'code': BUILDING_CODE_MAP['lumber_camp']},
+        {'position': 107, 'code': BUILDING_CODE_MAP['quarry']},
+        {'position': 108, 'code': BUILDING_CODE_MAP['gold_mine']},
+        {'position': 109, 'code': BUILDING_CODE_MAP['farm']},
+        {'position': 110, 'code': BUILDING_CODE_MAP['barrack']},
+        {'position': 111, 'code': BUILDING_CODE_MAP['lumber_camp']},
+    ),
+    5: (
+        {'position': 115, 'code': BUILDING_CODE_MAP['quarry']},
+        {'position': 116, 'code': BUILDING_CODE_MAP['gold_mine']},
+        {'position': 117, 'code': BUILDING_CODE_MAP['farm']},
+        {'position': 118, 'code': BUILDING_CODE_MAP['barrack']},
+    ),
+    10: (
+        {'position': 101, 'code': BUILDING_CODE_MAP['lumber_camp']},
+        {'position': 102, 'code': BUILDING_CODE_MAP['quarry']},
+        {'position': 103, 'code': BUILDING_CODE_MAP['gold_mine']},
+        {'position': 114, 'code': BUILDING_CODE_MAP['farm']},
+    ),
+    15: (
+        {'position': 112, 'code': BUILDING_CODE_MAP['barrack']},
+        {'position': 113, 'code': BUILDING_CODE_MAP['lumber_camp']},
+        {'position': 119, 'code': BUILDING_CODE_MAP['quarry']},
+        {'position': 120, 'code': BUILDING_CODE_MAP['gold_mine']},
+    ),
+}
+
 # 可收获的资源
 HARVESTABLE_CODE = [
     BUILDING_CODE_MAP['farm'],

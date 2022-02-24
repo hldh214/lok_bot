@@ -118,6 +118,31 @@ class LokFarmer:
             logger.info(f'resources updated: {resources}')
             self.resources = resources
 
+    def _upgrade_building(self, building, buildings, task_code):
+        if not self._is_building_upgradeable(building, buildings):
+            return 'continue'
+
+        try:
+            res = self.api.kingdom_building_upgrade(building)
+        except OtherException as error_code:
+            if str(error_code) == 'full_task':
+                logger.warning('building_farmer: full_task, quit')
+                return 'break'
+
+            logger.info(f'building upgrade failed: {building}')
+            return 'continue'
+
+        building['state'] = BUILDING_STATE_UPGRADING
+        self._update_building(building)
+
+        threading.Timer(
+            self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
+            self.building_farmer_thread,
+            [task_code]
+        ).start()
+
+        return
+
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
@@ -278,33 +303,42 @@ class LokFarmer:
             return
 
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
+        kingdom_level = buildings[0].get('level')
 
-        if not buildings:
-            logger.warning('building_farmer: no building')
-            return
+        # First check if there is any empty position available for building
+        for level_requirement, positions in BUILD_POSITION_UNLOCK_MAP.items():
+            if kingdom_level < level_requirement:
+                continue
 
+            for position in positions:
+                if position.get('position') in [building.get('position') for building in buildings]:
+                    continue
+
+                building = {
+                    'code': position.get('code'),
+                    'position': position.get('position'),
+                    'level': 0,
+                    'state': BUILDING_STATE_NORMAL,
+                }
+
+                res = self._upgrade_building(building, buildings, task_code)
+
+                if res == 'continue':
+                    continue
+                if res == 'break':
+                    break
+
+                return
+
+        # Then check if there is any upgradeable building
         for building in buildings:
-            if not self._is_building_upgradeable(building, buildings):
+            res = self._upgrade_building(building, buildings, task_code)
+
+            if res == 'continue':
                 continue
+            if res == 'break':
+                break
 
-            try:
-                res = self.api.kingdom_building_upgrade(building)
-            except OtherException as error_code:
-                if str(error_code) == 'full_task':
-                    logger.warning('building_farmer: full_task, quit')
-                    return
-
-                logger.info(f'building upgrade failed, try next one, current: {building}')
-                continue
-
-            building['state'] = BUILDING_STATE_UPGRADING
-            self._update_building(building)
-
-            threading.Timer(
-                self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
-                self.building_farmer_thread,
-                [task_code]
-            ).start()
             return
 
         logger.info('building_farmer: no building to upgrade, sleep for 2h')
