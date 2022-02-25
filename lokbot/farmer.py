@@ -25,7 +25,7 @@ class LokFarmer:
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
         time_diff = arrow.get(expected_ended) - arrow.utcnow()
-        diff_in_seconds = time_diff.seconds
+        diff_in_seconds = int(time_diff.total_seconds())
 
         if diff_in_seconds < 0:
             diff_in_seconds = 0
