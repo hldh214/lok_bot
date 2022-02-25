@@ -47,7 +47,12 @@ pipenv sync
 ### Run
 
 ```shell
+# activate a new shell with pipenv
+pipenv shell
 python3 -m lokbot YOUR_X_ACCESS_TOKEN
+
+# or run directly inside pipenv
+pipenv run python3 -m lokbot YOUR_X_ACCESS_TOKEN
 ```
 
 ## Run with Docker
