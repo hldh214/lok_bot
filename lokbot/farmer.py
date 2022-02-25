@@ -25,8 +25,12 @@ class LokFarmer:
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
         time_diff = arrow.get(expected_ended) - arrow.utcnow()
+        diff_in_seconds = time_diff.seconds
 
-        return time_diff.seconds + random.randint(10, 20)
+        if diff_in_seconds < 0:
+            diff_in_seconds = 0
+
+        return diff_in_seconds + random.randint(5, 10)
 
     def _is_building_upgradeable(self, building, buildings):
         if building.get('state') != BUILDING_STATE_NORMAL:
