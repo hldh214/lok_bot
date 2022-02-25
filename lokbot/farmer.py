@@ -141,6 +141,7 @@ class LokFarmer:
             return 'continue'
 
         building['state'] = BUILDING_STATE_UPGRADING
+        building['level'] = int(building.get('level')) + 1
         self._update_building(building)
 
         threading.Timer(
