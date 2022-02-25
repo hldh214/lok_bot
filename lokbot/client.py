@@ -5,8 +5,7 @@ import httpx
 import ratelimit
 import tenacity
 
-from lokbot.exceptions import DuplicatedException, ExceedLimitPacketException, NoAuthException, NeedCaptchaException, \
-    OtherException
+from lokbot.exceptions import *
 from lokbot import logger
 
 API_BASE_URL = 'https://api-lok-live.leagueofkingdoms.com/api/'
@@ -46,6 +45,12 @@ class LokBotApi:
     @tenacity.retry(
         wait=tenacity.wait_fixed(3600),
         retry=tenacity.retry_if_exception_type(ExceedLimitPacketException),  # server-side rate limiter(wait 1h)
+    )
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(NotOnlineException),  # not_online issue (#7)
+        stop=tenacity.stop_after_attempt(3),
+        reraise=True
     )
     @ratelimit.limits(calls=1, period=2)
     def post(self, url, json_data=None):
@@ -101,7 +106,7 @@ class LokBotApi:
         if code == 'not_online':
             self.auth_set_device_info()
 
-            raise DuplicatedException()
+            raise NotOnlineException()
 
         raise OtherException(code)
 
