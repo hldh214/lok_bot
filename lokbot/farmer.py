@@ -17,6 +17,14 @@ class LokFarmer:
         self.access_token = access_token
         self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
         self.kingdom_enter = self.api.kingdom_enter()
+        self.api.auth_set_device_info({
+            "OS": "iOS 15.3.1",
+            "country": "USA",
+            "language": "ChineseSimplified",
+            "version": "1.1407.97.168",
+            "platform": "ios",
+            "build": "global"
+        })
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
         self.buff_item_use_lock = threading.RLock()
