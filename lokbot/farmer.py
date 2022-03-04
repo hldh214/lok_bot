@@ -338,6 +338,23 @@ class LokFarmer:
         [self.api.quest_claim_daily_level(q) for q in quest_list_daily.get('rewards') if
          q.get('status') == STATUS_FINISHED]
 
+        # event
+        event_list = self.api.event_list()
+        event_has_red_dot = [each for each in event_list.get('events') if each.get('reddot') > 0]
+        for event in event_has_red_dot:
+            event_info = self.api.event_info(event.get('_id'))
+            finished_code = [
+                each.get('code') for each in event_info.get('eventKingdom').get('events')
+                if each.get('status') == STATUS_FINISHED
+            ]
+
+            if not finished_code:
+                continue
+
+            [self.api.event_claim(
+                event_info.get('event').get('_id'), each.get('_id'), each.get('code')
+            ) for each in event_info.get('event').get('events') if each.get('code') in finished_code]
+
         logger.info('quest_monitor: done, sleep for 1h')
         threading.Timer(3600, self.quest_monitor_thread).start()
         return

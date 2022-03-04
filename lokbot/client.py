@@ -200,6 +200,20 @@ class LokBotApi:
         """
         return self.post('event/list')
 
+    def event_info(self, root_event_id):
+        """
+        获取活动信息
+        :return:
+        """
+        return self.post('event/info', {'rootEventId': root_event_id})
+
+    def event_claim(self, event_id, event_target_id, code):
+        """
+        领取活动奖励
+        :return:
+        """
+        return self.post('event/claim', {'eventId': event_id, 'eventTargetId': event_target_id, 'code': code})
+
     def kingdom_wall_info(self):
         return self.post('kingdom/wall/info')
 
