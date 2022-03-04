@@ -16,7 +16,9 @@ class LokFarmer:
     def __init__(self, access_token, captcha_solver_config):
         self.access_token = access_token
         self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
+        # self.api.auth_connect()
         self.kingdom_enter = self.api.kingdom_enter()
+        self.api.chat_logs(self.kingdom_enter.get('kingdom').get('worldId'))
         self.api.auth_set_device_info({
             "OS": "iOS 15.3.1",
             "country": "USA",
@@ -25,6 +27,8 @@ class LokFarmer:
             "platform": "ios",
             "build": "global"
         })
+        self.api.kingdom_wall_info()
+        self.api.quest_main()
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
         self.buff_item_use_lock = threading.RLock()
@@ -238,6 +242,22 @@ class LokFarmer:
         sio.emit('/field/enter', {'token': self.access_token})
 
         # todo: 遍历整个地图
+        sio.wait()
+
+    @tenacity.retry(
+        stop=tenacity.stop_after_attempt(4),
+        wait=tenacity.wait_random_exponential(multiplier=1, max=60),
+        reraise=True
+    )
+    def socc_thread(self):
+        url = self.kingdom_enter.get('networks').get('chats')[0]
+
+        sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
+
+        sio.connect(url, transports=["websocket"])
+        sio.emit('/chat/enter', {'token': self.access_token})
+
+        # do nothing
         sio.wait()
 
     def alliance_helper(self):

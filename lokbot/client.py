@@ -121,6 +121,13 @@ class LokBotApi:
     def auth_captcha_confirm(self, value):
         return self.post('auth/captcha/confirm', {'value': value})
 
+    def auth_connect(self):
+        res = self.post('auth/connect')
+
+        self.opener.headers['x-access-token'] = res['token']
+
+        return res
+
     def auth_set_device_info(self, device_info):
         return self.post('auth/setDeviceInfo', {'deviceInfo': device_info})
 
@@ -129,6 +136,12 @@ class LokBotApi:
 
     def alliance_research_donate_all(self, code):
         return self.post('alliance/research/donateAll', {'code': code})
+
+    def chat_logs(self, chat_channel):
+        return self.post('chat/logs', {'chatChannel': chat_channel})
+
+    def quest_main(self):
+        return self.post('quest/main')
 
     def quest_list(self):
         """
@@ -167,6 +180,9 @@ class LokBotApi:
         :return:
         """
         return self.post('quest/claim/daily/level', {'level': reward.get('level')})
+
+    def kingdom_wall_info(self):
+        return self.post('kingdom/wall/info')
 
     def kingdom_enter(self):
         """

@@ -24,6 +24,7 @@ def main(token, captcha_solver_config=None):
     farmer = LokFarmer(token, captcha_solver_config)
 
     threading.Thread(target=farmer.sock_thread).start()
+    # threading.Thread(target=farmer.socc_thread).start()
 
     schedule.every(120).to(240).minutes.do(farmer.alliance_helper)
     schedule.every(60).to(120).minutes.do(farmer.harvester)
