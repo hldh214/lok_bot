@@ -181,8 +181,30 @@ class LokBotApi:
         """
         return self.post('quest/claim/daily/level', {'level': reward.get('level')})
 
+    def pkg_recommend(self):
+        return self.post('pkg/recommend')
+
+    def pkg_list(self):
+        return self.post('pkg/list')
+
+    def event_roulette_open(self):
+        return self.post('event/roulette/open')
+
+    def event_cvc_open(self):
+        return self.post('event/cvc/open')
+
+    def event_list(self):
+        """
+        获取活动列表
+        :return:
+        """
+        return self.post('event/list')
+
     def kingdom_wall_info(self):
         return self.post('kingdom/wall/info')
+
+    def kingdom_treasure_list(self):
+        return self.post('kingdom/treasure/list')
 
     def kingdom_enter(self):
         """

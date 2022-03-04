@@ -16,19 +16,32 @@ class LokFarmer:
     def __init__(self, access_token, captcha_solver_config):
         self.access_token = access_token
         self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
-        # self.api.auth_connect()
-        self.kingdom_enter = self.api.kingdom_enter()
-        self.api.chat_logs(self.kingdom_enter.get('kingdom').get('worldId'))
-        self.api.auth_set_device_info({
+
+        device_info = {
             "OS": "iOS 15.3.1",
             "country": "USA",
             "language": "English",
             "version": "1.1416.99.170",
             "platform": "ios",
             "build": "global"
-        })
+        }
+
+        self.kingdom_enter = self.api.kingdom_enter()
+
+        # knock
+        self.api.auth_set_device_info(device_info)
+        self.api.chat_logs(self.kingdom_enter.get('kingdom').get('worldId'))
         self.api.kingdom_wall_info()
         self.api.quest_main()
+        self.api.item_list()
+        self.api.kingdom_treasure_list()
+        self.api.event_list()
+        self.api.event_cvc_open()
+        self.api.event_roulette_open()
+        self.api.pkg_recommend()
+        self.api.pkg_list()
+        self.api.auth_set_device_info(device_info)
+
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
         self.buff_item_use_lock = threading.RLock()
