@@ -22,8 +22,8 @@ class LokFarmer:
         self.api.auth_set_device_info({
             "OS": "iOS 15.3.1",
             "country": "USA",
-            "language": "ChineseSimplified",
-            "version": "1.1407.97.168",
+            "language": "English",
+            "version": "1.1416.99.170",
             "platform": "ios",
             "build": "global"
         })
