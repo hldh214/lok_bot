@@ -35,18 +35,18 @@ class LokBotApi:
         reraise=True
     )
     @tenacity.retry(
-        wait=tenacity.wait_fixed(1),
-        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),  # client-side rate limiter
-    )
-    @tenacity.retry(
-        wait=tenacity.wait_random_exponential(multiplier=1, max=60),
-        retry=tenacity.retry_if_exception_type(DuplicatedException),  # server-side rate limiter(wait ~2s)
+        wait=tenacity.wait_fixed(2),
+        retry=tenacity.retry_if_exception_type(DuplicatedException),  # server-side rate limiter(wait 2s)
     )
     @tenacity.retry(
         wait=tenacity.wait_fixed(3600),
         retry=tenacity.retry_if_exception_type(ExceedLimitPacketException),  # server-side rate limiter(wait 1h)
     )
-    @ratelimit.limits(calls=1, period=2)
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=0.1)
     def post(self, url, json_data=None):
         if json_data is None:
             json_data = {}
@@ -118,6 +118,11 @@ class LokBotApi:
     def auth_captcha(self):
         return self.opener.get('auth/captcha')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=2)
     def auth_captcha_confirm(self, value):
         return self.post('auth/captcha/confirm', {'value': value})
 
@@ -157,6 +162,11 @@ class LokBotApi:
         """
         return self.post('quest/list/daily')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def quest_claim(self, quest):
         """
         领取任务奖励
@@ -165,6 +175,11 @@ class LokBotApi:
         """
         return self.post('quest/claim', {'questId': quest.get('_id'), 'code': quest.get('code')})
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def quest_claim_daily(self, quest):
         """
         领取日常任务奖励
@@ -173,6 +188,11 @@ class LokBotApi:
         """
         return self.post('quest/claim/daily', {'questId': quest.get('_id'), 'code': quest.get('code')})
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def quest_claim_daily_level(self, reward):
         """
         领取日常任务上方进度条奖励
@@ -200,6 +220,11 @@ class LokBotApi:
         """
         return self.post('event/list')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=2)
     def event_info(self, root_event_id):
         """
         获取活动信息
@@ -207,6 +232,11 @@ class LokBotApi:
         """
         return self.post('event/info', {'rootEventId': root_event_id})
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def event_claim(self, event_id, event_target_id, code):
         """
         领取活动奖励
@@ -243,6 +273,11 @@ class LokBotApi:
         """
         return self.post('kingdom/task/all')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def kingdom_task_claim(self, position):
         """
         领取任务奖励
@@ -271,6 +306,11 @@ class LokBotApi:
         """
         return self.post('kingdom/hospital/recover')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def kingdom_resource_harvest(self, position):
         """
         收获资源
@@ -297,6 +337,11 @@ class LokBotApi:
             'instant': instant
         })
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=6)
     def kingdom_building_build(self, building, instant=0):
         """
         建筑建造
@@ -310,6 +355,11 @@ class LokBotApi:
             'instant': instant
         })
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=6)
     def kingdom_academy_research(self, research, instant=0):
         """
         学院研究升级
@@ -373,6 +423,11 @@ class LokBotApi:
         """
         return self.post('item/list')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def item_use(self, code, amount=1):
         """
         使用道具
@@ -382,6 +437,11 @@ class LokBotApi:
         """
         return self.post('item/use', {'code': code, 'amount': amount})
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
     def item_free_chest(self, _type=0):
         """
         领取免费宝箱
@@ -390,6 +450,11 @@ class LokBotApi:
         """
         return self.post('item/freechest', {'type': _type})
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=2)
     def event_roulette_spin(self):
         """
         转轮抽奖
