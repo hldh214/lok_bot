@@ -21,7 +21,7 @@ class LokFarmer:
             "OS": "iOS 15.3.1",
             "country": "USA",
             "language": "English",
-            "version": "1.1416.99.170",
+            "version": "1.1419.100.172",
             "platform": "ios",
             "build": "global"
         }
