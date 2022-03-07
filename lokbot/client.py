@@ -471,3 +471,13 @@ class LokBotApi:
         :return:
         """
         return self.post('field/worldmap/devrank')
+
+
+def get_version():
+    first = 1
+    second = 1419
+    third = httpx.get('https://play.leagueofkingdoms.com/json/version-live.json').json().get('table')
+    fourth = httpx.get(f'https://play.leagueofkingdoms.com/bundles/webgl/kingdominfo_{second}').json()
+    fourth = [each for each in fourth if each.get('name') == 'ui'][0].get('version')
+
+    return f'{first}.{second}.{third}.{fourth}'
