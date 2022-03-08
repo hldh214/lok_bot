@@ -14,6 +14,7 @@ from lokbot.enum import *
 
 class LokFarmer:
     def __init__(self, access_token, captcha_solver_config):
+        self.kingdom_enter = None
         self.access_token = access_token
         self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
 
@@ -133,7 +134,7 @@ class LokFarmer:
 
         return True
 
-    def _update_building(self, building):
+    def _update_kingdom_enter_building(self, building):
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
 
         self.kingdom_enter['kingdom']['buildings'] = [
@@ -155,8 +156,10 @@ class LokFarmer:
         try:
             if building.get('level') == 0:
                 res = self.api.kingdom_building_build(building)
+                building = res.get('newBuilding')
             else:
                 res = self.api.kingdom_building_upgrade(building)
+                building = res.get('updateBuilding')
         except OtherException as error_code:
             if str(error_code) == 'full_task':
                 logger.warning('building_farmer: full_task, quit')
@@ -165,9 +168,16 @@ class LokFarmer:
             logger.info(f'building upgrade failed: {building}')
             return 'continue'
 
-        building['state'] = BUILDING_STATE_UPGRADING
-        building['level'] = int(building.get('level')) + 1
-        self._update_building(building)
+        building['level'] += 1
+        self._update_kingdom_enter_building(building)
+
+        # TODO: it's necessary only when their server is not stable
+        building['state'] = BUILDING_STATE_NORMAL
+        threading.Timer(
+            self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')) - 5,
+            self._update_kingdom_enter_building,
+            [building]
+        )
 
         threading.Timer(
             self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
@@ -194,7 +204,7 @@ class LokFarmer:
         @sio.on('/building/update')
         def on_building_update(data):
             logger.info(f'on_building_update: {data}')
-            self._update_building(data)
+            self._update_kingdom_enter_building(data)
 
         @sio.on('/resource/upgrade')
         def on_resource_update(data):
