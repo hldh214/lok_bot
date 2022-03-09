@@ -156,10 +156,10 @@ class LokFarmer:
         try:
             if building.get('level') == 0:
                 res = self.api.kingdom_building_build(building)
-                building = res.get('newBuilding')
+                building = res.get('newBuilding', building)
             else:
                 res = self.api.kingdom_building_upgrade(building)
-                building = res.get('updateBuilding')
+                building = res.get('updateBuilding', building)
         except OtherException as error_code:
             if str(error_code) == 'full_task':
                 logger.warning('building_farmer: full_task, quit')
