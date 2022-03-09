@@ -10,6 +10,7 @@ from lokbot.client import LokBotApi
 from lokbot import logger, builtin_logger
 from lokbot.exceptions import OtherException
 from lokbot.enum import *
+from lokbot.util import get_resource_index_by_item_code, run_functions_in_random_order
 
 
 class LokFarmer:
@@ -32,15 +33,17 @@ class LokFarmer:
         # knock
         self.api.auth_set_device_info(device_info)
         self.api.chat_logs(self.kingdom_enter.get('kingdom').get('worldId'))
-        self.api.kingdom_wall_info()
-        self.api.quest_main()
-        self.api.item_list()
-        self.api.kingdom_treasure_list()
-        self.api.event_list()
-        self.api.event_cvc_open()
-        self.api.event_roulette_open()
-        self.api.pkg_recommend()
-        self.api.pkg_list()
+        run_functions_in_random_order(
+            self.api.kingdom_wall_info,
+            self.api.quest_main,
+            self.api.item_list,
+            self.api.kingdom_treasure_list,
+            self.api.event_list,
+            self.api.event_cvc_open,
+            self.api.event_roulette_open,
+            self.api.pkg_recommend,
+            self.api.pkg_list,
+        )
         self.api.auth_set_device_info(device_info)
 
         # [food, lumber, stone, gold]
@@ -555,3 +558,29 @@ class LokFarmer:
             self.api.alliance_research_donate_all(code)
         except OtherException:
             pass
+
+    def caravan_farmer(self):
+        caravan = self.api.kingdom_caravan_list().get('caravan')
+
+        if not caravan:
+            return
+
+        for each_item in caravan.get('items', []):
+            if each_item.get('amount') < 1:
+                continue
+
+            if each_item.get('code') not in BUYABLE_CARAVAN_ITEM_CODE_LIST:
+                continue
+
+            if each_item.get('costItemCode') not in BUYABLE_CARAVAN_ITEM_CODE_LIST:
+                continue
+
+            resource_index = get_resource_index_by_item_code(each_item.get('costItemCode'))
+
+            if resource_index == -1:
+                continue
+
+            if each_item.get('cost') > self.resources[resource_index]:
+                continue
+
+            self.api.kingdom_caravan_buy(each_item.get('_id'))

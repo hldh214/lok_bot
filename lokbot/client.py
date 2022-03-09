@@ -395,6 +395,17 @@ class LokBotApi:
         """
         return self.post('kingdom/world/change', {'worldId': world_id})
 
+    def kingdom_caravan_list(self):
+        return self.post('kingdom/caravan/list')
+
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=4)
+    def kingdom_caravan_buy(self, caravan_item_id):
+        return self.post('kingdom/caravan/buy', {'caravanItemId': caravan_item_id})
+
     def alliance_help_all(self):
         """
         帮助全部
