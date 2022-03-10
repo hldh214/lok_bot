@@ -26,11 +26,10 @@ def main(token, captcha_solver_config=None):
     threading.Thread(target=farmer.sock_thread).start()
     # threading.Thread(target=farmer.socc_thread).start()
 
-    schedule.every(120).to(240).minutes.do(farmer.alliance_helper)
     schedule.every(120).to(240).minutes.do(farmer.alliance_farmer)
-    schedule.every(200).to(300).minutes.do(farmer.vip_chest_claim)
     schedule.every(120).to(240).minutes.do(farmer.caravan_farmer)
     schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
+    schedule.every(200).to(300).minutes.do(farmer.vip_chest_claim)
     schedule.every(60).to(120).minutes.do(farmer.harvester)
 
     schedule.run_all()

@@ -190,6 +190,51 @@ class LokFarmer:
 
         return
 
+    def _alliance_help_all(self):
+        try:
+            self.api.alliance_help_all()
+        except OtherException:
+            pass
+
+    def _alliance_research_donate_all(self):
+        try:
+            research_list = self.api.alliance_research_list()
+        except OtherException:
+            return
+
+        code = research_list.get('recommendResearch')
+
+        if not code:
+            code = 31101003  # 骑兵攻击力 1
+
+        try:
+            self.api.alliance_research_donate_all(code)
+        except OtherException:
+            pass
+
+    def _alliance_shop_autobuy(self, item_code_list=(ITEM_CODE_VIP_100,)):
+        try:
+            shop_list = self.api.alliance_shop_list()
+        except OtherException:
+            return
+
+        alliance_point = shop_list.get('alliancePoint')
+        shop_items = shop_list.get('allianceShopItems')
+
+        for each_shop_item in shop_items:
+            code = each_shop_item.get('code')
+            if code not in item_code_list:
+                continue
+
+            cost = each_shop_item.get('ap_1')  # or 'ap_2'?
+            amount = each_shop_item.get('amount')
+
+            minimum_buy_amount = int(alliance_point / cost)
+            if minimum_buy_amount < 1:
+                continue
+
+            self.api.alliance_shop_buy(code, amount if amount < minimum_buy_amount else minimum_buy_amount)
+
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
@@ -285,16 +330,6 @@ class LokFarmer:
 
         # do nothing
         sio.wait()
-
-    def alliance_helper(self):
-        """
-        帮助联盟
-        :return:
-        """
-        try:
-            self.api.alliance_help_all()
-        except OtherException:
-            pass
 
     def harvester(self):
         """
@@ -544,20 +579,12 @@ class LokFarmer:
         self.api.kingdom_vip_claim()
 
     def alliance_farmer(self):
-        try:
-            research_list = self.api.alliance_research_list()
-        except OtherException:
+        if not self.kingdom_enter.get('kingdom', {}).get('allianceId'):
             return
 
-        code = research_list.get('recommendResearch')
-
-        if not code:
-            code = 31101003  # 骑兵攻击力 1
-
-        try:
-            self.api.alliance_research_donate_all(code)
-        except OtherException:
-            pass
+        self._alliance_help_all()
+        self._alliance_research_donate_all()
+        self._alliance_shop_autobuy()
 
     def caravan_farmer(self):
         caravan = self.api.kingdom_caravan_list().get('caravan')

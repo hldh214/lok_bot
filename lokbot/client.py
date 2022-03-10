@@ -142,6 +142,12 @@ class LokBotApi:
     def alliance_research_donate_all(self, code):
         return self.post('alliance/research/donateAll', {'code': code})
 
+    def alliance_shop_list(self):
+        return self.post('alliance/shop/list')
+
+    def alliance_shop_buy(self, code, amount):
+        return self.post('alliance/shop/buy', {'code': code, 'amount': amount})
+
     def chat_logs(self, chat_channel):
         return self.post('chat/logs', {'chatChannel': chat_channel})
 
