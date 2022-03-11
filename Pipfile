@@ -12,6 +12,7 @@ tenacity = "*"
 schedule = "*"
 ratelimit = "*"
 python-socketio = {version = "<5", extras = ["client"]}
+numpy = "*"
 
 [dev-packages]
 

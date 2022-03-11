@@ -3,6 +3,7 @@ import threading
 import time
 
 import arrow
+import numpy
 import socketio
 import tenacity
 
@@ -11,6 +12,38 @@ from lokbot import logger, builtin_logger
 from lokbot.exceptions import OtherException
 from lokbot.enum import *
 from lokbot.util import get_resource_index_by_item_code, run_functions_in_random_order
+
+
+# Ref: https://stackoverflow.com/a/16858283/6266737
+def blockshaped(arr, nrows, ncols):
+    """
+    Return an array of shape (n, nrows, ncols) where
+    n * nrows * ncols = arr.size
+
+    If arr is a 2D array, the returned array should look like n subblocks with
+    each subblock preserving the "physical" layout of arr.
+    """
+    h, w = arr.shape
+    assert h % nrows == 0, f"{h} rows is not evenly divisible by {nrows}"
+    assert w % ncols == 0, f"{w} cols is not evenly divisible by {ncols}"
+    return (arr.reshape(h // nrows, nrows, -1, ncols)
+            .swapaxes(1, 2)
+            .reshape(-1, nrows, ncols))
+
+
+# Ref: https://stackoverflow.com/a/432175/6266737
+def ndindex(ndarray, item):
+    if len(ndarray.shape) == 1:
+        try:
+            return [ndarray.tolist().index(item)]
+        except:
+            pass
+    else:
+        for i, subarray in enumerate(ndarray):
+            try:
+                return [i] + ndindex(subarray, item)
+            except:
+                pass
 
 
 class LokFarmer:
@@ -235,6 +268,35 @@ class LokFarmer:
 
             self.api.alliance_shop_buy(code, amount if amount < minimum_buy_amount else minimum_buy_amount)
 
+    def _get_land_with_level(self):
+        rank = self.api.field_worldmap_devrank().get('lands')
+
+        land_with_level = [[], [], [], [], [], [], [], [], [], []]
+        for index, level in enumerate(rank):
+            # land id start from 100000
+            land_with_level[int(level)].append(100000 + index)
+
+        return land_with_level
+
+    def _get_top_leveled_land(self, limit=200):
+        land_with_level = self._get_land_with_level()
+
+        lands = []
+        for each_level in reversed(land_with_level):
+            if len(each_level) > limit:
+                return lands + each_level[:limit]
+
+            lands += each_level
+            limit -= len(each_level)
+
+        return lands
+
+    @staticmethod
+    def _get_zone_id_by_land_id(land_id):
+        land_array = blockshaped(numpy.arange(100000, 165536).reshape(256, 256), 4, 4)
+
+        return ndindex(land_array, land_id)[0]
+
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
@@ -305,15 +367,31 @@ class LokFarmer:
         websocket connection of the field
         :return:
         """
+        world = self.kingdom_enter.get('kingdom').get('worldId')
         url = self.kingdom_enter.get('networks').get('fields')[0]
+        lands = self._get_top_leveled_land()
 
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
+
+        @sio.on('/field/objects')
+        def on_field_objects(data):
+            objects = data.get('objects')
+            for each_obj in objects:
+                if each_obj.get('code') != OBJECT_CODE_CRYSTAL_MINE:
+                    continue
+
+                logger.info(f'on_field_objects: {each_obj}')
 
         sio.connect(url, transports=["websocket"])
         sio.emit('/field/enter', {'token': self.access_token})
 
-        # todo: 遍历整个地图
-        sio.wait()
+        while True:
+            for land_id in lands:
+                zone_id = self._get_zone_id_by_land_id(land_id)
+                sio.emit('/zone/enter/list', {'world': world, 'zones': json.dumps([zone_id])})
+                time.sleep(1)
+                sio.emit('/zone/leave/list', {'world': world, 'zones': json.dumps([zone_id])})
+                time.sleep(1)
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),

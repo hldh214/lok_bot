@@ -183,6 +183,132 @@ USABLE_BOOST_CODE_MAP = {
     'golden_hammer': (ITEM_CODE_GOLDEN_HAMMER,),
 }
 
+# {
+#     "_id": "6229ece6a2c48f60ea4c0f20",
+#     "loc": [
+#         32,
+#         293,
+#         1979
+#     ],
+#     "level": 1,
+#     "code": 20100101,
+#     "param": {
+#         "value": 50000 <- resources remain
+#     },
+#     "state": 1,
+#     "expired": "2022-03-11T22:34:23.062Z"
+# }
+OBJECT_CODE_FARM = 20100101
+OBJECT_CODE_LUMBER_CAMP = 20100102
+OBJECT_CODE_QUARRY = 20100103
+OBJECT_CODE_GOLD_MINE = 20100104
+# {
+#     "_id": "622aa43ba2c48f60ea531193",
+#     "loc": [32,
+#             1002,
+#             1130],
+#     "level": 3,
+#     "code": 20100105,
+#     "param": {
+#         "value": 200
+#     },
+#     "state": 1,
+#     "expired": "2022-03-12T13:39:31.786Z",
+#     "occupied": {
+#         "id": "621c10b7b975e73353393b54",
+#         "targetValue": 200,
+#         "moId": "622aa58b8f76db1734b15103",
+#         "started": "2022-03-11T01:28:59.678Z",
+#         "ended": "2022-03-11T04:05:51.678Z",
+#         "shield": 0,
+#         "skin": null,
+#         "name": "Kobitan",
+#         "worldId": 32,
+#         "allianceId": "621c40b4c56f92266601578a",
+#         "allianceTag": "HEHE"
+#     }
+# }
+OBJECT_CODE_CRYSTAL_MINE = 20100105
+# {
+#     "_id": "622aa433a2c48f60ea530fed",
+#     "loc": [
+#         32,
+#         302,
+#         2047
+#     ],
+#     "level": 2,
+#     "code": 20200101,
+#     "param": {
+#         "value": 5000 <- hp
+#     },
+#     "state": 1,
+#     "expired": "2022-03-12T11:35:28.436Z"
+# }
+OBJECT_CODE_ORC = 20200101
+OBJECT_CODE_SKELETON = 20200102
+OBJECT_CODE_GOLEM = 20200103
+# {
+#     "_id": "622a1887a2c48f60ea4dc1a1",
+#     "loc": [
+#         32,
+#         302,
+#         2010
+#     ],
+#     "level": 1,
+#     "code": 20200201,
+#     "param": {
+#         "value": 30000 <- hp
+#     },
+#     "state": 1,
+#     "expired": "2022-03-11T10:32:01.895Z"
+# }
+OBJECT_CODE_DEATHKAR = 20200201
+# {
+#     "_id": "622174d8c6903c237b5d339e",
+#     "loc": [
+#         32,
+#         304,
+#         2038
+#     ],
+#     "level": 3,
+#     "code": 20300101,
+#     "occupied": {
+#         "id": "621eee50a74093539dee2f91",
+#         "started": "2022-03-04T02:09:28.458Z",
+#         "skin": null,
+#         "name": "lrdMX4",
+#         "worldId": 32,
+#         "allianceId": "621ef63c5ab7e343e7614568",
+#         "allianceTag": "4eOd"
+#     },
+#     "state": 1
+# }
+OBJECT_CODE_KINGDOM = 20300101
+# {
+#     "_id": "622ab2e6a8cc4b49c37ae8d0",
+#     "loc": [
+#         32,
+#         310,
+#         2031
+#     ],
+#     "level": 1,
+#     "code": 20500101,
+#     "param": {
+#         "charmCode": 601
+#     },
+#     "state": 1,
+#     "expired": "2022-03-11T03:24:38.025Z"
+# }
+OBJECT_CODE_CHARM = 20500101
+
+OBJECT_MINE_CODE_LIST = (
+    OBJECT_CODE_FARM, OBJECT_CODE_LUMBER_CAMP, OBJECT_CODE_QUARRY, OBJECT_CODE_GOLD_MINE, OBJECT_CODE_CRYSTAL_MINE
+)
+
+OBJECT_MONSTER_CODE_LIST = (
+    OBJECT_CODE_ORC, OBJECT_CODE_SKELETON, OBJECT_CODE_GOLEM, OBJECT_CODE_DEATHKAR
+)
+
 RESEARCH_CODE_MAP = {
     # 生产优先
     'production': {
