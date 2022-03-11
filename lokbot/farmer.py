@@ -507,7 +507,7 @@ class LokFarmer:
             return
 
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
-        kingdom_level = buildings[0].get('level')
+        kingdom_level = [b for b in buildings if b.get('code') == BUILDING_CODE_MAP['castle']][0].get('level')
 
         # First check if there is any empty position available for building
         for level_requirement, positions in BUILD_POSITION_UNLOCK_MAP.items():
