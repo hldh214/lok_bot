@@ -278,7 +278,7 @@ class LokFarmer:
 
         return land_with_level
 
-    def _get_top_leveled_land(self, limit=200):
+    def _get_top_leveled_land(self, limit=2048):
         land_with_level = self._get_land_with_level()
 
         lands = []
@@ -369,7 +369,14 @@ class LokFarmer:
         """
         world = self.kingdom_enter.get('kingdom').get('worldId')
         url = self.kingdom_enter.get('networks').get('fields')[0]
+        field_object_id = self.kingdom_enter.get('kingdom').get('fieldObjectId')
+
         lands = self._get_top_leveled_land()
+        zones = []
+        for land_id in lands:
+            zone_id = self._get_zone_id_by_land_id(land_id)
+            if zone_id not in zones:
+                zones.append(zone_id)
 
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
@@ -380,18 +387,35 @@ class LokFarmer:
                 if each_obj.get('code') != OBJECT_CODE_CRYSTAL_MINE:
                     continue
 
+                if each_obj.get('occupied'):
+                    continue
+
                 logger.info(f'on_field_objects: {each_obj}')
+                self.api.field_march_start({
+                    'fromId': field_object_id,
+                    'marchType': 1,
+                    'toLoc': each_obj.get('loc'),
+                    'marchTroops': [
+                        # for a lvl3 crystal mine
+                        {'code': TROOP_CODE_FIGHTER, 'level': 0, 'select': 0, 'amount': 125, 'dead': 0, 'wounded': 0,
+                         'seq': 0},
+                        {'code': TROOP_CODE_HUNTER, 'level': 0, 'select': 0, 'amount': 0, 'dead': 0, 'wounded': 0,
+                         'seq': 0},
+                        {'code': TROOP_CODE_STABLE_MAN, 'level': 0, 'select': 0, 'amount': 0, 'dead': 0, 'wounded': 0,
+                         'seq': 0},
+                    ]
+                })
 
         sio.connect(url, transports=["websocket"])
         sio.emit('/field/enter', {'token': self.access_token})
 
         while True:
-            for land_id in lands:
-                zone_id = self._get_zone_id_by_land_id(land_id)
+            for zone_id in zones:
                 sio.emit('/zone/enter/list', {'world': world, 'zones': json.dumps([zone_id])})
-                time.sleep(1)
+                time.sleep(random.uniform(1, 2))
                 sio.emit('/zone/leave/list', {'world': world, 'zones': json.dumps([zone_id])})
-                time.sleep(1)
+                time.sleep(random.uniform(1, 2))
+            logger.info('a loop is finished')
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -689,3 +713,6 @@ class LokFarmer:
                 continue
 
             self.api.kingdom_caravan_buy(each_item.get('_id'))
+
+    def mail_claim(self):
+        self.api.mail_claim_all()

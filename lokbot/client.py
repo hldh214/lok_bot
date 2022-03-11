@@ -480,6 +480,9 @@ class LokBotApi:
         """
         return self.post('event/roulette/spin')
 
+    def mail_claim_all(self, category=1):
+        return self.post('mail/claim/all', {'category': category})
+
     def field_worldmap_devrank(self):
         """
         Returns the land rank (length: 65535)
@@ -488,6 +491,9 @@ class LokBotApi:
         :return:
         """
         return self.post('field/worldmap/devrank')
+
+    def field_march_start(self, data):
+        return self.post('field/march/start', data)
 
 
 def get_version():
