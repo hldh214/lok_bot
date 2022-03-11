@@ -391,20 +391,28 @@ class LokFarmer:
                     continue
 
                 logger.info(f'on_field_objects: {each_obj}')
-                self.api.field_march_start({
-                    'fromId': field_object_id,
-                    'marchType': 1,
-                    'toLoc': each_obj.get('loc'),
-                    'marchTroops': [
-                        # for a lvl3 crystal mine
-                        {'code': TROOP_CODE_FIGHTER, 'level': 0, 'select': 0, 'amount': 125, 'dead': 0, 'wounded': 0,
-                         'seq': 0},
-                        {'code': TROOP_CODE_HUNTER, 'level': 0, 'select': 0, 'amount': 0, 'dead': 0, 'wounded': 0,
-                         'seq': 0},
-                        {'code': TROOP_CODE_STABLE_MAN, 'level': 0, 'select': 0, 'amount': 0, 'dead': 0, 'wounded': 0,
-                         'seq': 0},
-                    ]
-                })
+
+                try:
+                    self.api.field_march_start({
+                        'fromId': field_object_id,
+                        'marchType': 1,
+                        'toLoc': each_obj.get('loc'),
+                        'marchTroops': [
+                            # for a lvl3 crystal mine
+                            {'code': TROOP_CODE_FIGHTER, 'level': 0, 'select': 0, 'amount': 125, 'dead': 0,
+                             'wounded': 0, 'seq': 0},
+                            {'code': TROOP_CODE_HUNTER, 'level': 0, 'select': 0, 'amount': 0, 'dead': 0,
+                             'wounded': 0, 'seq': 0},
+                            {'code': TROOP_CODE_STABLE_MAN, 'level': 0, 'select': 0, 'amount': 0, 'dead': 0,
+                             'wounded': 0, 'seq': 0},
+                        ]
+                    })
+                except OtherException as error_code:
+                    if str(error_code) == 'full_task':
+                        logger.warning('on_field_objects: full_task, skip')
+                        return
+
+                    raise
 
         sio.connect(url, transports=["websocket"])
         sio.emit('/field/enter', {'token': self.access_token})

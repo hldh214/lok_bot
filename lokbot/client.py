@@ -492,6 +492,11 @@ class LokBotApi:
         """
         return self.post('field/worldmap/devrank')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=6)
     def field_march_start(self, data):
         return self.post('field/march/start', data)
 
