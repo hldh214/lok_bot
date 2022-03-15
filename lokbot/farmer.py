@@ -408,8 +408,8 @@ class LokFarmer:
                         ]
                     })
                 except OtherException as error_code:
-                    if str(error_code) == 'full_task':
-                        logger.warning('on_field_objects: full_task, skip')
+                    if str(error_code) in ('full_task', 'not_enough_troop'):
+                        logger.warning(f'on_field_objects: {error_code}, skip')
                         return
 
                     raise
