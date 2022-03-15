@@ -253,6 +253,9 @@ class LokBotApi:
     def kingdom_wall_info(self):
         return self.post('kingdom/wall/info')
 
+    def kingdom_wall_repair(self):
+        return self.post('kingdom/wall/repair')
+
     def kingdom_treasure_list(self):
         return self.post('kingdom/treasure/list')
 

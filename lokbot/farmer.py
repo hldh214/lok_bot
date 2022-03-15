@@ -1,3 +1,4 @@
+import math
 import random
 import threading
 import time
@@ -278,6 +279,9 @@ class LokFarmer:
 
         return land_with_level
 
+    def _get_nearest_land(self, x, y, limit=2048):
+        pass
+
     def _get_top_leveled_land(self, limit=2048):
         land_with_level = self._get_land_with_level()
 
@@ -296,6 +300,10 @@ class LokFarmer:
         land_array = blockshaped(numpy.arange(100000, 165536).reshape(256, 256), 4, 4)
 
         return ndindex(land_array, land_id)[0]
+
+    @staticmethod
+    def _calc_distance(from_loc, to_loc):
+        return math.ceil(math.sqrt(math.pow(from_loc[1] - to_loc[1], 2) + math.pow(from_loc[2] - to_loc[2], 2)))
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -370,6 +378,7 @@ class LokFarmer:
         world = self.kingdom_enter.get('kingdom').get('worldId')
         url = self.kingdom_enter.get('networks').get('fields')[0]
         field_object_id = self.kingdom_enter.get('kingdom').get('fieldObjectId')
+        from_loc = self.kingdom_enter.get('kingdom').get('loc')
 
         lands = self._get_top_leveled_land()
         zones = []
@@ -390,13 +399,15 @@ class LokFarmer:
                 if each_obj.get('occupied'):
                     continue
 
-                logger.info(f'on_field_objects: {each_obj}')
+                to_loc = each_obj.get('loc')
+                distance = self._calc_distance(from_loc, to_loc)
+                logger.info(f'distance: {distance}, on_field_objects: {each_obj}')
 
                 try:
                     self.api.field_march_start({
                         'fromId': field_object_id,
                         'marchType': 1,
-                        'toLoc': each_obj.get('loc'),
+                        'toLoc': to_loc,
                         'marchTroops': [
                             # for a lvl3 crystal mine
                             {'code': TROOP_CODE_FIGHTER, 'level': 0, 'select': 0, 'amount': 125, 'dead': 0,
@@ -724,3 +735,20 @@ class LokFarmer:
 
     def mail_claim(self):
         self.api.mail_claim_all()
+
+    def wall_repair(self):
+        wall_info = self.api.kingdom_wall_info()
+
+        max_durability = wall_info.get('wall', {}).get('maxDurability')
+        durability = wall_info.get('wall', {}).get('durability')
+        last_repair_date = arrow.get(wall_info.get('wall', {}).get('lastRepairDate'))
+        last_repair_diff = arrow.utcnow() - last_repair_date
+
+        if durability >= max_durability:
+            return
+
+        if int(last_repair_diff.total_seconds()) < 60 * 30:
+            # 30 minute interval
+            return
+
+        self.api.kingdom_wall_repair()
