@@ -21,6 +21,24 @@
 
 Yet another League of Kingdoms farming bot
 
+# Features
+
+|            Feature            |                                 Supported?                                  |
+|:-----------------------------:|:---------------------------------------------------------------------------:|
+|          claim mail           |                                    ✔YES️                                    |
+|       buy caravan items       |                                    ✔YES️                                    |
+|      use resource items       |                                    ✔YES️                                    |
+| claim chests(vip/silver/gold) |                                    ✔YES️                                    |
+|       harvest resources       |                                    ✔YES️                                    |
+|         alliance help         |                                    ✔YES️                                    |
+|       alliance research       |                                    ✔YES️                                    |
+|    alliance shop auto buy     |                                    ✔YES️                                    |
+|    quest reward auto claim    |                                    ✔YES️                                    |
+|       building upgrade        |                                    ✔YES️                                    |
+|       academy research        |                                    ✔YES️                                    |
+|         train troops          | ❌[NO](https://github.com/hldh214/lok_bot/issues/16#issuecomment-1061367852) |
+|         field farming         |                                    🚧WIP                                    |
+
 # Usage
 
 ## Run with local Python interpreter
