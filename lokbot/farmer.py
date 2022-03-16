@@ -47,6 +47,13 @@ def ndindex(ndarray, item):
                 pass
 
 
+# Ref: https://stackoverflow.com/a/22550933/6266737
+def neighbors(a, radius, row_number, column_number):
+    return [[a[i][j] if 0 <= i < len(a) and 0 <= j < len(a[0]) else 0
+             for j in range(column_number - 1 - radius, column_number + radius)]
+            for i in range(row_number - 1 - radius, row_number + radius)]
+
+
 class LokFarmer:
     def __init__(self, access_token, captcha_solver_config):
         self.kingdom_enter = None
@@ -279,25 +286,48 @@ class LokFarmer:
 
         return land_with_level
 
-    def _get_nearest_land(self, x, y, limit=2048):
-        pass
+    @staticmethod
+    def _get_land_array():
+        return numpy.arange(100000, 165536).reshape(256, 256)
 
-    def _get_top_leveled_land(self, limit=2048):
+    def _get_nearest_land(self, x, y, radius=128):
+        land_array = self._get_land_array()
+        # current_land_id = land_array[y // 8, x // 8]
+        nearby_land_ids = neighbors(land_array, radius, y // 8 + 1, x // 8 + 1)
+        nearby_land_ids = [item for sublist in nearby_land_ids for item in sublist if item != 0]
         land_with_level = self._get_land_with_level()
 
         lands = []
-        for each_level in reversed(land_with_level):
+        for index, each_level in enumerate(reversed(land_with_level)):
+            level = 10 - index
+
+            if level < 4:
+                continue
+
+            lands += [(each_land_id, level) for each_land_id in each_level if each_land_id in nearby_land_ids]
+
+        return lands
+
+    def _get_top_leveled_land(self, limit=1024):
+        land_with_level = self._get_land_with_level()
+
+        lands = []
+        for index, each_level in enumerate(reversed(land_with_level)):
+            level = 10 - index
+
+            if level < 2:
+                continue
+
             if len(each_level) > limit:
                 return lands + each_level[:limit]
 
-            lands += each_level
+            lands += [(each, level) for each in each_level]
             limit -= len(each_level)
 
         return lands
 
-    @staticmethod
-    def _get_zone_id_by_land_id(land_id):
-        land_array = blockshaped(numpy.arange(100000, 165536).reshape(256, 256), 4, 4)
+    def _get_zone_id_by_land_id(self, land_id):
+        land_array = blockshaped(self._get_land_array(), 4, 4)
 
         return ndindex(land_array, land_id)[0]
 
@@ -380,9 +410,10 @@ class LokFarmer:
         field_object_id = self.kingdom_enter.get('kingdom').get('fieldObjectId')
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
 
-        lands = self._get_top_leveled_land()
+        lands = self._get_nearest_land(from_loc[1], from_loc[2])
+        # lands = self._get_top_leveled_land()
         zones = []
-        for land_id in lands:
+        for land_id, _ in lands:
             zone_id = self._get_zone_id_by_land_id(land_id)
             if zone_id not in zones:
                 zones.append(zone_id)
@@ -433,7 +464,6 @@ class LokFarmer:
                 sio.emit('/zone/enter/list', {'world': world, 'zones': json.dumps([zone_id])})
                 time.sleep(random.uniform(1, 2))
                 sio.emit('/zone/leave/list', {'world': world, 'zones': json.dumps([zone_id])})
-                time.sleep(random.uniform(1, 2))
             logger.info('a loop is finished')
 
     @tenacity.retry(
