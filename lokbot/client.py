@@ -415,6 +415,9 @@ class LokBotApi:
     def kingdom_caravan_buy(self, caravan_item_id):
         return self.post('kingdom/caravan/buy', {'caravanItemId': caravan_item_id})
 
+    def kingdom_profile_troops(self):
+        return self.post('kingdom/profile/troops')
+
     def alliance_help_all(self):
         """
         帮助全部
@@ -494,6 +497,9 @@ class LokBotApi:
         :return:
         """
         return self.post('field/worldmap/devrank')
+
+    def field_march_info(self, data):
+        return self.post('field/march/info', data)
 
     @tenacity.retry(
         wait=tenacity.wait_fixed(1),
