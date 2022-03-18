@@ -31,7 +31,8 @@ class LokBotApi:
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
-        retry=tenacity.retry_if_exception_type(httpx.HTTPError),  # general http error
+        # general http error or json decode error
+        retry=tenacity.retry_if_exception_type((httpx.HTTPError, json.JSONDecodeError)),
         reraise=True
     )
     @tenacity.retry(

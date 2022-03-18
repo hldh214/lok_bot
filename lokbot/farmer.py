@@ -71,21 +71,9 @@ class LokFarmer:
 
         self.kingdom_enter = self.api.kingdom_enter()
 
-        # knock
+        # knock moved to schedule job
         self.api.auth_set_device_info(device_info)
         self.api.chat_logs(self.kingdom_enter.get('kingdom').get('worldId'))
-        run_functions_in_random_order(
-            self.api.kingdom_wall_info,
-            self.api.quest_main,
-            self.api.item_list,
-            self.api.kingdom_treasure_list,
-            self.api.event_list,
-            self.api.event_cvc_open,
-            self.api.event_roulette_open,
-            self.api.pkg_recommend,
-            self.api.pkg_list,
-        )
-        self.api.auth_set_device_info(device_info)
 
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
@@ -830,3 +818,16 @@ class LokFarmer:
             return
 
         self.api.kingdom_wall_repair()
+
+    def keepalive_request(self):
+        run_functions_in_random_order(
+            self.api.kingdom_wall_info,
+            self.api.quest_main,
+            self.api.item_list,
+            self.api.kingdom_treasure_list,
+            self.api.event_list,
+            self.api.event_cvc_open,
+            self.api.event_roulette_open,
+            self.api.pkg_recommend,
+            self.api.pkg_list,
+        )
