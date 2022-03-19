@@ -497,6 +497,10 @@ class LokFarmer:
                 self._update_march_limit()
 
             for zone_id in zones:
+                if not sio.connected:
+                    logger.warning('socf_thread disconnected, reconnecting')
+                    raise tenacity.TryAgain()
+
                 sio.emit('/zone/enter/list', {'world': world, 'zones': json.dumps([zone_id])})
                 time.sleep(random.uniform(1, 2))
                 sio.emit('/zone/leave/list', {'world': world, 'zones': json.dumps([zone_id])})
@@ -807,7 +811,12 @@ class LokFarmer:
 
         max_durability = wall_info.get('wall', {}).get('maxDurability')
         durability = wall_info.get('wall', {}).get('durability')
-        last_repair_date = arrow.get(wall_info.get('wall', {}).get('lastRepairDate'))
+        last_repair_date = wall_info.get('wall', {}).get('lastRepairDate')
+
+        if not last_repair_date:
+            return
+
+        last_repair_date = arrow.get(last_repair_date)
         last_repair_diff = arrow.utcnow() - last_repair_date
 
         if durability >= max_durability:
