@@ -65,6 +65,9 @@ pipenv sync
 ### Run
 
 ```shell
+# Use the UTF-8 mode on Windows
+export PYTHONUTF8=1
+
 # activate a new shell with pipenv
 pipenv shell
 python -m lokbot YOUR_X_ACCESS_TOKEN
