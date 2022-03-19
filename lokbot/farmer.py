@@ -281,7 +281,7 @@ class LokFarmer:
     def _get_land_array():
         return numpy.arange(100000, 165536).reshape(256, 256)
 
-    def _get_nearest_land(self, x, y, radius=64):
+    def _get_nearest_land(self, x, y, radius=32):
         land_array = self._get_land_array()
         # current_land_id = land_array[y // 8, x // 8]
         nearby_land_ids = neighbors(land_array, radius, y // 8 + 1, x // 8 + 1)
