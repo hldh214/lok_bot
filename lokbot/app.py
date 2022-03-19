@@ -23,6 +23,8 @@ def main(token, captcha_solver_config=None):
 
     farmer = LokFarmer(token, captcha_solver_config)
     farmer.keepalive_request()
+    # find_alliance(farmer)
+    # exit()
 
     threading.Thread(target=farmer.sock_thread).start()
     # threading.Thread(target=farmer.socf_thread).start()
@@ -38,7 +40,7 @@ def main(token, captcha_solver_config=None):
 
     schedule.run_all()
 
-    schedule.every(30).to(90).minutes.do(farmer.keepalive_request)
+    schedule.every(15).to(30).minutes.do(farmer.keepalive_request)
 
     threading.Thread(target=farmer.free_chest_farmer_thread).start()
 

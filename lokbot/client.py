@@ -316,6 +316,9 @@ class LokBotApi:
         """
         return self.post('kingdom/hospital/recover')
 
+    def kingdom_hospital_wounded(self):
+        return self.post('kingdom/hospital/wounded')
+
     @tenacity.retry(
         wait=tenacity.wait_fixed(1),
         retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
