@@ -173,7 +173,7 @@ class LokBotApi:
         wait=tenacity.wait_fixed(1),
         retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
     )
-    @ratelimit.limits(calls=1, period=4)
+    @ratelimit.limits(calls=1, period=1)
     def quest_claim(self, quest):
         """
         领取任务奖励
@@ -186,7 +186,7 @@ class LokBotApi:
         wait=tenacity.wait_fixed(1),
         retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
     )
-    @ratelimit.limits(calls=1, period=4)
+    @ratelimit.limits(calls=1, period=1)
     def quest_claim_daily(self, quest):
         """
         领取日常任务奖励
