@@ -281,7 +281,7 @@ class LokFarmer:
     def _get_land_array():
         return numpy.arange(100000, 165536).reshape(256, 256)
 
-    def _get_nearest_land(self, x, y, radius=32):
+    def _get_nearest_land(self, x, y, radius=16):
         land_array = self._get_land_array()
         # current_land_id = land_array[y // 8, x // 8]
         nearby_land_ids = neighbors(land_array, radius, y // 8 + 1, x // 8 + 1)
@@ -336,6 +336,79 @@ class LokFarmer:
     @staticmethod
     def _calc_distance(from_loc, to_loc):
         return math.ceil(math.sqrt(math.pow(from_loc[1] - to_loc[1], 2) + math.pow(from_loc[2] - to_loc[2], 2)))
+
+    def _start_march(self, to_loc, march_troops, march_type=MARCH_TYPE_GATHER):
+        res = self.api.field_march_start({
+            'fromId': self.kingdom_enter.get('kingdom').get('fieldObjectId'),
+            'marchType': march_type,
+            'toLoc': to_loc,
+            'marchTroops': march_troops
+        })
+
+        new_task = res.get('newTask')
+        new_task['endTime'] = new_task['expectedEnded']
+        self.troop_queue.append(new_task)
+
+    def _prepare_march_troops(self, each_obj, march_type=MARCH_TYPE_GATHER):
+        march_info = self.api.field_march_info({
+            'fromId': self.kingdom_enter.get('kingdom').get('fieldObjectId'),
+            'toLoc': each_obj.get('loc')
+        })
+        troops = march_info.get('troops')
+        troops.sort(key=lambda x: x.get('code'), reverse=True)  # priority using high tier troops
+
+        # todo: calc troops load
+        need_troop_count = march_info.get('fo').get('param').get('value')
+        if march_type == MARCH_TYPE_MONSTER:
+            need_troop_count *= 2.5
+
+        # distance = self._calc_distance(from_loc, to_loc)
+        distance = march_info.get('distance')
+        logger.info(f'distance: {distance}, object: {each_obj}')
+
+        march_troops = []
+        for troop in troops:
+            amount = troop.get('amount')
+            code = troop.get('code')
+
+            if amount >= need_troop_count:
+                amount = need_troop_count
+                need_troop_count = 0
+            else:
+                need_troop_count -= amount
+
+            march_troops.append({
+                'code': code,
+                'amount': amount,
+                'level': 0,
+                'select': 0,
+                'dead': 0,
+                'wounded': 0,
+                'seq': 0
+            })
+
+        return march_troops
+
+    def _on_field_objects_crystal_mine(self, each_obj):
+        if each_obj.get('occupied'):
+            return
+
+        to_loc = each_obj.get('loc')
+        march_troops = self._prepare_march_troops(each_obj, MARCH_TYPE_GATHER)
+
+        if not march_troops:
+            return
+
+        self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER)
+
+    def _on_field_objects_goblin(self, each_obj):
+        to_loc = each_obj.get('loc')
+        march_troops = self._prepare_march_troops(each_obj, MARCH_TYPE_MONSTER)
+
+        if not march_troops:
+            return
+
+        self._start_march(to_loc, march_troops, MARCH_TYPE_MONSTER)
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -409,7 +482,6 @@ class LokFarmer:
         """
         world = self.kingdom_enter.get('kingdom').get('worldId')
         url = self.kingdom_enter.get('networks').get('fields')[0]
-        field_object_id = self.kingdom_enter.get('kingdom').get('fieldObjectId')
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
 
         lands = self._get_nearest_land(from_loc[1], from_loc[2])
@@ -426,64 +498,23 @@ class LokFarmer:
         def on_field_objects(data):
             objects = data.get('objects')
             for each_obj in objects:
-                if each_obj.get('code') != OBJECT_CODE_CRYSTAL_MINE:
-                    continue
-
-                if each_obj.get('occupied'):
-                    continue
-
                 if self._is_march_limit_exceeded():
                     continue
 
-                to_loc = each_obj.get('loc')
-
-                march_info = self.api.field_march_info({'fromId': field_object_id, 'toLoc': to_loc})
-                troops = march_info.get('troops')
-                troops.sort(key=lambda x: x.get('code'), reverse=True)  # priority using high tier troops
-                need_troop_count = march_info.get('fo').get('param').get('value')  # todo: calc troops load
-
-                march_troops = []
-                for troop in troops:
-                    amount = troop.get('amount')
-                    code = troop.get('code')
-
-                    if amount >= need_troop_count:
-                        amount = need_troop_count
-                        need_troop_count = 0
-                    else:
-                        need_troop_count -= amount
-
-                    march_troops.append({
-                        'code': code,
-                        'amount': amount,
-                        'level': 0,
-                        'select': 0,
-                        'dead': 0,
-                        'wounded': 0,
-                        'seq': 0
-                    })
-
-                # distance = self._calc_distance(from_loc, to_loc)
-                distance = march_info.get('distance')
-                logger.info(f'distance: {distance}, object: {each_obj}')
+                code = each_obj.get('code')
 
                 try:
-                    res = self.api.field_march_start({
-                        'fromId': field_object_id,
-                        'marchType': MARCH_TYPE_GATHER,
-                        'toLoc': to_loc,
-                        'marchTroops': march_troops
-                    })
+                    if code == OBJECT_CODE_CRYSTAL_MINE:
+                        self._on_field_objects_crystal_mine(each_obj)
+
+                    if code == OBJECT_CODE_GOBLIN:
+                        self._on_field_objects_goblin(each_obj)
                 except OtherException as error_code:
                     if str(error_code) in ('full_task', 'not_enough_troop'):
                         logger.warning(f'on_field_objects: {error_code}, skip')
                         return
 
                     raise
-
-                new_task = res.get('newTask')
-                new_task['endTime'] = new_task['expectedEnded']
-                self.troop_queue.append(new_task)
 
         sio.connect(url, transports=["websocket"])
         sio.emit('/field/enter', {'token': self.access_token})
