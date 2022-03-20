@@ -30,6 +30,7 @@ def main(token, captcha_solver_config=None):
     # threading.Thread(target=farmer.socf_thread).start()
     # threading.Thread(target=farmer.socc_thread).start()
 
+    schedule.every(90).to(180).minutes.do(farmer.hospital_recover)
     schedule.every(30).to(60).minutes.do(farmer.wall_repair)
     schedule.every(120).to(240).minutes.do(farmer.alliance_farmer)
     schedule.every(120).to(240).minutes.do(farmer.mail_claim)
