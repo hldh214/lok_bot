@@ -281,7 +281,7 @@ class LokFarmer:
     def _get_land_array():
         return numpy.arange(100000, 165536).reshape(256, 256)
 
-    def _get_nearest_land(self, x, y, radius=16):
+    def _get_nearest_land(self, x, y, radius=32):
         land_array = self._get_land_array()
         # current_land_id = land_array[y // 8, x // 8]
         nearby_land_ids = neighbors(land_array, radius, y // 8 + 1, x // 8 + 1)
@@ -361,6 +361,11 @@ class LokFarmer:
         need_troop_count = march_info.get('fo').get('param').get('value')
         if march_type == MARCH_TYPE_MONSTER:
             need_troop_count *= 2.5
+
+        troop_count = sum([each_troop.get('amount') for each_troop in troops])
+
+        if need_troop_count > troop_count:
+            return []
 
         # distance = self._calc_distance(from_loc, to_loc)
         distance = march_info.get('distance')
