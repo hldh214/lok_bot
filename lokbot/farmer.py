@@ -78,6 +78,7 @@ class LokFarmer:
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
         self.buff_item_use_lock = threading.RLock()
+        self.march_start_lock = threading.RLock()
         self.has_additional_building_queue = self.kingdom_enter.get('kingdom').get('vip', {}).get('level') >= 5
         self.troop_queue = []
         self.march_limit = 2
@@ -460,10 +461,11 @@ class LokFarmer:
                 if not item_in_inventory:
                     continue
 
-                code = item_in_inventory[0].get('code')
-                logger.info(f'activating buff: {buff_type}, code: {code}')
                 if not self.buff_item_use_lock.acquire(blocking=False):
                     return
+
+                code = item_in_inventory[0].get('code')
+                logger.info(f'activating buff: {buff_type}, code: {code}')
                 self.api.item_use(code)
 
                 if code == ITEM_CODE_GOLDEN_HAMMER:
@@ -505,6 +507,9 @@ class LokFarmer:
             for each_obj in objects:
                 if self._is_march_limit_exceeded():
                     continue
+
+                if not self.march_start_lock.acquire(blocking=False):
+                    return
 
                 code = each_obj.get('code')
 
