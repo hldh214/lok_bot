@@ -395,7 +395,7 @@ class LokFarmer:
 
         return march_troops
 
-    def _on_field_objects_crystal_mine(self, each_obj):
+    def _on_field_objects_gather(self, each_obj):
         if each_obj.get('occupied'):
             return
 
@@ -407,7 +407,7 @@ class LokFarmer:
 
         self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER)
 
-    def _on_field_objects_goblin(self, each_obj):
+    def _on_field_objects_monster(self, each_obj):
         to_loc = each_obj.get('loc')
         march_troops = self._prepare_march_troops(each_obj, MARCH_TYPE_MONSTER)
 
@@ -514,11 +514,18 @@ class LokFarmer:
                 code = each_obj.get('code')
 
                 try:
-                    if code == OBJECT_CODE_CRYSTAL_MINE:
-                        self._on_field_objects_crystal_mine(each_obj)
+                    if code in (
+                            OBJECT_CODE_CRYSTAL_MINE,
+                    ):
+                        self._on_field_objects_gather(each_obj)
 
-                    if code == OBJECT_CODE_GOBLIN:
-                        self._on_field_objects_goblin(each_obj)
+                    if code in (
+                            OBJECT_CODE_GOBLIN,
+                            # OBJECT_CODE_GOLEM,
+                            # OBJECT_CODE_SKELETON,
+                            # OBJECT_CODE_ORC
+                    ):
+                        self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
                     if str(error_code) in ('full_task', 'not_enough_troop'):
                         logger.warning(f'on_field_objects: {error_code}, skip')
