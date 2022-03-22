@@ -355,6 +355,12 @@ class LokFarmer:
             'fromId': self.kingdom_enter.get('kingdom').get('fieldObjectId'),
             'toLoc': each_obj.get('loc')
         })
+
+        if march_type == MARCH_TYPE_MONSTER:
+            # check if monster is already dead
+            if march_info.get('fo').get('code') != each_obj.get('code'):
+                return []
+
         troops = march_info.get('troops')
         troops.sort(key=lambda x: x.get('code'), reverse=True)  # priority using high tier troops
 
