@@ -1,9 +1,12 @@
+import json
+import os.path
 import threading
 import time
 
 import schedule
 
-from lokbot.farmer import LokFarmer, TASK_CODE_SILVER_HAMMER, TASK_CODE_GOLD_HAMMER
+from lokbot.farmer import LokFarmer
+from lokbot import project_root
 
 
 def find_alliance(farmer: LokFarmer):
@@ -17,9 +20,23 @@ def find_alliance(farmer: LokFarmer):
         time.sleep(60 * 5)
 
 
+def load_config():
+    os.chdir(project_root)
+
+    if os.path.exists('config.json'):
+        return json.load(open('config.json'))
+
+    if os.path.exists('config.example.json'):
+        return json.load(open('config.example.json'))
+
+    return {}
+
+
 def main(token, captcha_solver_config=None):
     if captcha_solver_config is None:
         captcha_solver_config = {}
+
+    config = load_config()
 
     farmer = LokFarmer(token, captcha_solver_config)
     farmer.keepalive_request()
@@ -29,28 +46,26 @@ def main(token, captcha_solver_config=None):
     threading.Thread(target=farmer.sock_thread).start()
     # threading.Thread(target=farmer.socc_thread).start()
 
-    schedule.every(90).to(180).minutes.do(farmer.hospital_recover)
-    schedule.every(30).to(60).minutes.do(farmer.wall_repair)
-    schedule.every(120).to(240).minutes.do(farmer.alliance_farmer)
-    schedule.every(120).to(240).minutes.do(farmer.mail_claim)
-    schedule.every(120).to(240).minutes.do(farmer.caravan_farmer)
-    schedule.every(120).to(240).minutes.do(farmer.use_resource_in_item_list)
-    schedule.every(200).to(300).minutes.do(farmer.vip_chest_claim)
-    schedule.every(60).to(120).minutes.do(farmer.harvester)
+    for job in config.get('main').get('jobs'):
+        if not job.get('enabled'):
+            continue
+
+        schedule.every(
+            job.get('interval').get('start')
+        ).to(
+            job.get('interval').get('end')
+        ).minutes.do(getattr(farmer, job.get('name')))
 
     schedule.run_all()
 
     schedule.every(15).to(30).minutes.do(farmer.keepalive_request)
     # schedule.every(1).to(3).minutes.do(farmer.socf_thread)
 
-    threading.Thread(target=farmer.free_chest_farmer_thread).start()
+    for thread in config.get('main').get('threads'):
+        if not thread.get('enabled'):
+            continue
 
-    threading.Thread(target=farmer.quest_monitor_thread).start()
-
-    threading.Thread(target=farmer.building_farmer_thread, args=(TASK_CODE_SILVER_HAMMER,)).start()
-    threading.Thread(target=farmer.building_farmer_thread, args=(TASK_CODE_GOLD_HAMMER,)).start()
-
-    threading.Thread(target=farmer.academy_farmer_thread).start()
+        threading.Thread(target=getattr(farmer, thread.get('name')), args=thread.get('args', [])).start()
 
     while True:
         schedule.run_pending()
