@@ -27,7 +27,6 @@ def main(token, captcha_solver_config=None):
     # exit()
 
     threading.Thread(target=farmer.sock_thread).start()
-    # threading.Thread(target=farmer.socf_thread).start()
     # threading.Thread(target=farmer.socc_thread).start()
 
     schedule.every(90).to(180).minutes.do(farmer.hospital_recover)
@@ -42,6 +41,7 @@ def main(token, captcha_solver_config=None):
     schedule.run_all()
 
     schedule.every(15).to(30).minutes.do(farmer.keepalive_request)
+    # schedule.every(1).to(3).minutes.do(farmer.socf_thread)
 
     threading.Thread(target=farmer.free_chest_farmer_thread).start()
 

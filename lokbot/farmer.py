@@ -293,7 +293,7 @@ class LokFarmer:
         for index, each_level in enumerate(reversed(land_with_level)):
             level = 10 - index
 
-            if level < 4:
+            if level < 3:
                 continue
 
             lands += [(each_land_id, level) for each_land_id in each_level if each_land_id in nearby_land_ids]
@@ -527,9 +527,9 @@ class LokFarmer:
 
                     if code in (
                             OBJECT_CODE_GOBLIN,
-                            # OBJECT_CODE_GOLEM,
-                            # OBJECT_CODE_SKELETON,
-                            # OBJECT_CODE_ORC
+                            OBJECT_CODE_GOLEM,
+                            OBJECT_CODE_SKELETON,
+                            OBJECT_CODE_ORC
                     ):
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
@@ -542,23 +542,25 @@ class LokFarmer:
         sio.connect(url, transports=["websocket"])
         sio.emit('/field/enter', {'token': self.access_token})
 
-        while True:
-            while self._is_march_limit_exceeded():
-                nearest_end_time = sorted(self.troop_queue, key=lambda x: x.get('endTime'))[0].get('endTime')
-                seconds = self.calc_time_diff_in_seconds(nearest_end_time)
-                logger.info(f'_is_march_limit_exceeded: wait {seconds} seconds')
-                time.sleep(seconds)
-                self._update_march_limit()
+        while self._is_march_limit_exceeded():
+            nearest_end_time = sorted(self.troop_queue, key=lambda x: x.get('endTime'))[0].get('endTime')
+            seconds = self.calc_time_diff_in_seconds(nearest_end_time)
+            logger.info(f'_is_march_limit_exceeded: wait {seconds} seconds')
+            time.sleep(seconds)
+            self._update_march_limit()
 
-            for zone_id in zones:
-                if not sio.connected:
-                    logger.warning('socf_thread disconnected, reconnecting')
-                    raise tenacity.TryAgain()
+        for zone_id in zones:
+            if not sio.connected:
+                logger.warning('socf_thread disconnected, reconnecting')
+                raise tenacity.TryAgain()
 
-                sio.emit('/zone/enter/list', {'world': world, 'zones': json.dumps([zone_id])})
-                time.sleep(random.uniform(1, 2))
-                sio.emit('/zone/leave/list', {'world': world, 'zones': json.dumps([zone_id])})
-            logger.info('a loop is finished')
+            sio.emit('/zone/enter/list', {'world': world, 'zones': json.dumps([zone_id])})
+            time.sleep(random.uniform(1, 2))
+            sio.emit('/zone/leave/list', {'world': world, 'zones': json.dumps([zone_id])})
+
+        logger.info('a loop is finished')
+        sio.disconnect()
+        sio.wait()
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
