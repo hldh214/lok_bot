@@ -6,3 +6,4 @@
 !Pipfile.lock
 !lokbot
 !docker-healthcheck.sh
+!config.example.json
