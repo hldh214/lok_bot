@@ -373,7 +373,8 @@ class LokFarmer:
 
         troop_count = sum([each_troop.get('amount') for each_troop in troops])
 
-        if need_troop_count > troop_count:
+        # we don't care about insufficient troops when gathering
+        if (march_type == MARCH_TYPE_MONSTER) and (need_troop_count > troop_count):
             return []
 
         # distance = self._calc_distance(from_loc, to_loc)
