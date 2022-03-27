@@ -65,7 +65,7 @@ class LokFarmer:
             "OS": "iOS 15.3.1",
             "country": "USA",
             "language": "English",
-            "version": "1.1422.103.175",
+            "version": "1.1426.103.176",
             "platform": "ios",
             "build": "global"
         }
@@ -284,7 +284,8 @@ class LokFarmer:
     def _get_land_array():
         return numpy.arange(100000, 165536).reshape(256, 256)
 
-    def _get_nearest_land(self, x, y, radius=64):
+    @functools.lru_cache()
+    def _get_nearest_land(self, x, y, radius=16):
         land_array = self._get_land_array()
         # current_land_id = land_array[y // 8, x // 8]
         nearby_land_ids = neighbors(land_array, radius, y // 8 + 1, x // 8 + 1)
@@ -295,8 +296,8 @@ class LokFarmer:
         for index, each_level in enumerate(reversed(land_with_level)):
             level = 10 - index
 
-            if level < 3:
-                continue
+            # if level < 3:
+            #     continue
 
             lands += [(each_land_id, level) for each_land_id in each_level if each_land_id in nearby_land_ids]
 
@@ -375,6 +376,7 @@ class LokFarmer:
 
         # we don't care about insufficient troops when gathering
         if (march_type == MARCH_TYPE_MONSTER) and (need_troop_count > troop_count):
+            logger.info(f'Insufficient troops: {troop_count} < {need_troop_count}: {each_obj}')
             return []
 
         # distance = self._calc_distance(from_loc, to_loc)
@@ -525,6 +527,10 @@ class LokFarmer:
                 try:
                     if code in (
                             OBJECT_CODE_CRYSTAL_MINE,
+                            # OBJECT_CODE_FARM,
+                            # OBJECT_CODE_LUMBER_CAMP,
+                            # OBJECT_CODE_QUARRY,
+                            # OBJECT_CODE_GOLD_MINE,
                     ):
                         self._on_field_objects_gather(each_obj)
 
@@ -557,9 +563,9 @@ class LokFarmer:
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
-            sio.emit('/zone/enter/list', {'world': world, 'zones': json.dumps([zone_id])})
+            sio.emit('/zone/enter/list/v2', {'world': world, 'zones': json.dumps([zone_id])})
             time.sleep(random.uniform(1, 2))
-            sio.emit('/zone/leave/list', {'world': world, 'zones': json.dumps([zone_id])})
+            sio.emit('/zone/leave/list/v2', {'world': world, 'zones': json.dumps([zone_id])})
 
         logger.info('a loop is finished')
         sio.disconnect()
