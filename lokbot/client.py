@@ -422,6 +422,9 @@ class LokBotApi:
     def kingdom_profile_troops(self):
         return self.post('kingdom/profile/troops')
 
+    def kingdom_vipshop_buy(self, code, amount):
+        return self.post('kingdom/vipshop/buy', {'code': code, 'amount': amount})
+
     def alliance_help_all(self):
         """
         帮助全部
