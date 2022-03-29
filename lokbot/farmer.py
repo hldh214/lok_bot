@@ -367,7 +367,6 @@ class LokFarmer:
         troops = march_info.get('troops')
         troops.sort(key=lambda x: x.get('code'), reverse=True)  # priority using high tier troops
 
-        # todo: calc troops load
         need_troop_count = march_info.get('fo').get('param').get('value')
         if march_type == MARCH_TYPE_MONSTER:
             need_troop_count *= 2.5
@@ -385,14 +384,22 @@ class LokFarmer:
 
         march_troops = []
         for troop in troops:
-            amount = troop.get('amount')
             code = troop.get('code')
+            amount = troop.get('amount')
 
-            if amount >= need_troop_count:
-                amount = need_troop_count
-                need_troop_count = 0
+            # todo: calc troops load for MARCH_TYPE_MONSTER
+            load = 1
+            if march_type == MARCH_TYPE_GATHER:
+                load = TROOP_LOAD_MAP.get(code, 1)
+
+            total_load = amount * load
+
+            if total_load >= need_troop_count:
+                if need_troop_count:
+                    amount = need_troop_count // load + 1
+                    need_troop_count = 0
             else:
-                need_troop_count -= amount
+                need_troop_count -= total_load
 
             march_troops.append({
                 'code': code,
@@ -527,18 +534,18 @@ class LokFarmer:
                 try:
                     if code in (
                             OBJECT_CODE_CRYSTAL_MINE,
-                            # OBJECT_CODE_FARM,
-                            # OBJECT_CODE_LUMBER_CAMP,
-                            # OBJECT_CODE_QUARRY,
-                            # OBJECT_CODE_GOLD_MINE,
+                            OBJECT_CODE_FARM,
+                            OBJECT_CODE_LUMBER_CAMP,
+                            OBJECT_CODE_QUARRY,
+                            OBJECT_CODE_GOLD_MINE,
                     ):
                         self._on_field_objects_gather(each_obj)
 
                     if code in (
                             OBJECT_CODE_GOBLIN,
-                            OBJECT_CODE_GOLEM,
-                            OBJECT_CODE_SKELETON,
-                            OBJECT_CODE_ORC
+                            # OBJECT_CODE_GOLEM,
+                            # OBJECT_CODE_SKELETON,
+                            # OBJECT_CODE_ORC
                     ):
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
@@ -840,7 +847,7 @@ class LokFarmer:
 
         self._alliance_help_all()
         self._alliance_research_donate_all()
-        self._alliance_shop_autobuy()
+        # self._alliance_shop_autobuy()
 
     def caravan_farmer(self):
         caravan = self.api.kingdom_caravan_list().get('caravan')
