@@ -348,6 +348,9 @@ class LokFarmer:
         return math.ceil(math.sqrt(math.pow(from_loc[1] - to_loc[1], 2) + math.pow(from_loc[2] - to_loc[2], 2)))
 
     def _start_march(self, to_loc, march_troops, march_type=MARCH_TYPE_GATHER):
+        if not self.march_start_lock.acquire(blocking=False):
+            return
+
         res = self.api.field_march_start({
             'fromId': self.kingdom_enter.get('kingdom').get('fieldObjectId'),
             'marchType': march_type,
@@ -532,18 +535,15 @@ class LokFarmer:
                 if self._is_march_limit_exceeded():
                     continue
 
-                if not self.march_start_lock.acquire(blocking=False):
-                    return
-
                 code = each_obj.get('code')
 
                 try:
                     if code in (
                             OBJECT_CODE_CRYSTAL_MINE,
-                            OBJECT_CODE_FARM,
-                            OBJECT_CODE_LUMBER_CAMP,
-                            OBJECT_CODE_QUARRY,
-                            OBJECT_CODE_GOLD_MINE,
+                            # OBJECT_CODE_FARM,
+                            # OBJECT_CODE_LUMBER_CAMP,
+                            # OBJECT_CODE_QUARRY,
+                            # OBJECT_CODE_GOLD_MINE,
                     ):
                         self._on_field_objects_gather(each_obj)
 
