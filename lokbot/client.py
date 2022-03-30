@@ -149,6 +149,9 @@ class LokBotApi:
     def alliance_shop_buy(self, code, amount):
         return self.post('alliance/shop/buy', {'code': code, 'amount': amount})
 
+    def alliance_gift_claim_all(self):
+        return self.post('alliance/gift/claim/all')
+
     def chat_logs(self, chat_channel):
         return self.post('chat/logs', {'chatChannel': chat_channel})
 

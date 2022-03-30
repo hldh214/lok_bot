@@ -224,6 +224,12 @@ class LokFarmer:
 
         return
 
+    def _alliance_gift_claim_all(self):
+        try:
+            self.api.alliance_gift_claim_all()
+        except OtherException:
+            pass
+
     def _alliance_help_all(self):
         try:
             self.api.alliance_help_all()
@@ -846,6 +852,7 @@ class LokFarmer:
         if not self.kingdom_enter.get('kingdom', {}).get('allianceId'):
             return
 
+        self._alliance_gift_claim_all()
         self._alliance_help_all()
         self._alliance_research_donate_all()
         # self._alliance_shop_autobuy()
