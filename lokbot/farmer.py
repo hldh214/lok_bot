@@ -79,7 +79,6 @@ class LokFarmer:
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
         self.buff_item_use_lock = threading.RLock()
-        self.march_start_lock = threading.RLock()
         self.has_additional_building_queue = self.kingdom_enter.get('kingdom').get('vip', {}).get('level') >= 5
         self.troop_queue = []
         self.march_limit = 2
@@ -291,7 +290,7 @@ class LokFarmer:
         return numpy.arange(100000, 165536).reshape(256, 256)
 
     @functools.lru_cache()
-    def _get_nearest_land(self, x, y, radius=16):
+    def _get_nearest_land(self, x, y, radius=32):
         land_array = self._get_land_array()
         # current_land_id = land_array[y // 8, x // 8]
         nearby_land_ids = neighbors(land_array, radius, y // 8 + 1, x // 8 + 1)
@@ -327,6 +326,7 @@ class LokFarmer:
 
         return lands
 
+    @functools.lru_cache()
     def _get_zone_id_by_land_id(self, land_id):
         land_array = blockshaped(self._get_land_array(), 4, 4)
 
@@ -348,9 +348,6 @@ class LokFarmer:
         return math.ceil(math.sqrt(math.pow(from_loc[1] - to_loc[1], 2) + math.pow(from_loc[2] - to_loc[2], 2)))
 
     def _start_march(self, to_loc, march_troops, march_type=MARCH_TYPE_GATHER):
-        if not self.march_start_lock.acquire(blocking=False):
-            return
-
         res = self.api.field_march_start({
             'fromId': self.kingdom_enter.get('kingdom').get('fieldObjectId'),
             'marchType': march_type,
