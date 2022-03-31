@@ -93,6 +93,145 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN lok_bot_local
 docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
 ```
 
+# Configuration
+
+```json5
+{
+  "main": {
+    "jobs": [
+      {
+        // name, DO NOT change
+        "name": "hospital_recover",
+        // or false to disable this job
+        "enabled": true,
+        // Run every 90 to 180 minutes.
+        "interval": {
+          "start": 90,
+          "end": 180
+        }
+      },
+      {
+        "name": "wall_repair",
+        "enabled": true,
+        "interval": {
+          "start": 30,
+          "end": 90
+        }
+      },
+      {
+        "name": "alliance_farmer",
+        "enabled": true,
+        "kwargs": {
+          "gift_claim": true,
+          "help_all": true,
+          "research_donate": true,
+          // or null if you don't want to auto buy items in alliance shop
+          "shop_auto_buy_item_code_list": [
+            // ITEM_CODE_VIP_100
+            10101008
+          ]
+        },
+        "interval": {
+          "start": 120,
+          "end": 200
+        }
+      },
+      {
+        "name": "mail_claim",
+        "enabled": true,
+        "interval": {
+          "start": 120,
+          "end": 200
+        }
+      },
+      {
+        "name": "caravan_farmer",
+        "enabled": true,
+        "interval": {
+          "start": 120,
+          "end": 200
+        }
+      },
+      {
+        "name": "use_resource_in_item_list",
+        "enabled": true,
+        "interval": {
+          "start": 120,
+          "end": 200
+        }
+      },
+      {
+        "name": "vip_chest_claim",
+        "enabled": true,
+        "interval": {
+          "start": 120,
+          "end": 200
+        }
+      },
+      {
+        "name": "harvester",
+        "enabled": true,
+        "interval": {
+          "start": 10,
+          "end": 20
+        }
+      },
+      {
+        // experimental
+        "name": "socf_thread",
+        "enabled": true,
+        "kwargs": {
+          "object_code_list": [
+            // OBJECT_CODE_CRYSTAL_MINE
+            20100105,
+            // OBJECT_CODE_GOBLIN
+            20200104
+          ],
+          // radius of the land to search, center: your castle, unit: land
+          "radius": 32
+        },
+        // Run every 1 minutes.
+        "interval": {
+          "start": 1,
+          "end": 1
+        }
+      }
+    ],
+    "threads": [
+      {
+        // name, DO NOT change
+        "name": "free_chest_farmer_thread",
+        "enabled": true
+      },
+      {
+        "name": "quest_monitor_thread",
+        "enabled": true
+      },
+      {
+        "name": "building_farmer_thread",
+        "enabled": true,
+        "kwargs": {
+          // 1 for TASK_CODE_SILVER_HAMMER
+          "task_code": 1
+        }
+      },
+      {
+        "name": "building_farmer_thread",
+        "enabled": true,
+        "kwargs": {
+          // 8 for TASK_CODE_GOLD_HAMMER if you're vip5 or above
+          "task_code": 8
+        }
+      },
+      {
+        "name": "academy_farmer_thread",
+        "enabled": true
+      }
+    ]
+  }
+}
+```
+
 # X_ACCESS_TOKEN
 
 There are currently no plans to support login functionality. So we need this `X_ACCESS_TOKEN` trick to made it works.

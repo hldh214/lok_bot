@@ -506,7 +506,7 @@ class LokFarmer:
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
         reraise=True
     )
-    def socf_thread(self):
+    def socf_thread(self, radius=32, object_code_list=(OBJECT_CODE_CRYSTAL_MINE, OBJECT_CODE_GOBLIN)):
         """
         websocket connection of the field
         :return:
@@ -515,7 +515,7 @@ class LokFarmer:
         url = self.kingdom_enter.get('networks').get('fields')[0]
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
 
-        lands = self._get_nearest_land(from_loc[1], from_loc[2])
+        lands = self._get_nearest_land(from_loc[1], from_loc[2], radius)
         # lands = self._get_top_leveled_land()
         zones = []
         for land_id, _ in lands:
@@ -535,21 +535,10 @@ class LokFarmer:
                 code = each_obj.get('code')
 
                 try:
-                    if code in (
-                            OBJECT_CODE_CRYSTAL_MINE,
-                            # OBJECT_CODE_FARM,
-                            # OBJECT_CODE_LUMBER_CAMP,
-                            # OBJECT_CODE_QUARRY,
-                            # OBJECT_CODE_GOLD_MINE,
-                    ):
+                    if code in set(OBJECT_MINE_CODE_LIST).intersection(set(object_code_list)):
                         self._on_field_objects_gather(each_obj)
 
-                    if code in (
-                            OBJECT_CODE_GOBLIN,
-                            # OBJECT_CODE_GOLEM,
-                            # OBJECT_CODE_SKELETON,
-                            # OBJECT_CODE_ORC
-                    ):
+                    if code in set(OBJECT_MONSTER_CODE_LIST).intersection(set(object_code_list)):
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
                     if str(error_code) in ('full_task', 'not_enough_troop'):
@@ -765,7 +754,6 @@ class LokFarmer:
         academy_level = [b for b in buildings if b.get('code') == BUILDING_CODE_MAP['academy']][0].get('level')
 
         for category_name, each_category in RESEARCH_CODE_MAP.items():
-            logger.info(f'start researching category: {category_name}')
             for research_name, research_code in each_category.items():
                 if not self._is_researchable(
                         academy_level, category_name, research_name, exist_researches, to_max_level
@@ -845,14 +833,21 @@ class LokFarmer:
 
         self.api.kingdom_vip_claim()
 
-    def alliance_farmer(self):
+    def alliance_farmer(self, gift_claim=True, help_all=True, research_donate=True, shop_auto_buy_item_code_list=None):
         if not self.kingdom_enter.get('kingdom', {}).get('allianceId'):
             return
 
-        self._alliance_gift_claim_all()
-        self._alliance_help_all()
-        self._alliance_research_donate_all()
-        # self._alliance_shop_autobuy()
+        if gift_claim:
+            self._alliance_gift_claim_all()
+
+        if help_all:
+            self._alliance_help_all()
+
+        if research_donate:
+            self._alliance_research_donate_all()
+
+        if shop_auto_buy_item_code_list and type(shop_auto_buy_item_code_list) == list:
+            self._alliance_shop_autobuy(shop_auto_buy_item_code_list)
 
     def caravan_farmer(self):
         caravan = self.api.kingdom_caravan_list().get('caravan')

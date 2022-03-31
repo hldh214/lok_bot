@@ -3,7 +3,7 @@
     "jobs": [
       {
         "name": "hospital_recover",
-        "enabled": false,
+        "enabled": true,
         "interval": {
           "start": 90,
           "end": 180
@@ -20,6 +20,14 @@
       {
         "name": "alliance_farmer",
         "enabled": true,
+        "kwargs": {
+          "gift_claim": true,
+          "help_all": true,
+          "research_donate": true,
+          "shop_auto_buy_item_code_list": [
+            10101008
+          ]
+        },
         "interval": {
           "start": 120,
           "end": 200
@@ -61,8 +69,23 @@
         "name": "harvester",
         "enabled": true,
         "interval": {
-          "start": 60,
-          "end": 120
+          "start": 10,
+          "end": 20
+        }
+      },
+      {
+        "name": "socf_thread",
+        "enabled": true,
+        "kwargs": {
+          "object_code_list": [
+            20100105,
+            20200104
+          ],
+          "radius": 32
+        },
+        "interval": {
+          "start": 1,
+          "end": 1
         }
       }
     ],
@@ -78,12 +101,16 @@
       {
         "name": "building_farmer_thread",
         "enabled": true,
-        "args": [1]
+        "kwargs": {
+          "task_code": 1
+        }
       },
       {
         "name": "building_farmer_thread",
         "enabled": true,
-        "args": [8]
+        "kwargs": {
+          "task_code": 8
+        }
       },
       {
         "name": "academy_farmer_thread",
