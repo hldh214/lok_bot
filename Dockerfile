@@ -18,6 +18,6 @@ RUN pip install -i ${PYPI_MIRROR} pipenv && \
 ENV PATH="/app/.venv/bin:$PATH"
 
 HEALTHCHECK --retries=1 \
-    CMD ./docker-healthcheck.sh
+    CMD if grep -q Exception /app/output.log; then exit 1; else exit 0; fi
 
 ENTRYPOINT ["/bin/sh", "-c", "python -m lokbot $TOKEN $CAPTCHA_SOLVER_CONFIG 2>&1 | tee output.log"]

@@ -81,7 +81,7 @@ pipenv run python -m lokbot YOUR_X_ACCESS_TOKEN
 ### Build image yourself
 
 ```shell
-docker build -t lok_bot_local --build-arg PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple .
+docker buildx build -t lok_bot_local --build-arg PYPI_MIRROR=https://pypi.tuna.tsinghua.edu.cn/simple .
 docker run -e TOKEN=YOUR_X_ACCESS_TOKEN lok_bot_local
 ```
 
@@ -101,27 +101,11 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
     "jobs": [
       {
         // name, DO NOT change
-        "name": "hospital_recover",
+        "name": "alliance_farmer",
         // or false to disable this job
         "enabled": true,
-        // Run every 90 to 180 minutes.
-        "interval": {
-          "start": 90,
-          "end": 180
-        }
-      },
-      {
-        "name": "wall_repair",
-        "enabled": true,
-        "interval": {
-          "start": 30,
-          "end": 90
-        }
-      },
-      {
-        "name": "alliance_farmer",
-        "enabled": true,
         "kwargs": {
+          // or false to disable gift claiming
           "gift_claim": true,
           "help_all": true,
           "research_donate": true,
@@ -131,49 +115,10 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
             10101008
           ]
         },
+        // Run every 120 to 200 minutes.
         "interval": {
           "start": 120,
           "end": 200
-        }
-      },
-      {
-        "name": "mail_claim",
-        "enabled": true,
-        "interval": {
-          "start": 120,
-          "end": 200
-        }
-      },
-      {
-        "name": "caravan_farmer",
-        "enabled": true,
-        "interval": {
-          "start": 120,
-          "end": 200
-        }
-      },
-      {
-        "name": "use_resource_in_item_list",
-        "enabled": true,
-        "interval": {
-          "start": 120,
-          "end": 200
-        }
-      },
-      {
-        "name": "vip_chest_claim",
-        "enabled": true,
-        "interval": {
-          "start": 120,
-          "end": 200
-        }
-      },
-      {
-        "name": "harvester",
-        "enabled": true,
-        "interval": {
-          "start": 10,
-          "end": 20
         }
       },
       {
@@ -200,14 +145,6 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
     "threads": [
       {
         // name, DO NOT change
-        "name": "free_chest_farmer_thread",
-        "enabled": true
-      },
-      {
-        "name": "quest_monitor_thread",
-        "enabled": true
-      },
-      {
         "name": "building_farmer_thread",
         "enabled": true,
         "kwargs": {
@@ -222,10 +159,6 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
           // 8 for TASK_CODE_GOLD_HAMMER if you're vip5 or above
           "task_code": 8
         }
-      },
-      {
-        "name": "academy_farmer_thread",
-        "enabled": true
       }
     ]
   }
