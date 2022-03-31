@@ -114,7 +114,10 @@
       },
       {
         "name": "academy_farmer_thread",
-        "enabled": true
+        "enabled": true,
+        "kwargs": {
+          "to_max_level": false
+        }
       }
     ]
   }

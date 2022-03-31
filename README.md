@@ -159,6 +159,14 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
           // 8 for TASK_CODE_GOLD_HAMMER if you're vip5 or above
           "task_code": 8
         }
+      },
+      {
+        "name": "academy_farmer_thread",
+        "enabled": true,
+        "kwargs": {
+          // true if you want to research max level, else it will only level up to the minimum required level
+          "to_max_level": false
+        }
       }
     ]
   }
