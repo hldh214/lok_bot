@@ -57,6 +57,9 @@ def main(token, captcha_solver_config=None):
     threading.Thread(target=farmer.sock_thread).start()
     # threading.Thread(target=farmer.socc_thread).start()
 
+    # wait for the socket to be ready
+    time.sleep(4)
+
     for job in config.get('main').get('jobs'):
         if not job.get('enabled'):
             continue
