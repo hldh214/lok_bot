@@ -556,8 +556,10 @@ class LokFarmer:
         sio.emit('/field/enter', {'token': self.access_token})
 
         while self._is_march_limit_exceeded():
-            logger.info(f'sorting troop queue: {self.troop_queue}')
-            nearest_end_time = sorted(self.troop_queue, key=lambda x: x.get('endTime'))[0].get('endTime')
+            nearest_end_time = sorted(
+                self.troop_queue,
+                key=lambda x: x.get('endTime') if x.get('endTime') else '9999-99-99T99:99:99.999Z'
+            )[0].get('endTime')
             seconds = self.calc_time_diff_in_seconds(nearest_end_time)
             logger.info(f'_is_march_limit_exceeded: wait {seconds} seconds')
             time.sleep(seconds)

@@ -632,6 +632,7 @@ TROOP_LOAD_MAP = {
 
 MARCH_TYPE_GATHER = 1
 MARCH_TYPE_MONSTER = 5
+MARCH_TYPE_SUPPORT = 7
 
 
 def load_building_json():
