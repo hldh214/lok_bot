@@ -83,6 +83,7 @@ class LokFarmer:
         self.troop_queue = []
         self.march_limit = 2
         self._update_march_limit()
+        self.level = self.kingdom_enter.get('kingdom').get('level')
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -286,6 +287,7 @@ class LokFarmer:
         return land_with_level
 
     @staticmethod
+    @functools.lru_cache()
     def _get_land_array():
         return numpy.arange(100000, 165536).reshape(256, 256)
 
@@ -423,6 +425,9 @@ class LokFarmer:
         if each_obj.get('occupied'):
             return
 
+        if each_obj.get('code') == OBJECT_CODE_CRYSTAL_MINE and self.level < 11:
+            return
+
         to_loc = each_obj.get('loc')
         march_troops = self._prepare_march_troops(each_obj, MARCH_TYPE_GATHER)
 
@@ -551,6 +556,7 @@ class LokFarmer:
         sio.emit('/field/enter', {'token': self.access_token})
 
         while self._is_march_limit_exceeded():
+            logger.info(f'sorting troop queue: {self.troop_queue}')
             nearest_end_time = sorted(self.troop_queue, key=lambda x: x.get('endTime'))[0].get('endTime')
             seconds = self.calc_time_diff_in_seconds(nearest_end_time)
             logger.info(f'_is_march_limit_exceeded: wait {seconds} seconds')

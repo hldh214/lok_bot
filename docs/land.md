@@ -1,5 +1,9 @@
 # Land
 
+```js
+let zone_id = 64 * parseInt(yaxis / 32) + parseInt(xaxis / 32)
+```
+
 ## world
 
 ```
