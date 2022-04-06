@@ -403,7 +403,9 @@ class LokFarmer:
             total_load = amount * load
 
             if total_load >= need_troop_count:
-                if need_troop_count:
+                if need_troop_count == 0:
+                    amount = 0
+                else:
                     amount = need_troop_count // load + 1
                     need_troop_count = 0
             else:
