@@ -52,13 +52,11 @@ def main(token, captcha_solver_config=None):
     config = load_config()
 
     farmer = LokFarmer(token, captcha_solver_config)
-    farmer.keepalive_request()
 
     threading.Thread(target=farmer.sock_thread).start()
     # threading.Thread(target=farmer.socc_thread).start()
 
-    # wait for the socket to be ready
-    time.sleep(4)
+    farmer.keepalive_request()
 
     for job in config.get('main').get('jobs'):
         if not job.get('enabled'):
@@ -74,7 +72,7 @@ def main(token, captcha_solver_config=None):
 
     schedule.run_all()
 
-    schedule.every(5).to(15).minutes.do(farmer.keepalive_request)
+    schedule.every(5).to(10).minutes.do(farmer.keepalive_request)
 
     for thread in config.get('main').get('threads'):
         if not thread.get('enabled'):

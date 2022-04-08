@@ -9,11 +9,11 @@ import numpy
 import socketio
 import tenacity
 
+import lokbot.util
 from lokbot.client import LokBotApi
 from lokbot import logger, builtin_logger
 from lokbot.exceptions import OtherException
 from lokbot.enum import *
-from lokbot.util import get_resource_index_by_item_code, run_functions_in_random_order
 
 
 # Ref: https://stackoverflow.com/a/16858283/6266737
@@ -292,6 +292,15 @@ class LokFarmer:
         return numpy.arange(100000, 165536).reshape(256, 256)
 
     @functools.lru_cache()
+    def _get_land_array_4_by_4(self):
+        return blockshaped(self._get_land_array(), 4, 4)
+
+    @staticmethod
+    @functools.lru_cache()
+    def _get_zone_array():
+        return numpy.arange(0, 4096).reshape(64, 64)
+
+    @functools.lru_cache()
     def _get_nearest_land(self, x, y, radius=32):
         land_array = self._get_land_array()
         # current_land_id = land_array[y // 8, x // 8]
@@ -330,9 +339,31 @@ class LokFarmer:
 
     @functools.lru_cache()
     def _get_zone_id_by_land_id(self, land_id):
-        land_array = blockshaped(self._get_land_array(), 4, 4)
+        land_array = self._get_land_array_4_by_4()
 
         return ndindex(land_array, land_id)[0]
+
+    @functools.lru_cache()
+    def _get_nearest_zone(self, x, y, radius=16):
+        lands = self._get_nearest_land(x, y, radius)
+        zones = []
+        for land_id, _ in lands:
+            zone_id = self._get_zone_id_by_land_id(land_id)
+            if zone_id not in zones:
+                zones.append(zone_id)
+
+        return zones
+
+    @functools.lru_cache()
+    def _get_nearest_zone_ng(self, x, y, radius=8):
+        current_zone_id = lokbot.util.get_zone_id_by_coords(x, y)
+
+        idx = ndindex(self._get_zone_array(), current_zone_id)
+
+        nearby_zone_ids = neighbors(self._get_zone_array(), radius, idx[0] + 1, idx[1] + 1)
+        nearby_zone_ids = [item.item() for sublist in nearby_zone_ids for item in sublist if item != 0]
+
+        return nearby_zone_ids
 
     def _update_march_limit(self):
         troops = self.api.kingdom_profile_troops().get('troops')
@@ -513,7 +544,7 @@ class LokFarmer:
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
         reraise=True
     )
-    def socf_thread(self, radius=32, object_code_list=(OBJECT_CODE_CRYSTAL_MINE, OBJECT_CODE_GOBLIN)):
+    def socf_thread(self, radius, object_code_list=(OBJECT_CODE_CRYSTAL_MINE, OBJECT_CODE_GOBLIN)):
         """
         websocket connection of the field
         :return:
@@ -522,13 +553,7 @@ class LokFarmer:
         url = self.kingdom_enter.get('networks').get('fields')[0]
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
 
-        lands = self._get_nearest_land(from_loc[1], from_loc[2], radius)
-        # lands = self._get_top_leveled_land()
-        zones = []
-        for land_id, _ in lands:
-            zone_id = self._get_zone_id_by_land_id(land_id)
-            if zone_id not in zones:
-                zones.append(zone_id)
+        zones = self._get_nearest_zone_ng(from_loc[1], from_loc[2], radius)
 
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
@@ -875,7 +900,7 @@ class LokFarmer:
             if each_item.get('costItemCode') not in BUYABLE_CARAVAN_ITEM_CODE_LIST:
                 continue
 
-            resource_index = get_resource_index_by_item_code(each_item.get('costItemCode'))
+            resource_index = lokbot.util.get_resource_index_by_item_code(each_item.get('costItemCode'))
 
             if resource_index == -1:
                 continue
@@ -917,7 +942,7 @@ class LokFarmer:
             pass
 
     def keepalive_request(self):
-        run_functions_in_random_order(
+        lokbot.util.run_functions_in_random_order(
             self.api.kingdom_wall_info,
             self.api.quest_main,
             self.api.item_list,

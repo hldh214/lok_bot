@@ -29,3 +29,7 @@ def run_functions_in_random_order(*funcs):
     random.shuffle(functions)
     for func in functions:
         func()
+
+
+def get_zone_id_by_coords(x, y):
+    return (x // 32) + 64 * (y // 32)
