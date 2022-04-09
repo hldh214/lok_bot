@@ -14,6 +14,8 @@
 
 # lok_bot
 
+![lok_crystal_miner](https://user-images.githubusercontent.com/5501843/161889542-decefcc7-1c51-4998-adf1-53d366118fa3.gif)
+
 [![GitHub issues](https://img.shields.io/github/issues/hldh214/lok_bot)](https://github.com/hldh214/lok_bot/issues)
 [![GitHub forks](https://img.shields.io/github/forks/hldh214/lok_bot)](https://github.com/hldh214/lok_bot/network)
 [![GitHub stars](https://img.shields.io/github/stars/hldh214/lok_bot)](https://github.com/hldh214/lok_bot/stargazers)
