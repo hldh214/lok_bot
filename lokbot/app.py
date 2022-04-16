@@ -1,3 +1,4 @@
+import asyncio
 import functools
 import json
 import os.path
@@ -6,6 +7,7 @@ import time
 
 import schedule
 
+from lokbot.async_farmer import AsyncLokFarmer
 from lokbot.farmer import LokFarmer
 from lokbot import project_root
 
@@ -45,7 +47,16 @@ def run_threaded(name, job_func):
     job_thread.start()
 
 
+def async_main(token):
+    async_farmer = AsyncLokFarmer(token)
+
+    asyncio.run(async_farmer.parallel_buy_caravan())
+
+
 def main(token, captcha_solver_config=None):
+    # async_main(token)
+    # exit()
+
     if captcha_solver_config is None:
         captcha_solver_config = {}
 

@@ -5,10 +5,9 @@ import httpx
 import ratelimit
 import tenacity
 
+import lokbot.enum
 from lokbot.exceptions import *
 from lokbot import logger
-
-API_BASE_URL = 'https://api-lok-live.leagueofkingdoms.com/api/'
 
 
 class LokBotApi:
@@ -19,7 +18,7 @@ class LokBotApi:
                 'x-access-token': access_token
             },
             http2=True,
-            base_url=API_BASE_URL
+            base_url=lokbot.enum.API_BASE_URL
         )
         self.request_callback = request_callback
 
