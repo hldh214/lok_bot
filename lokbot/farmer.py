@@ -942,14 +942,17 @@ class LokFarmer:
             pass
 
     def keepalive_request(self):
-        lokbot.util.run_functions_in_random_order(
-            self.api.kingdom_wall_info,
-            self.api.quest_main,
-            self.api.item_list,
-            self.api.kingdom_treasure_list,
-            self.api.event_list,
-            self.api.event_cvc_open,
-            self.api.event_roulette_open,
-            self.api.pkg_recommend,
-            self.api.pkg_list,
-        )
+        try:
+            lokbot.util.run_functions_in_random_order(
+                self.api.kingdom_wall_info,
+                self.api.quest_main,
+                self.api.item_list,
+                self.api.kingdom_treasure_list,
+                self.api.event_list,
+                self.api.event_cvc_open,
+                self.api.event_roulette_open,
+                self.api.pkg_recommend,
+                self.api.pkg_list,
+            )
+        except OtherException:
+            pass
