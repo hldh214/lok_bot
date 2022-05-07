@@ -573,7 +573,7 @@ class LokFarmer:
                     if code in set(OBJECT_MONSTER_CODE_LIST).intersection(set(object_code_list)):
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
-                    if str(error_code) in ('full_task', 'not_enough_troop'):
+                    if str(error_code) in ('full_task', 'not_enough_troop', 'insufficient_actionpoint'):
                         logger.warning(f'on_field_objects: {error_code}, skip')
                         return
 
