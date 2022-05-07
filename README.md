@@ -134,8 +134,9 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
             // OBJECT_CODE_GOBLIN
             20200104
           ],
-          // radius of the land to search, center: your castle, unit: land
-          "radius": 32
+          // radius of the zone to search, center: your castle, unit: zone
+          // P.S. one zone contains 4x4 lands, please refer to: https://github.com/hldh214/lok_bot/blob/master/docs/land.md
+          "radius": 8
         },
         // Run every 1 minutes.
         "interval": {
