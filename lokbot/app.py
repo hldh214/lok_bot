@@ -1,6 +1,7 @@
 import asyncio
 import functools
 import json
+import logging
 import os.path
 import threading
 import time
@@ -9,7 +10,7 @@ import schedule
 
 from lokbot.async_farmer import AsyncLokFarmer
 from lokbot.farmer import LokFarmer
-from lokbot import project_root
+from lokbot import project_root, builtin_logger
 
 
 def find_alliance(farmer: LokFarmer):
@@ -61,6 +62,9 @@ def main(token, captcha_solver_config=None):
         captcha_solver_config = {}
 
     config = load_config()
+
+    if not config.get('socketio').get('debug'):
+        builtin_logger.setLevel(logging.CRITICAL)
 
     farmer = LokFarmer(token, captcha_solver_config)
 

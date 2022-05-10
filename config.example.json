@@ -120,5 +120,8 @@
         }
       }
     ]
+  },
+  "socketio": {
+    "debug": false
   }
 }
