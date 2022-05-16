@@ -9,6 +9,31 @@ import lokbot.enum
 from lokbot.exceptions import *
 from lokbot import logger
 
+BASE64ENCODE_URL_WHITELIST = (
+    'kingdom/enter',
+    'auth/setDeviceInfo',
+    'chat/logs',
+    'kingdom/wall/info',
+    'quest/main',
+    'item/list',
+    'kingdom/treasure/list',
+    'event/list',
+    'event/cvc/open',
+    'event/roulette/open',
+    'pkg/recommend',
+    'pkg/list',
+    'kingdom/task/all',
+    'alliance/help/all',
+    'kingdom/profile/troops',
+    'mail/claim/all'
+    'kingdom/wall/repair',
+    'quest/list',
+    'quest/list/daily',
+    'kingdom/vip/info',
+    'kingdom/arcademy/research',
+    'kingdom/arcademy/research/list'
+)
+
 
 class LokBotApi:
     def __init__(self, access_token, captcha_solver_config, request_callback=None):
@@ -51,7 +76,11 @@ class LokBotApi:
         if json_data is None:
             json_data = {}
 
-        response = self.opener.post(url, data={'json': json.dumps(json_data)})
+        post_data = json.dumps(json_data)
+        if url not in BASE64ENCODE_URL_WHITELIST:
+            post_data = base64.b64encode(post_data.encode()).decode()
+
+        response = self.opener.post(url, data={'json': post_data})
 
         log_data = {
             'url': url,
@@ -60,7 +89,10 @@ class LokBotApi:
         }
 
         try:
-            json_response = response.json()
+            if url not in BASE64ENCODE_URL_WHITELIST and response.text[0] != '{':
+                json_response = json.loads(base64.b64decode(response.text).decode())
+            else:
+                json_response = response.json()
         except json.JSONDecodeError:
             log_data.update({'res': response.text})
             logger.error(log_data)
@@ -495,6 +527,11 @@ class LokBotApi:
         """
         return self.post('event/roulette/spin')
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=2)
     def mail_claim_all(self, category=1):
         return self.post('mail/claim/all', {'category': category})
 
