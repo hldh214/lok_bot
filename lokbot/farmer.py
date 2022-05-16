@@ -911,7 +911,9 @@ class LokFarmer:
             self.api.kingdom_caravan_buy(each_item.get('_id'))
 
     def mail_claim(self):
-        self.api.mail_claim_all()
+        self.api.mail_claim_all(1)  # report
+        self.api.mail_claim_all(2)  # alliance
+        self.api.mail_claim_all(3)  # system
 
     def wall_repair(self):
         wall_info = self.api.kingdom_wall_info()
