@@ -28,6 +28,8 @@ BASE64ENCODE_URL_WHITELIST = (
     'kingdom/arcademy/research/list',
     'kingdom/caravan/list',
     'kingdom/caravan/buy',
+    'kingdom/treasure/equip',
+    'kingdom/treasure/page',
 
     'quest/main',
     'quest/claim/daily',
