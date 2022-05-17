@@ -13,25 +13,42 @@ BASE64ENCODE_URL_WHITELIST = (
     'kingdom/enter',
     'auth/setDeviceInfo',
     'chat/logs',
-    'kingdom/wall/info',
-    'quest/main',
     'item/list',
+    'mail/claim/all',
+    'field/march/info',
+
+    'kingdom/wall/info',
     'kingdom/treasure/list',
-    'event/list',
-    'event/cvc/open',
-    'event/roulette/open',
-    'pkg/recommend',
-    'pkg/list',
+    'kingdom/task/claim',
     'kingdom/task/all',
-    'alliance/help/all',
-    'kingdom/profile/troops',
-    'mail/claim/all'
     'kingdom/wall/repair',
-    'quest/list',
-    'quest/list/daily',
+    'kingdom/profile/troops',
     'kingdom/vip/info',
     'kingdom/arcademy/research',
-    'kingdom/arcademy/research/list'
+    'kingdom/arcademy/research/list',
+    'kingdom/caravan/list',
+    'kingdom/caravan/buy',
+
+    'quest/main',
+    'quest/claim/daily',
+    'quest/claim/daily/level',
+    'quest/list',
+    'quest/list/daily',
+
+    'event/list',
+    'event/info',
+    'event/claim',
+    'event/cvc/open',
+    'event/roulette/open',
+
+    'pkg/recommend',
+    'pkg/list',
+
+    'alliance/help/all',
+    'alliance/research/list',
+    'alliance/research/donateAll',
+    'alliance/research/donate',
+    'alliance/research/info',
 )
 
 
@@ -526,6 +543,9 @@ class LokBotApi:
         :return:
         """
         return self.post('event/roulette/spin')
+
+    def mail_list_check(self):
+        return self.post('mail/list/check')
 
     @tenacity.retry(
         wait=tenacity.wait_fixed(1),
