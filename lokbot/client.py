@@ -49,6 +49,8 @@ BASE64ENCODE_URL_WHITELIST = (
     'alliance/research/donateAll',
     'alliance/research/donate',
     'alliance/research/info',
+    'alliance/shop/list',
+    'alliance/shop/buy',
 )
 
 
