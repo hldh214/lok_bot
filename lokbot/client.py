@@ -31,6 +31,7 @@ BASE64ENCODE_URL_WHITELIST = (
     'kingdom/treasure/equip',
     'kingdom/treasure/page',
     'kingdom/building/build',
+    'kingdom/barrack/train',
 
     'quest/main',
     'quest/claim/daily',
@@ -54,6 +55,7 @@ BASE64ENCODE_URL_WHITELIST = (
     'alliance/research/info',
     'alliance/shop/list',
     'alliance/shop/buy',
+    'alliance/join',
 )
 
 
