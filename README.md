@@ -93,6 +93,9 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN lok_bot_local
 
 ```shell
 docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
+
+# or use your own config
+docker run -v $PWD/config.json:/app/config.json -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
 ```
 
 # Configuration
