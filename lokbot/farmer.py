@@ -1,3 +1,4 @@
+import base64
 import functools
 import math
 import random
@@ -557,8 +558,9 @@ class LokFarmer:
 
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
-        @sio.on('/field/objects')
+        @sio.on('/field/objects/v3')
         def on_field_objects(data):
+            data = json.loads(base64.b64decode(data.encode()).decode())
             objects = data.get('objects')
             for each_obj in objects:
                 if self._is_march_limit_exceeded():
@@ -580,7 +582,7 @@ class LokFarmer:
                     raise
 
         sio.connect(url, transports=["websocket"])
-        sio.emit('/field/enter', {'token': self.access_token})
+        sio.emit('/field/enter/v3', base64.b64encode(json.dumps({'token': self.access_token}).encode()).decode())
 
         while self._is_march_limit_exceeded():
             nearest_end_time = sorted(
@@ -597,9 +599,12 @@ class LokFarmer:
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
-            sio.emit('/zone/enter/list/v2', {'world': world, 'zones': json.dumps([zone_id])})
+            message = {'world': world, 'zones': json.dumps([zone_id])}
+            encoded_message = base64.b64encode(json.dumps(message).encode()).decode()
+
+            sio.emit('/zone/enter/list/v3', encoded_message)
             time.sleep(random.uniform(1, 2))
-            sio.emit('/zone/leave/list/v2', {'world': world, 'zones': json.dumps([zone_id])})
+            sio.emit('/zone/leave/list/v2', message)
 
         logger.info('a loop is finished')
         sio.disconnect()
