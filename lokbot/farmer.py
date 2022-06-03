@@ -63,10 +63,10 @@ class LokFarmer:
         self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
 
         device_info = {
-            "OS": "iOS 15.3.1",
+            "OS": "iOS 15.5",
             "country": "USA",
             "language": "English",
-            "version": "1.1447.106.17",
+            "version": "1.1454.106.179",
             "platform": "ios",
             "build": "global"
         }
