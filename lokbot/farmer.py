@@ -85,6 +85,7 @@ class LokFarmer:
         self.march_limit = 2
         self._update_march_limit()
         self.level = self.kingdom_enter.get('kingdom').get('level')
+        self.socf_entered = False
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -581,8 +582,17 @@ class LokFarmer:
 
                     raise
 
+        @sio.on('/field/enter/v3')
+        def on_field_enter(data):
+            data = json.loads(base64.b64decode(data.encode()).decode())
+            logger.info(f'on_field_enter: {data}')
+            self.socf_entered = True
+
         sio.connect(url, transports=["websocket"])
         sio.emit('/field/enter/v3', base64.b64encode(json.dumps({'token': self.access_token}).encode()).decode())
+
+        while not self.socf_entered:
+            time.sleep(1)
 
         while self._is_march_limit_exceeded():
             nearest_end_time = sorted(
