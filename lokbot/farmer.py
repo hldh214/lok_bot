@@ -928,9 +928,9 @@ class LokFarmer:
 
     def mail_claim(self):
         self.api.mail_claim_all(1)  # report
-        time.sleep(random.randint(2, 4))
+        time.sleep(random.randint(4, 6))
         self.api.mail_claim_all(2)  # alliance
-        time.sleep(random.randint(2, 4))
+        time.sleep(random.randint(4, 6))
         self.api.mail_claim_all(3)  # system
 
     def wall_repair(self):
