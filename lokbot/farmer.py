@@ -606,6 +606,7 @@ class LokFarmer:
 
         for zone_id in zones:
             if not sio.connected:
+                self.socf_entered = False
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
