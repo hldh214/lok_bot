@@ -86,6 +86,7 @@ class LokFarmer:
         self._update_march_limit()
         self.level = self.kingdom_enter.get('kingdom').get('level')
         self.socf_entered = False
+        self.socf_world_id = None
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -551,7 +552,7 @@ class LokFarmer:
         websocket connection of the field
         :return:
         """
-        world = self.kingdom_enter.get('kingdom').get('worldId')
+        self.socf_world_id = self.kingdom_enter.get('kingdom').get('worldId')
         url = self.kingdom_enter.get('networks').get('fields')[0]
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
 
@@ -576,7 +577,10 @@ class LokFarmer:
                     if code in set(OBJECT_MONSTER_CODE_LIST).intersection(set(object_code_list)):
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
-                    if str(error_code) in ('full_task', 'not_enough_troop', 'insufficient_actionpoint'):
+                    if str(error_code) in (
+                            'full_task', 'not_enough_troop', 'insufficient_actionpoint',
+                            'not_open_gate'
+                    ):
                         logger.warning(f'on_field_objects: {error_code}, skip')
                         return
 
@@ -587,6 +591,7 @@ class LokFarmer:
             data = json.loads(base64.b64decode(data.encode()).decode())
             logger.info(f'on_field_enter: {data}')
             self.socf_entered = True
+            self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
 
         sio.connect(url, transports=["websocket"])
         sio.emit('/field/enter/v3', base64.b64encode(json.dumps({'token': self.access_token}).encode()).decode())
@@ -610,7 +615,7 @@ class LokFarmer:
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
-            message = {'world': world, 'zones': json.dumps([zone_id])}
+            message = {'world': self.socf_world_id, 'zones': json.dumps([zone_id])}
             encoded_message = base64.b64encode(json.dumps(message).encode()).decode()
 
             sio.emit('/zone/enter/list/v3', encoded_message)

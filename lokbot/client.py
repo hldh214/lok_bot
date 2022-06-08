@@ -44,6 +44,8 @@ BASE64ENCODE_URL_WHITELIST = (
     'event/claim',
     'event/cvc/open',
     'event/roulette/open',
+    'event/cvc/dashboard',
+    'event/cvc/enter',
 
     'pkg/recommend',
     'pkg/list',
