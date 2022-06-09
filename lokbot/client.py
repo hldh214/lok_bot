@@ -309,6 +309,9 @@ class LokBotApi:
         """
         return self.post('event/claim', {'eventId': event_id, 'eventTargetId': event_target_id, 'code': code})
 
+    def train_troop(self, troop_code, amount):
+        return self.post('kingdom/barrack/train', {'troopCode': troop_code, 'amount': amount})
+
     def kingdom_wall_info(self):
         return self.post('kingdom/wall/info')
 
