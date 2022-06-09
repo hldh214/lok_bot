@@ -3,7 +3,7 @@
     "jobs": [
       {
         "name": "hospital_recover",
-        "enabled": false,
+        "enabled": true,
         "interval": {
           "start": 90,
           "end": 180
@@ -11,7 +11,7 @@
       },
       {
         "name": "wall_repair",
-        "enabled": false,
+        "enabled": true,
         "interval": {
           "start": 30,
           "end": 90
@@ -19,7 +19,7 @@
       },
       {
         "name": "alliance_farmer",
-        "enabled": false,
+        "enabled": true,
         "kwargs": {
           "gift_claim": true,
           "help_all": true,
@@ -43,7 +43,7 @@
       },
       {
         "name": "caravan_farmer",
-        "enabled": false,
+        "enabled": true,
         "interval": {
           "start": 120,
           "end": 200
@@ -59,7 +59,7 @@
       },
       {
         "name": "vip_chest_claim",
-        "enabled": false,
+        "enabled": true,
         "interval": {
           "start": 120,
           "end": 200
@@ -75,7 +75,7 @@
       },
       {
         "name": "socf_thread",
-        "enabled": false,
+        "enabled": true,
         "kwargs": {
           "object_code_list": [
             20100105,
