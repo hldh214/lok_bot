@@ -849,7 +849,10 @@ class LokFarmer:
         req_resources = TRAIN_TROOP_RESOURCE_REQUIREMENT[troop_code]
 
         amount = 0
-        for req_resource, resource in (req_resources, self.resources):
+        for req_resource, resource in zip(req_resources, self.resources):
+            if req_resource == 0:
+                continue
+
             if amount == 0 or resource // req_resource <= amount:
                 amount = resource // req_resource
 
