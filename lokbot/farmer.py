@@ -855,6 +855,13 @@ class LokFarmer:
 
         return amount
 
+    def _random_choice_building_position(self, building_code):
+        """
+        return position of a building type by random
+        """
+        buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
+        return random.choice([building['code'] for building in buildings if building['code'] == building_code])
+
     def train_troop_thread(self, troop_code):
         current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
@@ -864,7 +871,7 @@ class LokFarmer:
 
         if worker_used:
             if worker_used[0].get('status') == STATUS_CLAIMED:
-                self.api.kingdom_task_claim(random.choice([105, 110]))
+                self.api.kingdom_task_claim(self._random_choice_building_position(BUILDING_CODE_MAP['barrack']))
                 logger.info('trian_troop: one loop completed, sleep for 3h')
                 threading.Timer(
                     3 * 3600,
