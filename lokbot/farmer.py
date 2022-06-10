@@ -834,7 +834,7 @@ class LokFarmer:
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
         troop_training_capacity = 0
         for building in buildings:
-            if building.get('state') == BUILDING_STATE_NORMAL:
+            if building.get('state') != BUILDING_STATE_NORMAL:
                 continue
 
             if building['code'] == BUILDING_CODE_MAP['barrack']:
