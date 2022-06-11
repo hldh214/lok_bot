@@ -118,6 +118,13 @@
         "kwargs": {
           "to_max_level": false
         }
+      },
+      {
+        "name": "train_troop_thread",
+        "enabled": true,
+        "kwargs": {
+          "troop_code": 50100101
+        }
       }
     ]
   },

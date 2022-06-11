@@ -38,7 +38,7 @@ Yet another League of Kingdoms farming bot
 |    quest reward auto claim    |                                    ✔YES️                                    |
 |       building upgrade        |                                    ✔YES️                                    |
 |       academy research        |                                    ✔YES️                                    |
-|         train troops          | ❌[NO](https://github.com/hldh214/lok_bot/issues/16#issuecomment-1061367852) |
+|         train troops          |                                    ✔YES️                                    |
 |         field farming         |                                    🚧WIP                                    |
 
 # Usage

@@ -670,6 +670,58 @@ TROOP_LOAD_MAP = {
     TROOP_CODE_DRAGON: 5
 }
 
+BARRACK_LEVEL_TROOP_TRAINING_RATE_MAP = {
+    1: 50,
+    2: 100,
+    3: 150,
+    4: 200,
+    5: 300,
+    6: 400,
+    7: 500,
+    8: 600,
+    9: 700,
+    10: 1000,
+    11: 1200,
+    12: 1400,
+    13: 1800,
+    14: 1800,
+    15: 2000,
+    16: 2400,
+    17: 2800,
+    18: 3200,
+    19: 3600,
+    20: 4000,
+    21: 5000,
+    22: 6000,
+    23: 7000,
+    24: 8000,
+    25: 10000,
+    26: 12000,
+    27: 14000,
+    28: 16000,
+    29: 18000,
+    30: 25000,
+}
+
+TRAIN_TROOP_RESOURCE_REQUIREMENT = {
+    # Tier 1
+    TROOP_CODE_FIGHTER: [30, 0, 60, 15],
+    TROOP_CODE_HUNTER: [0, 60, 30, 15],
+    TROOP_CODE_STABLE_MAN: [60, 30, 0, 15],
+    # Tier 2
+    TROOP_CODE_WARRIOR: [60, 0, 120, 30],
+    TROOP_CODE_LONGBOW_MAN: [0, 120, 60, 30],
+    TROOP_CODE_HORSEMAN: [120, 60, 0, 30],
+    # Tier 3
+    TROOP_CODE_KNIGHT: [90, 0, 180, 45],
+    TROOP_CODE_RANGER: [0, 180, 90, 45],
+    TROOP_CODE_HEAVY_CAVALRY: [180, 90, 0, 45],
+    # Tier 4
+    TROOP_CODE_GUARDIAN: [180, 0, 360, 90],
+    TROOP_CODE_CROSSBOW_MAN: [0, 360, 180, 90],
+    TROOP_CODE_IRON_CAVALRY: [360, 180, 0, 90],
+}
+
 MARCH_TYPE_GATHER = 1
 MARCH_TYPE_MONSTER = 5
 MARCH_TYPE_SUPPORT = 7

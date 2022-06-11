@@ -102,6 +102,12 @@ class LokFarmer:
         if building.get('state') != BUILDING_STATE_NORMAL:
             return False
 
+        if building.get('code') == BUILDING_CODE_MAP['barrack']:
+            current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
+            for t in current_tasks:
+                if t.get('code') == TASK_CODE_CAMP:
+                    return False
+
         # 暂时忽略联盟中心
         if building.get('code') == BUILDING_CODE_MAP['hall_of_alliance']:
             return False
@@ -835,6 +841,83 @@ class LokFarmer:
 
         logger.info('academy_farmer: no research to do, sleep for 2h')
         threading.Timer(2 * 3600, self.academy_farmer_thread, [to_max_level]).start()
+        return
+
+    def _troop_training_capacity(self):
+        """
+        return total troop training capacity of all barracks
+        """
+        buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
+        troop_training_capacity = 0
+        for building in buildings:
+            if building.get('state') != BUILDING_STATE_NORMAL:
+                continue
+
+            if building['code'] == BUILDING_CODE_MAP['barrack']:
+                troop_training_capacity += BARRACK_LEVEL_TROOP_TRAINING_RATE_MAP[int(building['level'])]
+
+        return troop_training_capacity
+
+    def _total_troops_capacity_according_to_resources(self, troop_code):
+        """
+        return maximum number of troops according to resources
+        """
+        req_resources = TRAIN_TROOP_RESOURCE_REQUIREMENT[troop_code]
+
+        amount = 0
+        for req_resource, resource in zip(req_resources, self.resources):
+            if req_resource == 0:
+                continue
+
+            if amount == 0 or resource // req_resource <= amount:
+                amount = resource // req_resource
+
+        return amount
+
+    def _random_choice_building(self, building_code):
+        """
+        return a random building object with the building_code
+        """
+        buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
+        return random.choice([building for building in buildings if building['code'] == building_code])
+
+    def train_troop_thread(self, troop_code):
+        current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
+
+        worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_CAMP]
+
+        troop_training_capacity = self._troop_training_capacity()
+
+        if worker_used:
+            if worker_used[0].get('status') == STATUS_CLAIMED:
+                self.api.kingdom_task_claim(self._random_choice_building(BUILDING_CODE_MAP['barrack'])['position'])
+                logger.info('trian_troop: one loop completed, sleep for 3h')
+                threading.Timer(
+                    3 * 3600,
+                    self.train_troop_thread,
+                    [troop_code]
+                ).start()
+                return
+
+            if worker_used[0].get('status') == STATUS_PENDING:
+                threading.Timer(
+                    self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')) + 5,
+                    self.train_troop_thread,
+                    [troop_code]
+                ).start()
+                return
+
+        # if there is not enough resource, train how much possible
+        total_troops_capacity_according_to_resources = self._total_troops_capacity_according_to_resources(troop_code)
+        if troop_training_capacity > total_troops_capacity_according_to_resources:
+            troop_training_capacity = total_troops_capacity_according_to_resources
+
+        res = self.api.train_troop(troop_code, troop_training_capacity)
+        threading.Timer(
+            self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')) + 5,
+            self.train_troop_thread,
+            [troop_code]
+        ).start()
         return
 
     def free_chest_farmer_thread(self, _type=0):
