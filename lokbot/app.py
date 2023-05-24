@@ -43,7 +43,7 @@ def run_threaded(name, job_func):
     if name in thread_map and thread_map[name].is_alive():
         return
 
-    job_thread = threading.Thread(target=job_func, name=name)
+    job_thread = threading.Thread(target=job_func, name=name, daemon=True)
     thread_map[name] = job_thread
     job_thread.start()
 
@@ -70,7 +70,7 @@ def main(token, captcha_solver_config=None):
 
     farmer.keepalive_request()
 
-    threading.Thread(target=farmer.sock_thread).start()
+    threading.Thread(target=farmer.sock_thread, daemon=True).start()
     # threading.Thread(target=farmer.socc_thread).start()
 
     for job in config.get('main').get('jobs'):
@@ -93,7 +93,7 @@ def main(token, captcha_solver_config=None):
         if not thread.get('enabled'):
             continue
 
-        threading.Thread(target=getattr(farmer, thread.get('name')), kwargs=thread.get('kwargs')).start()
+        threading.Thread(target=getattr(farmer, thread.get('name')), kwargs=thread.get('kwargs'), daemon=True).start()
 
     while True:
         schedule.run_pending()
