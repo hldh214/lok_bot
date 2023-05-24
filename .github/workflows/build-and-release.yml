@@ -28,7 +28,7 @@ jobs:
       - run: pipenv install PyInstaller
 
       - name: Run PyInstaller
-        run: python -m PyInstaller --add-data "lokbot/assets/;lokbot/assets" -F lokbot/__main__.py -n "${{ env.OUTPUT_EXE_NAME }}.${{ github.ref_name }}.x${{ env.ARCH }}"
+        run: pipenv run python -m PyInstaller --add-data "lokbot/assets/;lokbot/assets" -F lokbot/__main__.py -n "${{ env.OUTPUT_EXE_NAME }}.${{ github.ref_name }}.x${{ env.ARCH }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -56,7 +56,7 @@ jobs:
       - run: pipenv install PyInstaller
 
       - name: Run PyInstaller
-        run: python -m PyInstaller --add-data "lokbot/assets/;lokbot/assets" -F lokbot/__main__.py -n "${{ env.OUTPUT_EXE_NAME }}.${{ github.ref_name }}.x${{ env.ARCH }}"
+        run: pipenv run python -m PyInstaller --add-data "lokbot/assets/;lokbot/assets" -F lokbot/__main__.py -n "${{ env.OUTPUT_EXE_NAME }}.${{ github.ref_name }}.x${{ env.ARCH }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
