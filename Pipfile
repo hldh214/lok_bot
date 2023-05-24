@@ -4,15 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-arrow = "*"
-fire = "*"
-httpx = {extras = ["http2"], version = "*"}
-loguru = "*"
-tenacity = "*"
-schedule = "*"
-ratelimit = "*"
+arrow = "==1.2.*"
+fire = "==0.5.*"
+loguru = "==0.7.*"
+tenacity = "==8.2.*"
+schedule = "==1.2.*"
+ratelimit = "==2.2.*"
 python-socketio = {version = "<5", extras = ["client"]}
-numpy = "*"
+numpy = "==1.24.*"
+httpx = {version = "==0.24.*", extras = ["http2"]}
 
 [dev-packages]
 
