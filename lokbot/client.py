@@ -10,7 +10,8 @@ from lokbot.exceptions import *
 from lokbot import logger
 
 BASE64ENCODE_URL_WHITELIST = (
-    'kingdom/enter',
+    'https://lok-api-live.leagueofkingdoms.com/api/auth/connect',
+
     'auth/setDeviceInfo',
     'chat/logs',
     'item/list',
@@ -60,6 +61,16 @@ BASE64ENCODE_URL_WHITELIST = (
     'alliance/join',
 )
 
+StringObfuscatorPassword = b'23.0912.05'
+
+
+def xor_enc(plain: bytes) -> bytes:
+    result = []
+    for index, each_plain in enumerate(plain):
+        result.append(each_plain ^ StringObfuscatorPassword[index % len(StringObfuscatorPassword)])
+
+    return bytearray(result)
+
 
 class LokBotApi:
     def __init__(self, access_token, captcha_solver_config, request_callback=None):
@@ -104,7 +115,7 @@ class LokBotApi:
 
         post_data = json.dumps(json_data)
         if url not in BASE64ENCODE_URL_WHITELIST:
-            post_data = base64.b64encode(post_data.encode()).decode()
+            post_data = base64.b64encode(xor_enc(post_data.encode())).decode()
 
         response = self.opener.post(url, data={'json': post_data})
 
@@ -116,7 +127,7 @@ class LokBotApi:
 
         try:
             if url not in BASE64ENCODE_URL_WHITELIST and response.text[0] != '{':
-                json_response = json.loads(base64.b64decode(response.text).decode())
+                json_response = json.loads(xor_enc(base64.b64decode(response.text)).decode())
             else:
                 json_response = response.json()
         except json.JSONDecodeError:
@@ -185,7 +196,7 @@ class LokBotApi:
         return self.post('auth/captcha/confirm', {'value': value})
 
     def auth_connect(self):
-        res = self.post('auth/connect')
+        res = self.post('https://lok-api-live.leagueofkingdoms.com/api/auth/connect')
 
         self.opener.headers['x-access-token'] = res['token']
 
@@ -328,7 +339,7 @@ class LokBotApi:
         获取基础信息
         :return:
         """
-        res = self.post('kingdom/enter')
+        res = self.post('https://lok-api-live.leagueofkingdoms.com/api/kingdom/enter')
 
         captcha = res.get('captcha')
         if captcha and captcha.get('next'):
