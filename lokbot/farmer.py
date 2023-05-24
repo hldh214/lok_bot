@@ -63,10 +63,10 @@ class LokFarmer:
         self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
 
         device_info = {
-            "OS": "iOS 15.5",
+            "OS": "iOS 16.4",
             "country": "USA",
             "language": "English",
-            "version": "1.1454.106.179",
+            "version": "1.1624.135.217",
             "platform": "ios",
             "build": "global"
         }
@@ -738,11 +738,9 @@ class LokFarmer:
         worker_used = [t for t in current_tasks if t.get('code') == task_code]
 
         if worker_used:
-            threading.Timer(
-                self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')),
-                self.building_farmer_thread,
-                [task_code]
-            ).start()
+            sleep_sec = self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded'))
+            logger.info(f'building_farmer: task_code({task_code}) is busy, sleep for {sleep_sec}s')
+            threading.Timer(sleep_sec, self.building_farmer_thread, [task_code]).start()
             return
 
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
