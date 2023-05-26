@@ -11,7 +11,7 @@ import socketio
 import tenacity
 
 import lokbot.util
-from lokbot.client import LokBotApi
+from lokbot.client import LokBotApi, xor_enc
 from lokbot import logger, builtin_logger
 from lokbot.exceptions import OtherException
 from lokbot.enum import *
@@ -566,7 +566,7 @@ class LokFarmer:
 
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
-        @sio.on('/field/objects/v3')
+        @sio.on('/field/objects/v4')  # fixme
         def on_field_objects(data):
             data = json.loads(base64.b64decode(data.encode()).decode())
             objects = data.get('objects')
@@ -584,8 +584,7 @@ class LokFarmer:
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
                     if str(error_code) in (
-                            'full_task', 'not_enough_troop', 'insufficient_actionpoint',
-                            'not_open_gate'
+                            'full_task', 'not_enough_troop', 'insufficient_actionpoint', 'not_open_gate'
                     ):
                         logger.warning(f'on_field_objects: {error_code}, skip')
                         return
@@ -594,13 +593,16 @@ class LokFarmer:
 
         @sio.on('/field/enter/v3')
         def on_field_enter(data):
-            data = json.loads(base64.b64decode(data.encode()).decode())
+            data = json.loads(xor_enc(base64.b64decode(data.encode())).decode())
             logger.info(f'on_field_enter: {data}')
             self.socf_entered = True
             self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
 
         sio.connect(url, transports=["websocket"])
-        sio.emit('/field/enter/v3', base64.b64encode(json.dumps({'token': self.access_token}).encode()).decode())
+        sio.emit(
+            '/field/enter/v3',
+            base64.b64encode(xor_enc(json.dumps({'token': self.access_token}).encode())).decode()
+        )
 
         while not self.socf_entered:
             time.sleep(1)
@@ -622,9 +624,9 @@ class LokFarmer:
                 raise tenacity.TryAgain()
 
             message = {'world': self.socf_world_id, 'zones': json.dumps([zone_id])}
-            encoded_message = base64.b64encode(json.dumps(message).encode()).decode()
+            encoded_message = base64.b64encode(xor_enc(json.dumps(message).encode())).decode()
 
-            sio.emit('/zone/enter/list/v3', encoded_message)
+            sio.emit('/zone/enter/list/v4', encoded_message)
             time.sleep(random.uniform(1, 2))
             sio.emit('/zone/leave/list/v2', message)
 
