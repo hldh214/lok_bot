@@ -150,7 +150,11 @@ class LokBotApi:
         return self.post('auth/captcha/confirm', {'value': value})
 
     def auth_connect(self):
-        res = self.post('https://lok-api-live.leagueofkingdoms.com/api/auth/connect')
+        try:
+            res = self.post('https://lok-api-live.leagueofkingdoms.com/api/auth/connect')
+        except OtherException:
+            # {"result":false,"err":{}} when no auth
+            raise NoAuthException()
 
         self.opener.headers['x-access-token'] = res['token']
 
