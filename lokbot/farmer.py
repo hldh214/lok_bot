@@ -71,7 +71,7 @@ class LokFarmer:
         logger.debug(f'xor_password: {self.api.xor_password}')
         self.token = auth_res.get('token')
         self._id = lokbot.util.decode_jwt(token).get('_id')
-        project_root.joinpath(f'{self._id}.token').write_text(self.token)
+        project_root.joinpath(f'data/{self._id}.token').write_text(self.token)
 
         self.kingdom_enter = self.api.kingdom_enter()
 

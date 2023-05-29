@@ -68,7 +68,7 @@ def main(token, captcha_solver_config=None):
         builtin_logger.setLevel(logging.CRITICAL)
 
     _id = lokbot.util.decode_jwt(token).get('_id')
-    token_file = project_root.joinpath(f'{_id}.token')
+    token_file = project_root.joinpath(f'data/{_id}.token')
     if token_file.exists():
         token = token_file.read_text()
         logger.info(f'Using token: {token} from file: {token_file}')
