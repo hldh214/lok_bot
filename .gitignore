@@ -1,3 +1,4 @@
+*.token
 config.json
 builtin_logger.log.*
 

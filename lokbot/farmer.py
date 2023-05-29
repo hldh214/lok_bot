@@ -11,7 +11,7 @@ import socketio
 import tenacity
 
 import lokbot.util
-from lokbot.client import LokBotApi, xor_enc
+from lokbot.client import LokBotApi
 from lokbot import logger, builtin_logger
 from lokbot.exceptions import OtherException
 from lokbot.enum import *
@@ -35,6 +35,7 @@ def blockshaped(arr, nrows, ncols):
 
 
 # Ref: https://stackoverflow.com/a/432175/6266737
+# noinspection PyBroadException
 def ndindex(ndarray, item):
     if len(ndarray.shape) == 1:
         try:
@@ -57,24 +58,29 @@ def neighbors(a, radius, row_number, column_number):
 
 
 class LokFarmer:
-    def __init__(self, access_token, captcha_solver_config):
+    def __init__(self, token, captcha_solver_config):
         self.kingdom_enter = None
-        self.access_token = access_token
-        self.api = LokBotApi(access_token, captcha_solver_config, self._request_callback)
+        self.token = token
+        self.api = LokBotApi(token, captcha_solver_config, self._request_callback)
 
-        device_info = {
+        auth_res = self.api.auth_connect()
+        self.api.protected_api_list = json.loads(base64.b64decode(auth_res.get('lstProtect')).decode())
+        self.api.protected_api_list = [str(api).split('/api/').pop() for api in self.api.protected_api_list]
+        self.api.xor_password = json.loads(base64.b64decode(auth_res.get('regionHash')).decode()).split('-')[1]
+        self.token = auth_res.get('token')
+        self._id = lokbot.util.decode_jwt(token).get('_id')
+        project_root.joinpath(f'{self._id}.token').write_text(self.token)
+
+        self.kingdom_enter = self.api.kingdom_enter()
+
+        self.api.auth_set_device_info({
             "OS": "iOS 16.4",
             "country": "USA",
             "language": "English",
             "version": "1.1624.135.217",
             "platform": "ios",
             "build": "global"
-        }
-
-        self.kingdom_enter = self.api.kingdom_enter()
-
-        # knock moved to schedule job
-        self.api.auth_set_device_info(device_info)
+        })
         self.api.chat_logs(self.kingdom_enter.get('kingdom').get('worldId'))
 
         # [food, lumber, stone, gold]
@@ -545,7 +551,7 @@ class LokFarmer:
                 self.buff_item_use_lock.release()
 
         sio.connect(url, transports=["websocket"])
-        sio.emit('/kingdom/enter', {'token': self.access_token})
+        sio.emit('/kingdom/enter', {'token': self.token})
         sio.wait()
 
     @tenacity.retry(
@@ -593,7 +599,7 @@ class LokFarmer:
 
         @sio.on('/field/enter/v3')
         def on_field_enter(data):
-            data = json.loads(xor_enc(base64.b64decode(data.encode())).decode())
+            data = json.loads(self.api.xor_enc(base64.b64decode(data.encode())).decode())
             logger.info(f'on_field_enter: {data}')
             self.socf_entered = True
             self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
@@ -601,7 +607,7 @@ class LokFarmer:
         sio.connect(url, transports=["websocket"])
         sio.emit(
             '/field/enter/v3',
-            base64.b64encode(xor_enc(json.dumps({'token': self.access_token}).encode())).decode()
+            base64.b64encode(self.api.xor_enc(json.dumps({'token': self.token}).encode())).decode()
         )
 
         while not self.socf_entered:
@@ -624,7 +630,7 @@ class LokFarmer:
                 raise tenacity.TryAgain()
 
             message = {'world': self.socf_world_id, 'zones': json.dumps([zone_id])}
-            encoded_message = base64.b64encode(xor_enc(json.dumps(message).encode())).decode()
+            encoded_message = base64.b64encode(self.api.xor_enc(json.dumps(message).encode())).decode()
 
             sio.emit('/zone/enter/list/v4', encoded_message)
             time.sleep(random.uniform(1, 2))
@@ -645,7 +651,7 @@ class LokFarmer:
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
         sio.connect(url, transports=["websocket"])
-        sio.emit('/chat/enter', {'token': self.access_token})
+        sio.emit('/chat/enter', {'token': self.token})
 
         # do nothing
         sio.wait()

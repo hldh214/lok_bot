@@ -6,91 +6,43 @@ import ratelimit
 import tenacity
 
 import lokbot.enum
+import lokbot.util
 from lokbot.exceptions import *
-from lokbot import logger
-
-BASE64ENCODE_URL_WHITELIST = (
-    'https://lok-api-live.leagueofkingdoms.com/api/auth/connect',
-
-    'auth/setDeviceInfo',
-    'chat/logs',
-    'item/list',
-    'mail/claim/all',
-    'field/march/info',
-
-    'kingdom/wall/info',
-    'kingdom/treasure/list',
-    'kingdom/task/claim',
-    'kingdom/task/all',
-    'kingdom/wall/repair',
-    'kingdom/profile/troops',
-    'kingdom/vip/info',
-    'kingdom/arcademy/research',
-    'kingdom/arcademy/research/list',
-    'kingdom/caravan/list',
-    'kingdom/caravan/buy',
-    'kingdom/treasure/equip',
-    'kingdom/treasure/page',
-    'kingdom/building/build',
-    'kingdom/barrack/train',
-
-    'quest/main',
-    'quest/claim/daily',
-    'quest/claim/daily/level',
-    'quest/list',
-    'quest/list/daily',
-
-    'event/list',
-    'event/info',
-    'event/claim',
-    'event/cvc/open',
-    'event/roulette/open',
-    'event/cvc/dashboard',
-    'event/cvc/enter',
-
-    'pkg/recommend',
-    'pkg/list',
-
-    'alliance/help/all',
-    'alliance/research/list',
-    'alliance/research/donateAll',
-    'alliance/research/donate',
-    'alliance/research/info',
-    'alliance/shop/list',
-    'alliance/shop/buy',
-    'alliance/join',
-)
-
-StringObfuscatorPassword = b'23.0912.05'
-
-
-def xor_enc(plain: bytes) -> bytes:
-    result = []
-    for index, each_plain in enumerate(plain):
-        result.append(each_plain ^ StringObfuscatorPassword[index % len(StringObfuscatorPassword)])
-
-    return bytearray(result)
+from lokbot import logger, project_root
 
 
 class LokBotApi:
-    def __init__(self, access_token, captcha_solver_config, request_callback=None):
+    def __init__(self, token, captcha_solver_config, request_callback=None):
         self.opener = httpx.Client(
             headers={
                 'User-Agent': 'BestHTTP',
-                'x-access-token': access_token
+                'x-access-token': token
             },
             http2=True,
             base_url=lokbot.enum.API_BASE_URL
         )
+        self.token = token
         self.request_callback = request_callback
+        self._id = lokbot.util.decode_jwt(token).get('_id')
+
+        self.xor_password = None
+        self.protected_api_list = []
 
         self.captcha_solver = None
         if 'ttshitu' in captcha_solver_config:
             from lokbot.captcha_solver import Ttshitu
             self.captcha_solver = Ttshitu(**captcha_solver_config['ttshitu'])
 
+    def xor_enc(self, plain: bytes) -> bytes:
+        assert self.xor_password is not None
+
+        return bytearray([
+            each_plain ^ ord(self.xor_password[index % len(self.xor_password)])
+            for index, each_plain in enumerate(plain)
+        ])
+
     @tenacity.retry(
-        stop=tenacity.stop_after_attempt(4),
+        stop=tenacity.stop_after_attempt(2),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
         # general http error or json decode error
         retry=tenacity.retry_if_exception_type((httpx.HTTPError, json.JSONDecodeError)),
@@ -114,8 +66,9 @@ class LokBotApi:
             json_data = {}
 
         post_data = json.dumps(json_data)
-        if url not in BASE64ENCODE_URL_WHITELIST:
-            post_data = base64.b64encode(xor_enc(post_data.encode())).decode()
+        api_path = str(url).split('/api/').pop()
+        if api_path in self.protected_api_list:
+            post_data = base64.b64encode(self.xor_enc(post_data.encode())).decode()
 
         response = self.opener.post(url, data={'json': post_data})
 
@@ -126,8 +79,8 @@ class LokBotApi:
         }
 
         try:
-            if url not in BASE64ENCODE_URL_WHITELIST and response.text[0] != '{':
-                json_response = json.loads(xor_enc(base64.b64decode(response.text)).decode())
+            if api_path in self.protected_api_list:
+                json_response = json.loads(self.xor_enc(base64.b64decode(response.text)).decode())
             else:
                 json_response = response.json()
         except json.JSONDecodeError:
@@ -150,6 +103,7 @@ class LokBotApi:
         code = err.get('code')
 
         if code == 'no_auth':
+            project_root.joinpath(f'{self._id}.token').unlink()
             raise NoAuthException()
 
         if code == 'need_captcha':

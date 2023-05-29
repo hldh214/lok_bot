@@ -8,9 +8,10 @@ import time
 
 import schedule
 
+import lokbot.util
 from lokbot.async_farmer import AsyncLokFarmer
 from lokbot.farmer import LokFarmer
-from lokbot import project_root, builtin_logger
+from lokbot import project_root, builtin_logger, logger
 
 
 def find_alliance(farmer: LokFarmer):
@@ -65,6 +66,12 @@ def main(token, captcha_solver_config=None):
 
     if not config.get('socketio').get('debug'):
         builtin_logger.setLevel(logging.CRITICAL)
+
+    _id = lokbot.util.decode_jwt(token).get('_id')
+    token_file = project_root.joinpath(f'{_id}.token')
+    if token_file.exists():
+        token = token_file.read_text()
+        logger.info(f'Using token: {token} from file: {token_file}')
 
     farmer = LokFarmer(token, captcha_solver_config)
 

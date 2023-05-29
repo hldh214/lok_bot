@@ -13,6 +13,7 @@ ratelimit = "==2.2.*"
 python-socketio = {version = "<5", extras = ["client"]}
 numpy = "==1.24.*"
 httpx = {version = "==0.24.*", extras = ["http2"]}
+pyjwt = "==2.7.*"
 
 [dev-packages]
 

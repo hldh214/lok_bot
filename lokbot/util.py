@@ -1,5 +1,7 @@
 import random
 
+import jwt
+
 from lokbot.enum import *
 
 
@@ -33,3 +35,7 @@ def run_functions_in_random_order(*funcs):
 
 def get_zone_id_by_coords(x, y):
     return (x // 32) + 64 * (y // 32)
+
+
+def decode_jwt(token):
+    return jwt.decode(token, options={'verify_signature': False})
