@@ -66,7 +66,9 @@ class LokFarmer:
         auth_res = self.api.auth_connect()
         self.api.protected_api_list = json.loads(base64.b64decode(auth_res.get('lstProtect')).decode())
         self.api.protected_api_list = [str(api).split('/api/').pop() for api in self.api.protected_api_list]
+        logger.debug(f'protected_api_list: {self.api.protected_api_list}')
         self.api.xor_password = json.loads(base64.b64decode(auth_res.get('regionHash')).decode()).split('-')[1]
+        logger.debug(f'xor_password: {self.api.xor_password}')
         self.token = auth_res.get('token')
         self._id = lokbot.util.decode_jwt(token).get('_id')
         project_root.joinpath(f'{self._id}.token').write_text(self.token)
