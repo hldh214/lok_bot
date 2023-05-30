@@ -1,6 +1,4 @@
-*.token
 config.json
-builtin_logger.log.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

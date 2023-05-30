@@ -120,6 +120,11 @@ class LokBotApi:
         if code == 'exceed_limit_packet':
             raise ExceedLimitPacketException()
 
+        if code == 'not_online':
+            logger.warning('not online, quit')
+            exit()
+            # raise NotOnlineException()
+
         raise OtherException(code)
 
     @tenacity.retry(
@@ -249,6 +254,9 @@ class LokBotApi:
 
     def event_cvc_open(self):
         return self.post('event/cvc/open')
+
+    def drago_lair_list(self):
+        return self.post('drago/lair/list')
 
     def event_list(self):
         """

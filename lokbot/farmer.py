@@ -1,5 +1,6 @@
 import base64
 import functools
+import gzip
 import math
 import random
 import threading
@@ -83,7 +84,7 @@ class LokFarmer:
             "platform": "ios",
             "build": "global"
         })
-        self.api.chat_logs(self.kingdom_enter.get('kingdom').get('worldId'))
+        self.api.chat_logs(f'w{self.kingdom_enter.get("kingdom").get("worldId")}')
 
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
@@ -511,7 +512,7 @@ class LokFarmer:
 
         @sio.on('/building/update')
         def on_building_update(data):
-            logger.info(f'on_building_update: {data}')
+            logger.debug(f'on_building_update: {data}')
             self._update_kingdom_enter_building(data)
 
         @sio.on('/resource/upgrade')
@@ -521,7 +522,7 @@ class LokFarmer:
 
         @sio.on('/buff/list')
         def on_buff_list(data):
-            logger.info(f'on_buff_list: {data}')
+            logger.debug(f'on_buff_list: {data}')
 
             self.has_additional_building_queue = len([
                 item for item in data if item.get('param', {}).get('itemCode') == ITEM_CODE_GOLDEN_HAMMER
@@ -574,10 +575,13 @@ class LokFarmer:
 
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
-        @sio.on('/field/objects/v4')  # fixme
+        @sio.on('/field/objects/v4')
         def on_field_objects(data):
-            data = json.loads(base64.b64decode(data.encode()).decode())
-            objects = data.get('objects')
+            packs = data.get('packs')
+            gzip_decompress = gzip.decompress(bytearray(packs))
+            data_decoded = json.loads(self.api.xor_enc(base64.b64decode(gzip_decompress)))
+            objects = data_decoded.get('objects')
+            logger.debug(f'Processing {len(objects)} objects')
             for each_obj in objects:
                 if self._is_march_limit_exceeded():
                     continue
@@ -607,6 +611,7 @@ class LokFarmer:
             self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
 
         sio.connect(url, transports=["websocket"])
+        logger.debug(f'entering field: {zones}')
         sio.emit(
             '/field/enter/v3',
             base64.b64encode(self.api.xor_enc(json.dumps({'token': self.token}).encode())).decode()
@@ -625,18 +630,26 @@ class LokFarmer:
             time.sleep(seconds)
             self._update_march_limit()
 
+        zone_ids = []
         for zone_id in zones:
+            if len(zone_ids) < 4:
+                zone_ids.append(zone_id)
+                continue
+
             if not sio.connected:
                 self.socf_entered = False
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
-            message = {'world': self.socf_world_id, 'zones': json.dumps([zone_id])}
+            message = {'world': self.socf_world_id, 'zones': json.dumps(zone_ids)}
             encoded_message = base64.b64encode(self.api.xor_enc(json.dumps(message).encode())).decode()
 
             sio.emit('/zone/enter/list/v4', encoded_message)
-            time.sleep(random.uniform(1, 2))
+            delay = random.uniform(4, 16)
+            logger.debug(f'entering zone: {zone_ids}, delay: {delay}')
+            time.sleep(delay)
             sio.emit('/zone/leave/list/v2', message)
+            zone_ids = []
 
         logger.info('a loop is finished')
         sio.disconnect()
@@ -1067,6 +1080,7 @@ class LokFarmer:
                 self.api.event_list,
                 self.api.event_cvc_open,
                 self.api.event_roulette_open,
+                self.api.drago_lair_list,
                 self.api.pkg_recommend,
                 self.api.pkg_list,
             )

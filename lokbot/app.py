@@ -10,6 +10,7 @@ import schedule
 
 import lokbot.util
 from lokbot.async_farmer import AsyncLokFarmer
+from lokbot.exceptions import NoAuthException
 from lokbot.farmer import LokFarmer
 from lokbot import project_root, builtin_logger, logger
 
@@ -70,10 +71,15 @@ def main(token, captcha_solver_config=None):
     _id = lokbot.util.decode_jwt(token).get('_id')
     token_file = project_root.joinpath(f'data/{_id}.token')
     if token_file.exists():
-        token = token_file.read_text()
-        logger.info(f'Using token: {token} from file: {token_file}')
-
-    farmer = LokFarmer(token, captcha_solver_config)
+        token_from_file = token_file.read_text()
+        logger.info(f'Using token: {token_from_file} from file: {token_file}')
+        try:
+            farmer = LokFarmer(token_from_file, captcha_solver_config)
+        except NoAuthException:
+            logger.info('Token is invalid, using token from command line')
+            farmer = LokFarmer(token, captcha_solver_config)
+    else:
+        farmer = LokFarmer(token, captcha_solver_config)
 
     farmer.keepalive_request()
 

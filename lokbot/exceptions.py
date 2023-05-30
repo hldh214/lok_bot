@@ -18,5 +18,9 @@ class ExceedLimitPacketException(ApiException):
     pass
 
 
+class NotOnlineException(ApiException):
+    pass
+
+
 class OtherException(ApiException):
     pass
