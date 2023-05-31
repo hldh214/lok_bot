@@ -462,7 +462,7 @@ class LokFarmer:
 
             march_troops.append({
                 'code': code,
-                'amount': amount,
+                'amount': int(amount),
                 'level': 0,
                 'select': 0,
                 'dead': 0,
@@ -567,6 +567,12 @@ class LokFarmer:
         websocket connection of the field
         :return:
         """
+        while self.api.last_requested_at + 10 > time.time():
+            # if last request is less than 60 seconds ago, wait
+            # when we are in the field, we should not be doing anything else
+            logger.info(f'last requested at {arrow.get(self.api.last_requested_at).humanize()}, waiting...')
+            time.sleep(4)
+
         self.socf_world_id = self.kingdom_enter.get('kingdom').get('worldId')
         url = self.kingdom_enter.get('networks').get('fields')[0]
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
@@ -614,7 +620,9 @@ class LokFarmer:
         logger.debug(f'entering field: {zones}')
         sio.emit(
             '/field/enter/v3',
-            base64.b64encode(self.api.xor_enc(json.dumps({'token': self.token}).encode())).decode()
+            base64.b64encode(self.api.xor_enc(json.dumps(
+                {'token': self.token}, separators=(',', ':')
+            ).encode())).decode()
         )
 
         while not self.socf_entered:
@@ -632,7 +640,7 @@ class LokFarmer:
 
         zone_ids = []
         for zone_id in zones:
-            if len(zone_ids) < 4:
+            if len(zone_ids) < 6:
                 zone_ids.append(zone_id)
                 continue
 
@@ -641,17 +649,20 @@ class LokFarmer:
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
-            message = {'world': self.socf_world_id, 'zones': json.dumps(zone_ids)}
-            encoded_message = base64.b64encode(self.api.xor_enc(json.dumps(message).encode())).decode()
+            message = {'world': self.socf_world_id, 'zones': json.dumps(zone_ids, separators=(',', ':'))}
+            encoded_message = base64.b64encode(self.api.xor_enc(json.dumps(
+                message, separators=(',', ':')
+            ).encode())).decode()
 
             sio.emit('/zone/enter/list/v4', encoded_message)
-            delay = random.uniform(4, 16)
+            delay = random.uniform(2, 4)
             logger.debug(f'entering zone: {zone_ids}, delay: {delay}')
             time.sleep(delay)
             sio.emit('/zone/leave/list/v2', message)
             zone_ids = []
 
         logger.info('a loop is finished')
+        self.socf_entered = False
         sio.disconnect()
         sio.wait()
 

@@ -1,5 +1,6 @@
 import base64
 import json
+import time
 
 import httpx
 import ratelimit
@@ -27,6 +28,8 @@ class LokBotApi:
 
         self.xor_password = None
         self.protected_api_list = []
+
+        self.last_requested_at = time.time()
 
         self.captcha_solver = None
         if 'ttshitu' in captcha_solver_config:
@@ -65,12 +68,13 @@ class LokBotApi:
         if json_data is None:
             json_data = {}
 
-        post_data = json.dumps(json_data)
+        post_data = json.dumps(json_data, separators=(',', ':'))
         api_path = str(url).split('/api/').pop()
         if api_path in self.protected_api_list:
             post_data = base64.b64encode(self.xor_enc(post_data.encode())).decode()
 
         response = self.opener.post(url, data={'json': post_data})
+        self.last_requested_at = time.time()
 
         log_data = {
             'url': url,
@@ -121,9 +125,7 @@ class LokBotApi:
             raise ExceedLimitPacketException()
 
         if code == 'not_online':
-            logger.warning('not online, quit')
-            exit()
-            # raise NotOnlineException()
+            raise NotOnlineException()
 
         raise OtherException(code)
 
