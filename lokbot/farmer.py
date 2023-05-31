@@ -621,6 +621,7 @@ class LokFarmer:
                             'full_task', 'not_enough_troop', 'insufficient_actionpoint', 'not_open_gate'
                     ):
                         logger.warning(f'on_field_objects: {error_code}, skip')
+                        self.field_object_processed = True
                         return
 
                     raise
