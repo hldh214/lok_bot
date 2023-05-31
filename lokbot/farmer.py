@@ -96,6 +96,7 @@ class LokFarmer:
         self.level = self.kingdom_enter.get('kingdom').get('level')
         self.socf_entered = False
         self.socf_world_id = None
+        self.field_object_processed = False
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -416,6 +417,11 @@ class LokFarmer:
             'toLoc': each_obj.get('loc')
         })
 
+        expired_ts = arrow.get(march_info.get('fo').get('expired')).timestamp()
+        if expired_ts < arrow.now().timestamp():
+            logger.info(f'Expired: {march_info}')
+            return []
+
         if march_type == MARCH_TYPE_MONSTER:
             # check if monster is already dead
             if march_info.get('fo').get('code') != each_obj.get('code'):
@@ -434,6 +440,10 @@ class LokFarmer:
         if (march_type == MARCH_TYPE_MONSTER) and (need_troop_count > troop_count):
             logger.info(f'Insufficient troops: {troop_count} < {need_troop_count}: {each_obj}')
             return []
+
+        delay = random.randint(2, 4)
+        logger.info('Add dummy delay: {} seconds'.format(delay))
+        time.sleep(delay)  # add dummy delay
 
         # distance = self._calc_distance(from_loc, to_loc)
         distance = march_info.get('distance')
@@ -462,13 +472,18 @@ class LokFarmer:
 
             march_troops.append({
                 'code': code,
-                'amount': int(amount),
                 'level': 0,
                 'select': 0,
+                'amount': int(amount),
                 'dead': 0,
                 'wounded': 0,
+                'hp': 0,
+                'attack': 0,
+                'defense': 0,
                 'seq': 0
             })
+
+        march_troops.sort(key=lambda x: x.get('code'))  # sort by code asc
 
         return march_troops
 
@@ -587,6 +602,7 @@ class LokFarmer:
             gzip_decompress = gzip.decompress(bytearray(packs))
             data_decoded = json.loads(self.api.xor_enc(base64.b64decode(gzip_decompress)))
             objects = data_decoded.get('objects')
+
             logger.debug(f'Processing {len(objects)} objects')
             for each_obj in objects:
                 if self._is_march_limit_exceeded():
@@ -608,6 +624,8 @@ class LokFarmer:
                         return
 
                     raise
+
+            self.field_object_processed = True
 
         @sio.on('/field/enter/v3')
         def on_field_enter(data):
@@ -640,7 +658,7 @@ class LokFarmer:
 
         zone_ids = []
         for zone_id in zones:
-            if len(zone_ids) < 6:
+            if len(zone_ids) < 9:
                 zone_ids.append(zone_id)
                 continue
 
@@ -655,9 +673,10 @@ class LokFarmer:
             ).encode())).decode()
 
             sio.emit('/zone/enter/list/v4', encoded_message)
-            delay = random.uniform(2, 4)
-            logger.debug(f'entering zone: {zone_ids}, delay: {delay}')
-            time.sleep(delay)
+            self.field_object_processed = False
+            logger.debug(f'entering zone: {zone_ids} and waiting for processing')
+            while not self.field_object_processed:
+                time.sleep(4)
             sio.emit('/zone/leave/list/v2', message)
             zone_ids = []
 
