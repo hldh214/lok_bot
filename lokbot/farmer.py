@@ -465,7 +465,7 @@ class LokFarmer:
                 if need_troop_count == 0:
                     amount = 0
                 else:
-                    amount = need_troop_count // load + 1
+                    amount = math.ceil(need_troop_count / load)
                     need_troop_count = 0
             else:
                 need_troop_count -= total_load
