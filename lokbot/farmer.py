@@ -989,6 +989,7 @@ class LokFarmer:
 
         for each_item in usable_item_list:
             self.api.item_use(each_item.get('code'), each_item.get('amount'))
+            self.api.item_list()  # dummy call to prevent `not_online` issue
             time.sleep(random.randint(1, 3))
 
     def vip_chest_claim(self):
