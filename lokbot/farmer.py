@@ -434,6 +434,10 @@ class LokFarmer:
         if march_type == MARCH_TYPE_MONSTER:
             need_troop_count *= 2.5
 
+        if not need_troop_count:
+            # "value": 0, means no more resources or monster
+            return []
+
         troop_count = sum([each_troop.get('amount') for each_troop in troops])
 
         # we don't care about insufficient troops when gathering
