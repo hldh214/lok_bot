@@ -107,7 +107,7 @@ class LokBotApi:
         code = err.get('code')
 
         if code == 'no_auth':
-            project_root.joinpath(f'data/{self._id}.token').unlink()
+            project_root.joinpath(f'data/{self._id}.token').unlink(missing_ok=True)
             raise NoAuthException()
 
         if code == 'need_captcha':
@@ -161,7 +161,7 @@ class LokBotApi:
             res = self.post('https://lok-api-live.leagueofkingdoms.com/api/auth/connect')
         except OtherException:
             # {"result":false,"err":{}} when no auth
-            project_root.joinpath(f'data/{self._id}.token').unlink()
+            project_root.joinpath(f'data/{self._id}.token').unlink(missing_ok=True)
             raise NoAuthException()
 
         self.opener.headers['x-access-token'] = res['token']
