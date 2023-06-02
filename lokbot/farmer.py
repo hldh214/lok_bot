@@ -568,7 +568,7 @@ class LokFarmer:
 
                 self.buff_item_use_lock.release()
 
-        sio.connect(url, transports=["websocket"])
+        sio.connect(url, transports=["websocket"], headers={'User-Agent': 'BestHTTP'})
         sio.emit('/kingdom/enter', {'token': self.token})
         sio.wait()
 
@@ -635,7 +635,7 @@ class LokFarmer:
             self.socf_entered = True
             self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
 
-        sio.connect(url, transports=["websocket"])
+        sio.connect(url, transports=["websocket"], headers={'User-Agent': 'BestHTTP'})
         logger.debug(f'entering field: {zones}')
         sio.emit(
             '/field/enter/v3',
@@ -696,7 +696,7 @@ class LokFarmer:
 
         sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
 
-        sio.connect(url, transports=["websocket"])
+        sio.connect(url, transports=["websocket"], headers={'User-Agent': 'BestHTTP'})
         sio.emit('/chat/enter', {'token': self.token})
 
         # do nothing
