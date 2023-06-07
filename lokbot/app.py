@@ -84,7 +84,7 @@ def main(token, captcha_solver_config=None):
     farmer.keepalive_request()
 
     threading.Thread(target=farmer.sock_thread, daemon=True).start()
-    # threading.Thread(target=farmer.socc_thread, daemon=True).start()
+    threading.Thread(target=farmer.socc_thread, daemon=True).start()
 
     for job in config.get('main').get('jobs'):
         if not job.get('enabled'):
@@ -100,7 +100,7 @@ def main(token, captcha_solver_config=None):
 
     schedule.run_all()
 
-    schedule.every(5).to(10).minutes.do(farmer.keepalive_request)
+    schedule.every(15).to(20).minutes.do(farmer.keepalive_request)
 
     for thread in config.get('main').get('threads'):
         if not thread.get('enabled'):

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ea21a18e5c2c56bc41a6ad73ab0aafe3b027f5de479604bf4fe97eb75504a39e"
+            "sha256": "a513274c2f9187d16550da8943938daf420447111a3219fe96a8d616a72989d3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -261,12 +261,9 @@
             "version": "==2.8.2"
         },
         "python-engineio": {
-            "hashes": [
-                "sha256:5a9e6086d192463b04a1428ff1f85b6ba631bbb19d453b144ffc04f530542b84",
-                "sha256:eab4553f2804c1ce97054c8b22cf0d5a9ab23128075248b97e1a5b2f29553085"
-            ],
-            "markers": "python_version >= '3.6'",
-            "version": "==3.14.2"
+            "editable": true,
+            "git": "https://github.com/hldh214/python-engineio-3-for-lokbot",
+            "ref": "f80ff666dc5dc21a8911108132ca75aaa239127b"
         },
         "python-socketio": {
             "extras": [

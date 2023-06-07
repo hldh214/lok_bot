@@ -527,7 +527,7 @@ class LokFarmer:
         """
         url = self.kingdom_enter.get('networks').get('kingdoms')[0]
 
-        sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
+        sio = socketio.Client(logger=builtin_logger, engineio_logger=builtin_logger)
 
         @sio.on('/building/update')
         def on_building_update(data):
@@ -698,7 +698,7 @@ class LokFarmer:
     def socc_thread(self):
         url = self.kingdom_enter.get('networks').get('chats')[0]
 
-        sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
+        sio = socketio.Client(logger=builtin_logger, engineio_logger=builtin_logger)
 
         sio.connect(url, transports=["websocket"], headers={'User-Agent': 'BestHTTP'})
         sio.emit('/chat/enter', {'token': self.token})
