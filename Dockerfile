@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10
 
 ARG PYPI_MIRROR=https://pypi.org/simple
 
