@@ -16,8 +16,22 @@ class LokBotApi:
     def __init__(self, token, captcha_solver_config, request_callback=None):
         self.opener = httpx.Client(
             headers={
-                'User-Agent': 'BestHTTP',
-                'x-access-token': token
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Cache-Control': 'no-cache',
+                'Dnt': '1',
+                'Origin': 'https://play.leagueofkingdoms.com',
+                'Pragma': 'no-cache',
+                'Referer': 'https://play.leagueofkingdoms.com/',
+                'Sec-Ch-Ua': '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"',
+                'Sec-Ch-Ua-Mobile': '?0',
+                'Sec-Ch-Ua-Platform': '"Windows"',
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'same-site',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/114.0.0.0 Safari/537.36',
+                'X-Access-Token': token
             },
             http2=True,
             base_url=lokbot.enum.API_BASE_URL
@@ -570,9 +584,13 @@ class LokBotApi:
 
 def get_version():
     first = 1
-    second = 1419
+    second = 1630
     third = httpx.get('https://play.leagueofkingdoms.com/json/version-live.json').json().get('table')
     fourth = httpx.get(f'https://play.leagueofkingdoms.com/bundles/webgl/kingdominfo_{second}').json()
     fourth = [each for each in fourth if each.get('name') == 'ui'][0].get('version')
 
     return f'{first}.{second}.{third}.{fourth}'
+
+
+if __name__ == '__main__':
+    print(get_version())

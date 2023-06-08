@@ -17,6 +17,16 @@ from lokbot import logger, builtin_logger
 from lokbot.exceptions import OtherException
 from lokbot.enum import *
 
+ws_headers = {
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Cache-Control': 'no-cache',
+    'Origin': 'https://play.leagueofkingdoms.com',
+    'Pragma': 'no-cache',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/114.0.0.0 Safari/537.36'
+}
+
 
 # Ref: https://stackoverflow.com/a/16858283/6266737
 def blockshaped(arr, nrows, ncols):
@@ -77,14 +87,18 @@ class LokFarmer:
         self.kingdom_enter = self.api.kingdom_enter()
 
         self.api.auth_set_device_info({
-            "OS": "iOS 16.4",
+            "build": "global",
+            "OS": "Windows 10",
             "country": "USA",
             "language": "English",
-            "version": "1.1624.135.217",
-            "platform": "ios",
-            "build": "global"
+            "bundle": "",
+            "version": "1.1630.136.218",
+            "platform": "web",
+            "pushId": ""
         })
-        self.api.chat_logs(f'w{self.kingdom_enter.get("kingdom").get("worldId")}')
+
+        # todo: {"chatChannel":"???"}
+        # self.api.chat_logs(f'w{self.kingdom_enter.get("kingdom").get("worldId")}')
 
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
@@ -572,9 +586,11 @@ class LokFarmer:
 
                 self.buff_item_use_lock.release()
 
-        sio.connect(url, transports=["websocket"], headers={'User-Agent': 'BestHTTP'})
+        sio.connect(url, transports=["websocket"], headers=ws_headers)
         sio.emit('/kingdom/enter', {'token': self.token})
+
         sio.wait()
+        raise tenacity.TryAgain()
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -639,7 +655,7 @@ class LokFarmer:
             self.socf_entered = True
             self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
 
-        sio.connect(url, transports=["websocket"], headers={'User-Agent': 'BestHTTP'})
+        sio.connect(url, transports=["websocket"], headers=ws_headers)
         logger.debug(f'entering field: {zones}')
         sio.emit(
             '/field/enter/v3',
@@ -700,11 +716,11 @@ class LokFarmer:
 
         sio = socketio.Client(logger=builtin_logger, engineio_logger=builtin_logger)
 
-        sio.connect(url, transports=["websocket"], headers={'User-Agent': 'BestHTTP'})
+        sio.connect(url, transports=["websocket"], headers=ws_headers)
         sio.emit('/chat/enter', {'token': self.token})
 
-        # do nothing
         sio.wait()
+        raise tenacity.TryAgain()
 
     def harvester(self):
         """
