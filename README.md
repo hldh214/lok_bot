@@ -89,7 +89,7 @@ docker run -e TOKEN=YOUR_X_ACCESS_TOKEN lok_bot_local
 
 ### Or use prebuilt image
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hldh214/lok_bot/Docker%20Image%20CI.svg)](https://github.com/hldh214/lok_bot/pkgs/container/lok_bot)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/hldh214/lok_bot/docker-image-ci.yml?branch=master)](https://github.com/hldh214/lok_bot/pkgs/container/lok_bot)
 
 ```shell
 docker run -e TOKEN=YOUR_X_ACCESS_TOKEN ghcr.io/hldh214/lok_bot
