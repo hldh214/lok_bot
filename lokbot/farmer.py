@@ -608,6 +608,7 @@ class LokFarmer:
             logger.info(f'last requested at {arrow.get(self.api.last_requested_at).humanize()}, waiting...')
             time.sleep(4)
 
+        self.socf_entered = False
         self.socf_world_id = self.kingdom_enter.get('kingdom').get('worldId')
         url = self.kingdom_enter.get('networks').get('fields')[0]
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
@@ -684,7 +685,6 @@ class LokFarmer:
                 continue
 
             if not sio.connected:
-                self.socf_entered = False
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
@@ -702,7 +702,6 @@ class LokFarmer:
             zone_ids = []
 
         logger.info('a loop is finished')
-        self.socf_entered = False
         sio.disconnect()
         sio.wait()
 
