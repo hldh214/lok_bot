@@ -12,10 +12,10 @@ import socketio
 import tenacity
 
 import lokbot.util
+from lokbot import logger, socf_logger, sock_logger, socc_logger
 from lokbot.client import LokBotApi
-from lokbot import logger, builtin_logger
-from lokbot.exceptions import OtherException
 from lokbot.enum import *
+from lokbot.exceptions import OtherException, FatalApiException
 
 ws_headers = {
     'Accept-Encoding': 'gzip, deflate, br',
@@ -111,6 +111,7 @@ class LokFarmer:
         self.socf_entered = False
         self.socf_world_id = None
         self.field_object_processed = False
+        self.started_at = time.time()
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -532,6 +533,7 @@ class LokFarmer:
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
+        retry=tenacity.retry_if_not_exception_type(FatalApiException),
         reraise=True
     )
     def sock_thread(self):
@@ -541,7 +543,7 @@ class LokFarmer:
         """
         url = self.kingdom_enter.get('networks').get('kingdoms')[0]
 
-        sio = socketio.Client(logger=builtin_logger, engineio_logger=builtin_logger)
+        sio = socketio.Client(logger=sock_logger, engineio_logger=sock_logger)
 
         @sio.on('/building/update')
         def on_building_update(data):
@@ -560,6 +562,10 @@ class LokFarmer:
             self.has_additional_building_queue = len([
                 item for item in data if item.get('param', {}).get('itemCode') == ITEM_CODE_GOLDEN_HAMMER
             ]) > 0
+
+            while self.started_at + 10 > time.time():
+                logger.info(f'started at {arrow.get(self.started_at).humanize()}, wait 10 seconds to activate buff')
+                time.sleep(4)
 
             item_list = self.api.item_list().get('items')
 
@@ -590,11 +596,13 @@ class LokFarmer:
         sio.emit('/kingdom/enter', {'token': self.token})
 
         sio.wait()
+        logger.warning('sock_thread disconnected, reconnecting')
         raise tenacity.TryAgain()
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
+        retry=tenacity.retry_if_not_exception_type(FatalApiException),
         reraise=True
     )
     def socf_thread(self, radius, object_code_list=(OBJECT_CODE_CRYSTAL_MINE, OBJECT_CODE_GOBLIN)):
@@ -602,11 +610,21 @@ class LokFarmer:
         websocket connection of the field
         :return:
         """
-        while self.api.last_requested_at + 10 > time.time():
-            # if last request is less than 60 seconds ago, wait
+        while self.api.last_requested_at + 6 > time.time():
+            # if last request is less than 6 seconds ago, wait
             # when we are in the field, we should not be doing anything else
             logger.info(f'last requested at {arrow.get(self.api.last_requested_at).humanize()}, waiting...')
             time.sleep(4)
+
+        while self._is_march_limit_exceeded():
+            nearest_end_time = sorted(
+                self.troop_queue,
+                key=lambda x: x.get('endTime') if x.get('endTime') else '9999-99-99T99:99:99.999Z'
+            )[0].get('endTime')
+            seconds = self.calc_time_diff_in_seconds(nearest_end_time)
+            logger.info(f'_is_march_limit_exceeded: wait {seconds} seconds')
+            time.sleep(seconds)
+            self._update_march_limit()
 
         self.socf_entered = False
         self.socf_world_id = self.kingdom_enter.get('kingdom').get('worldId')
@@ -615,7 +633,7 @@ class LokFarmer:
 
         zones = self._get_nearest_zone_ng(from_loc[1], from_loc[2], radius)
 
-        sio = socketio.Client(reconnection=False, logger=builtin_logger, engineio_logger=builtin_logger)
+        sio = socketio.Client(reconnection=False, logger=socf_logger, engineio_logger=socf_logger)
 
         @sio.on('/field/objects/v4')
         def on_field_objects(data):
@@ -668,16 +686,6 @@ class LokFarmer:
         while not self.socf_entered:
             time.sleep(1)
 
-        while self._is_march_limit_exceeded():
-            nearest_end_time = sorted(
-                self.troop_queue,
-                key=lambda x: x.get('endTime') if x.get('endTime') else '9999-99-99T99:99:99.999Z'
-            )[0].get('endTime')
-            seconds = self.calc_time_diff_in_seconds(nearest_end_time)
-            logger.info(f'_is_march_limit_exceeded: wait {seconds} seconds')
-            time.sleep(seconds)
-            self._update_march_limit()
-
         zone_ids = []
         for zone_id in zones:
             if len(zone_ids) < 9:
@@ -708,17 +716,23 @@ class LokFarmer:
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
         wait=tenacity.wait_random_exponential(multiplier=1, max=60),
+        retry=tenacity.retry_if_not_exception_type(FatalApiException),
         reraise=True
     )
     def socc_thread(self):
+        """
+        websocket connection of the chat
+        :return:
+        """
         url = self.kingdom_enter.get('networks').get('chats')[0]
 
-        sio = socketio.Client(logger=builtin_logger, engineio_logger=builtin_logger)
+        sio = socketio.Client(logger=socc_logger, engineio_logger=socc_logger)
 
         sio.connect(url, transports=["websocket"], headers=ws_headers)
         sio.emit('/chat/enter', {'token': self.token})
 
         sio.wait()
+        logger.warning('socc_thread disconnected, reconnecting')
         raise tenacity.TryAgain()
 
     def harvester(self):

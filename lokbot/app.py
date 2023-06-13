@@ -1,18 +1,15 @@
 import asyncio
 import functools
-import json
-import logging
-import os.path
 import threading
 import time
 
 import schedule
 
 import lokbot.util
+from lokbot import project_root, logger, config
 from lokbot.async_farmer import AsyncLokFarmer
 from lokbot.exceptions import NoAuthException
 from lokbot.farmer import LokFarmer
-from lokbot import project_root, builtin_logger, logger
 
 
 def find_alliance(farmer: LokFarmer):
@@ -24,18 +21,6 @@ def find_alliance(farmer: LokFarmer):
             break
 
         time.sleep(60 * 5)
-
-
-def load_config():
-    os.chdir(project_root)
-
-    if os.path.exists('config.json'):
-        return json.load(open('config.json'))
-
-    if os.path.exists('config.example.json'):
-        return json.load(open('config.example.json'))
-
-    return {}
 
 
 thread_map = {}
@@ -62,11 +47,6 @@ def main(token, captcha_solver_config=None):
 
     if captcha_solver_config is None:
         captcha_solver_config = {}
-
-    config = load_config()
-
-    if not config.get('socketio').get('debug'):
-        builtin_logger.setLevel(logging.CRITICAL)
 
     _id = lokbot.util.decode_jwt(token).get('_id')
     token_file = project_root.joinpath(f'data/{_id}.token')

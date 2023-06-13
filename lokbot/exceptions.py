@@ -2,25 +2,33 @@ class ApiException(Exception):
     pass
 
 
-class NoAuthException(ApiException):
+class RetryableApiException(ApiException):
     pass
 
 
-class NeedCaptchaException(ApiException):
+class FatalApiException(ApiException):
     pass
 
 
-class DuplicatedException(ApiException):
+class NoAuthException(FatalApiException):
     pass
 
 
-class ExceedLimitPacketException(ApiException):
+class NeedCaptchaException(FatalApiException):
     pass
 
 
-class NotOnlineException(ApiException):
+class NotOnlineException(FatalApiException):
     pass
 
 
-class OtherException(ApiException):
+class OtherException(FatalApiException):
+    pass
+
+
+class DuplicatedException(RetryableApiException):
+    pass
+
+
+class ExceedLimitPacketException(RetryableApiException):
     pass
