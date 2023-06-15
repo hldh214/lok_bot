@@ -536,7 +536,7 @@ class LokFarmer:
         retry=tenacity.retry_if_not_exception_type(FatalApiException),
         reraise=True
     )
-    def sock_thread(self):
+    def sock_thread(self, join_rally_code_list=(OBJECT_CODE_DEATHKAR,)):
         """
         websocket connection of the kingdom
         :return:
@@ -547,12 +547,12 @@ class LokFarmer:
 
         @sio.on('/building/update')
         def on_building_update(data):
-            logger.debug(f'on_building_update: {data}')
+            logger.debug(data)
             self._update_kingdom_enter_building(data)
 
         @sio.on('/resource/upgrade')
         def on_resource_update(data):
-            logger.info(f'on_resource_update: {data}')
+            logger.debug(data)
             self.resources[data.get('resourceIdx')] = data.get('value')
 
         @sio.on('/buff/list')
@@ -591,6 +591,16 @@ class LokFarmer:
                     self.has_additional_building_queue = True
 
                 self.buff_item_use_lock.release()
+
+        @sio.on('/alliance/rally/new')
+        def on_alliance_rally_new(data):
+            logger.debug(data)
+            code = data.get('code')
+            if code not in join_rally_code_list:
+                logger.info(f'ignore rally: {code}')
+                return
+            # battles = self.api.alliance_battle_list_v2().get('battles')
+            # TODO: what does `state` mean?
 
         sio.connect(url, transports=["websocket"], headers=ws_headers)
         sio.emit('/kingdom/enter', {'token': self.token})
@@ -670,7 +680,7 @@ class LokFarmer:
         @sio.on('/field/enter/v3')
         def on_field_enter(data):
             data = json.loads(self.api.xor_enc(base64.b64decode(data.encode())).decode())
-            logger.info(f'on_field_enter: {data}')
+            logger.debug(data)
             self.socf_entered = True
             self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
 
