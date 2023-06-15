@@ -8,6 +8,8 @@ from loguru import logger
 
 project_root = pathlib.Path(__file__).parent.parent
 
+project_root.joinpath('data').mkdir(exist_ok=True)
+
 
 def load_config():
     os.chdir(project_root)
