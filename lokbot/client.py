@@ -1,4 +1,5 @@
 import base64
+import gzip
 import json
 import time
 
@@ -106,6 +107,9 @@ class LokBotApi:
             logger.error(log_data)
 
             raise
+
+        if json_response.get('isPacked') is True:
+            json_response = json.loads(gzip.decompress(bytearray(json_response.get('payload'))))
 
         log_data.update({'res': json_response})
 
@@ -502,6 +506,13 @@ class LokBotApi:
         :return:
         """
         return self.post('alliance/join', {'allianceId': alliance_id})
+
+    def alliance_battle_list_v2(self):
+        """
+        获取战争列表
+        :return:
+        """
+        return self.post('alliance/battle/list/v2')
 
     def item_list(self):
         """
