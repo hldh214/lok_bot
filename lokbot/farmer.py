@@ -106,6 +106,7 @@ class LokFarmer:
         self.has_additional_building_queue = self.kingdom_enter.get('kingdom').get('vip', {}).get('level') >= 5
         self.troop_queue = []
         self.march_limit = 2
+        self.march_size = 10000
         self._update_march_limit()
         self.level = self.kingdom_enter.get('kingdom').get('level')
         self.socf_entered = False
@@ -403,6 +404,7 @@ class LokFarmer:
         troops = self.api.kingdom_profile_troops().get('troops')
         self.troop_queue = troops.get('field')
         self.march_limit = troops.get('info').get('marchLimit')
+        self.march_size = troops.get('info').get('marchSize')
 
     def _is_march_limit_exceeded(self):
         if len(self.troop_queue) >= self.march_limit:
@@ -458,6 +460,10 @@ class LokFarmer:
         # we don't care about insufficient troops when gathering
         if (march_type == MARCH_TYPE_MONSTER) and (need_troop_count > troop_count):
             logger.info(f'Insufficient troops: {troop_count} < {need_troop_count}: {each_obj}')
+            return []
+
+        if troop_count > self.march_size:
+            logger.info(f'Troop count exceeded: {troop_count} > {self.march_size}: {each_obj}')
             return []
 
         delay = random.randint(2, 4)
