@@ -240,16 +240,7 @@ class LokFarmer:
             logger.info(f'building upgrade failed: {building}')
             return 'continue'
 
-        building['level'] += 1
         self._update_kingdom_enter_building(building)
-
-        # TODO: it's necessary only when their server is not stable
-        building['state'] = BUILDING_STATE_NORMAL
-        threading.Timer(
-            self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')) - 5,
-            self._update_kingdom_enter_building,
-            [building]
-        )
 
         threading.Timer(
             self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
@@ -951,9 +942,6 @@ class LokFarmer:
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
         troop_training_capacity = 0
         for building in buildings:
-            if building.get('state') != BUILDING_STATE_NORMAL:
-                continue
-
             if building['code'] == BUILDING_CODE_MAP['barrack']:
                 troop_training_capacity += BARRACK_LEVEL_TROOP_TRAINING_RATE_MAP[int(building['level'])]
 
@@ -992,7 +980,7 @@ class LokFarmer:
         if worker_used:
             if worker_used[0].get('status') == STATUS_CLAIMED:
                 self.api.kingdom_task_claim(self._random_choice_building(BUILDING_CODE_MAP['barrack'])['position'])
-                logger.info('trian_troop: one loop completed, sleep for 3h')
+                logger.info('train_troop: one loop completed, sleep for 3h')
                 threading.Timer(
                     3 * 3600,
                     self.train_troop_thread,
