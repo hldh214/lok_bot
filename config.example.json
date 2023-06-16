@@ -102,28 +102,32 @@
         "name": "building_farmer_thread",
         "enabled": true,
         "kwargs": {
-          "task_code": 1
+          "task_code": 1,
+          "speedup": true
         }
       },
       {
         "name": "building_farmer_thread",
         "enabled": true,
         "kwargs": {
-          "task_code": 8
+          "task_code": 8,
+          "speedup": true
         }
       },
       {
         "name": "academy_farmer_thread",
         "enabled": true,
         "kwargs": {
-          "to_max_level": false
+          "to_max_level": false,
+          "speedup": true
         }
       },
       {
         "name": "train_troop_thread",
         "enabled": true,
         "kwargs": {
-          "troop_code": 50100101
+          "troop_code": 50100101,
+          "speedup": true
         }
       }
     ]

@@ -221,7 +221,37 @@ class LokFarmer:
             logger.info(f'resources updated: {resources}')
             self.resources = resources
 
-    def _upgrade_building(self, building, buildings, task_code):
+    def _get_optimal_speedups(self, need_seconds, speedup_type):
+        current_map = ITEM_CODE_SPEEDUP_MAP.get(speedup_type)
+
+        items = self.api.item_list().get('items', [])
+        items = [item for item in items if item.get('code') in current_map.values()]
+
+        if not items:
+            return False
+
+        # build `{code, amount, second}` map
+        speedups = []
+        for item in items:
+            speedups.append({
+                'code': item.get('code'),
+                'amount': item.get('amount'),
+                'second': current_map.get(item.get('code'))
+            })
+
+        # sort by speedup second desc
+        speedups = sorted(speedups, key=lambda x: x.get('second'), reverse=True)
+
+        counts = {each.get('code'): 0 for each in speedups}
+
+        for each in speedups:
+            while need_seconds >= each.get('second') and counts.get(each.get('code')) < each.get('amount'):
+                need_seconds -= each.get('second')
+                counts[each.get('code')] += 1
+
+        return counts
+
+    def _upgrade_building(self, building, buildings, task_code, speedup):
         if not self._is_building_upgradeable(building, buildings):
             return 'continue'
 
@@ -242,11 +272,16 @@ class LokFarmer:
 
         self._update_kingdom_enter_building(building)
 
-        threading.Timer(
-            self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
-            self.building_farmer_thread,
-            [task_code]
-        ).start()
+        need_seconds = self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded'))
+
+        if need_seconds > 60 * 5 and speedup is True:
+            # try speedup
+            speedups = self._get_optimal_speedups(need_seconds, 'building')
+
+            if speedups:
+                pass
+
+        threading.Timer(need_seconds, self.building_farmer_thread, [task_code, speedup]).start()
 
         return
 
@@ -818,10 +853,11 @@ class LokFarmer:
         threading.Timer(3600, self.quest_monitor_thread).start()
         return
 
-    def building_farmer_thread(self, task_code=TASK_CODE_SILVER_HAMMER):
+    def building_farmer_thread(self, task_code=TASK_CODE_SILVER_HAMMER, speedup=False):
         """
         building farmer
         :param task_code:
+        :param speedup:
         :return:
         """
         if task_code == TASK_CODE_GOLD_HAMMER and not self.has_additional_building_queue:
@@ -857,7 +893,7 @@ class LokFarmer:
                     'state': BUILDING_STATE_NORMAL,
                 }
 
-                res = self._upgrade_building(building, buildings, task_code)
+                res = self._upgrade_building(building, buildings, task_code, speedup)
 
                 if res == 'continue':
                     continue
@@ -868,7 +904,7 @@ class LokFarmer:
 
         # Then check if there is any upgradeable building
         for building in buildings:
-            res = self._upgrade_building(building, buildings, task_code)
+            res = self._upgrade_building(building, buildings, task_code, speedup)
 
             if res == 'continue':
                 continue
