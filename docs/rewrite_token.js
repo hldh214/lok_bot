@@ -1,6 +1,7 @@
-// const
-const newToken = "";
+// testing GitGuardian
+const newToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDg5YjU4OTY0MmM2NDI2YjU3ZjJmODkiLCJraW5nZG9tSWQiOiI2NDg5YjU4OTY0MmM2NDI2YjU3ZjJmODkiLCJ3b3JsZElkIjo4OTY0LCJ2ZXJzaW9uIjo4OTY0LCJhdXRoVHlwZSI6ImVtYUlsIiwicGxhdGZvcm0iOiJ3ZWIiLCJ0aW1lIjoxMTg2ODkwODA1LCJjbGllbnRYb3IiOiIxIiwiaXAiOiIxLjEuMS4xIiwiaWF0IjoxMTg2ODkwODA1LCJleHAiOjE5OTc0OTU2MDUsImlzcyI6Im5vZGdhbWVzLmNvbSIsInN1YiI6InVzZXJJbmZvIn0.OjPUrm_fhfxNrglSAh_5-4B_kCl0lk6JjQ8sbHOP6MU";
 
+// const
 const dbName = "/idbfs";
 const objName = "FILE_DATA";
 
@@ -23,6 +24,7 @@ dbRequest.onsuccess = (event) => {
 
       // find auth_token
       // 0x80 is a long string.
+      // Credit: https://discussions.unity.com/t/how-can-i-view-a-webplayer-playerprefs-file/25440/2
       const token = contents.match(/auth_token\x80(.+?)\x07/)[1];
       // The type identifier is followed by an additional 32Bit integer (4-byte little endian) length.
       // After the length int you'll find the actual string.
