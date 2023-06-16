@@ -917,7 +917,7 @@ class LokFarmer:
         threading.Timer(2 * 3600, self.building_farmer_thread, [task_code]).start()
         return
 
-    def academy_farmer_thread(self, to_max_level=False):
+    def academy_farmer_thread(self, to_max_level=False, speedup=False):
         """
         research farmer
         :param to_max_level:
@@ -1006,7 +1006,7 @@ class LokFarmer:
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
         return random.choice([building for building in buildings if building['code'] == building_code])
 
-    def train_troop_thread(self, troop_code):
+    def train_troop_thread(self, troop_code, speedup=False):
         current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
         worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_CAMP]
