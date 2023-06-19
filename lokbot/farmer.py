@@ -490,23 +490,10 @@ class LokFarmer:
             return []
 
         troop_count = sum([each_troop.get('amount') for each_troop in troops])
-
         # we don't care about insufficient troops when gathering
         if (march_type == MARCH_TYPE_MONSTER) and (need_troop_count > troop_count):
             logger.info(f'Insufficient troops: {troop_count} < {need_troop_count}: {each_obj}')
             return []
-
-        if troop_count > self.march_size:
-            logger.info(f'Troop count exceeded: {troop_count} > {self.march_size}: {each_obj}')
-            return []
-
-        delay = random.randint(2, 4)
-        logger.info('Add dummy delay: {} seconds'.format(delay))
-        time.sleep(delay)  # add dummy delay
-
-        # distance = self._calc_distance(from_loc, to_loc)
-        distance = march_info.get('distance')
-        logger.info(f'distance: {distance}, object: {each_obj}')
 
         march_troops = []
         for troop in troops:
@@ -541,6 +528,14 @@ class LokFarmer:
                 'defense': 0,
                 'seq': 0
             })
+
+        march_troop_count = sum([each_troop.get('amount') for each_troop in march_troops])
+        if march_troop_count > self.march_size:
+            logger.info(f'Troop count exceeded: {march_troop_count} > {self.march_size}: {each_obj}')
+            return []
+
+        distance = march_info.get('distance')
+        logger.info(f'distance: {distance}, object: {each_obj}')
 
         march_troops.sort(key=lambda x: x.get('code'))  # sort by code asc
 
