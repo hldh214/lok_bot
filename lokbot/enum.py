@@ -814,3 +814,6 @@ def load_research_json():
 
 building_json = load_building_json()
 research_json = load_research_json()
+# https://play.leagueofkingdoms.com/json/table-live_136.nod
+# troop_json = json.load(open(project_root.joinpath('lokbot/assets/troop.json')))
+# field_monster_json = json.load(open(project_root.joinpath('lokbot/assets/field_monster.json')))

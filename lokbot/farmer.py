@@ -228,6 +228,7 @@ class LokFarmer:
         items = [item for item in items if item.get('code') in current_map.values()]
 
         if not items:
+            logger.info(f'no speedup item found for {speedup_type}')
             return False
 
         # build `{code, amount, second}` map
@@ -244,10 +245,17 @@ class LokFarmer:
 
         counts = {each.get('code'): 0 for each in speedups}
 
+        remaining_seconds = need_seconds
+        used_seconds = 0
         for each in speedups:
-            while need_seconds >= each.get('second') and counts.get(each.get('code')) < each.get('amount'):
-                need_seconds -= each.get('second')
+            while remaining_seconds >= each.get('second') and counts.get(each.get('code')) < each.get('amount'):
+                remaining_seconds -= each.get('second')
                 counts[each.get('code')] += 1
+                used_seconds += each.get('second')
+
+        if used_seconds - need_seconds > 60 * 10:  # 10 minutes max tolerance
+            logger.info(f'cannot find optimal speedups for {speedup_type}')
+            return False
 
         return counts
 
