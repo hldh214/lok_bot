@@ -154,16 +154,8 @@ docker run -v $PWD/config.json:/app/config.json -e TOKEN=YOUR_X_ACCESS_TOKEN ghc
         "name": "building_farmer_thread",
         "enabled": true,
         "kwargs": {
-          // 1 for TASK_CODE_SILVER_HAMMER
-          "task_code": 1
-        }
-      },
-      {
-        "name": "building_farmer_thread",
-        "enabled": true,
-        "kwargs": {
-          // 8 for TASK_CODE_GOLD_HAMMER if you're vip5 or above
-          "task_code": 8
+          // if you want to use speedup items
+          "speedup": true
         }
       },
       {

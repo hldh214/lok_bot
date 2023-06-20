@@ -102,15 +102,6 @@
         "name": "building_farmer_thread",
         "enabled": true,
         "kwargs": {
-          "task_code": 1,
-          "speedup": true
-        }
-      },
-      {
-        "name": "building_farmer_thread",
-        "enabled": true,
-        "kwargs": {
-          "task_code": 8,
           "speedup": true
         }
       },

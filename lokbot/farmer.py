@@ -113,6 +113,9 @@ class LokFarmer:
         self.socf_world_id = None
         self.field_object_processed = False
         self.started_at = time.time()
+        self.building_queue_available = threading.Event()
+        self.research_queue_available = threading.Event()
+        self.train_queue_available = threading.Event()
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -225,7 +228,7 @@ class LokFarmer:
         current_map = ITEM_CODE_SPEEDUP_MAP.get(speedup_type)
 
         items = self.api.item_list().get('items', [])
-        items = [item for item in items if item.get('code') in current_map.values()]
+        items = [item for item in items if item.get('code') in current_map.keys()]
 
         if not items:
             logger.info(f'no speedup item found for {speedup_type}')
@@ -253,13 +256,35 @@ class LokFarmer:
                 counts[each.get('code')] += 1
                 used_seconds += each.get('second')
 
-        if used_seconds - need_seconds > 60 * 10:  # 10 minutes max tolerance
+        if used_seconds - need_seconds > 60 * 10:
+            # 10 minutes max waste tolerance
+            # seems never happen since we have `remaining_seconds >= each.get('second')` check
+            # will remove it later
             logger.info(f'cannot find optimal speedups for {speedup_type}')
             return False
 
-        return counts
+        return {
+            'counts': {k: v for k, v in counts.items() if v > 0},
+            'used_seconds': used_seconds
+        }
 
-    def _upgrade_building(self, building, buildings, task_code, speedup):
+    def _do_speedup(self, expected_ended, task_id):
+        need_seconds = self.calc_time_diff_in_seconds(expected_ended)
+
+        if need_seconds > 60 * 5:
+            # try speedup only when need_seconds > 5 minutes
+            speedups = self._get_optimal_speedups(need_seconds, 'building')
+            if speedups:
+                counts = speedups.get('counts')
+                used_seconds = speedups.get('used_seconds')
+
+                # using speedup items
+                logger.info(f'need_seconds: {need_seconds}, using speedups: {counts}, saved {used_seconds} seconds')
+                for code, count in counts.items():
+                    self.api.kingdom_task_speedup(task_id, code, count)
+                    time.sleep(random.randint(1, 3))
+
+    def _upgrade_building(self, building, buildings, speedup):
         if not self._is_building_upgradeable(building, buildings):
             return 'continue'
 
@@ -278,20 +303,11 @@ class LokFarmer:
             logger.info(f'building upgrade failed: {building}')
             return 'continue'
 
+        building['state'] = BUILDING_STATE_UPGRADING
         self._update_kingdom_enter_building(building)
 
-        need_seconds = self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded'))
-
-        if need_seconds > 60 * 5 and speedup is True:
-            # try speedup
-            speedups = self._get_optimal_speedups(need_seconds, 'building')
-
-            if speedups:
-                pass
-
-        threading.Timer(need_seconds, self.building_farmer_thread, [task_code, speedup]).start()
-
-        return
+        if speedup:
+            self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'))
 
     def _alliance_gift_claim_all(self):
         try:
@@ -637,6 +653,17 @@ class LokFarmer:
             # battles = self.api.alliance_battle_list_v2().get('battles')
             # TODO: what does `state` mean?
 
+        @sio.on('/task/update')
+        def on_task_update(data):
+            logger.debug(data)
+            if data.get('status') == STATUS_FINISHED:
+                if data.get('code') in (TASK_CODE_SILVER_HAMMER, TASK_CODE_GOLD_HAMMER):
+                    self.building_queue_available.set()
+                if data.get('code') == TASK_CODE_ACADEMY:
+                    self.research_queue_available.set()
+                if data.get('code') == TASK_CODE_CAMP:
+                    self.train_queue_available.set()
+
         sio.connect(url, transports=["websocket"], headers=ws_headers)
         sio.emit('/kingdom/enter', {'token': self.token})
 
@@ -856,26 +883,7 @@ class LokFarmer:
         threading.Timer(3600, self.quest_monitor_thread).start()
         return
 
-    def building_farmer_thread(self, task_code=TASK_CODE_SILVER_HAMMER, speedup=False):
-        """
-        building farmer
-        :param task_code:
-        :param speedup:
-        :return:
-        """
-        if task_code == TASK_CODE_GOLD_HAMMER and not self.has_additional_building_queue:
-            return
-
-        current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
-
-        worker_used = [t for t in current_tasks if t.get('code') == task_code]
-
-        if worker_used:
-            sleep_sec = self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded'))
-            logger.info(f'building_farmer: task_code({task_code}) is busy, sleep for {sleep_sec}s')
-            threading.Timer(sleep_sec, self.building_farmer_thread, [task_code]).start()
-            return
-
+    def _building_farmer_worker(self, speedup=False):
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
         buildings.sort(key=lambda x: x.get('level'))
         kingdom_level = [b for b in buildings if b.get('code') == BUILDING_CODE_MAP['castle']][0].get('level')
@@ -896,34 +904,66 @@ class LokFarmer:
                     'state': BUILDING_STATE_NORMAL,
                 }
 
-                res = self._upgrade_building(building, buildings, task_code, speedup)
+                res = self._upgrade_building(building, buildings, speedup)
 
                 if res == 'continue':
                     continue
                 if res == 'break':
                     break
 
-                return
+                return True
 
         # Then check if there is any upgradeable building
         for building in buildings:
-            res = self._upgrade_building(building, buildings, task_code, speedup)
+            res = self._upgrade_building(building, buildings, speedup)
 
             if res == 'continue':
                 continue
             if res == 'break':
                 break
 
-            return
+            return True
 
-        logger.info('building_farmer: no building to upgrade, sleep for 2h')
-        threading.Timer(2 * 3600, self.building_farmer_thread, [task_code]).start()
-        return
+        return False
+
+    def building_farmer_thread(self, speedup=False):
+        """
+        building farmer
+        :param speedup:
+        :return:
+        """
+        kingdom_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
+
+        silver_in_use = [t for t in kingdom_tasks if t.get('code') == TASK_CODE_SILVER_HAMMER]
+        gold_in_use = [t for t in kingdom_tasks if t.get('code') == TASK_CODE_GOLD_HAMMER]
+
+        if silver_in_use:
+            excepted_ended = silver_in_use[0].get('expectedEnded')
+            logger.info(f'task_code({TASK_CODE_SILVER_HAMMER}) is busy, excepted_ended: {excepted_ended}')
+        else:
+            if not self._building_farmer_worker(speedup):
+                logger.info('no building to upgrade, sleep for 2h')
+                threading.Timer(7200, self.building_farmer_thread).start()
+                return
+
+        if gold_in_use:
+            excepted_ended = gold_in_use[0].get('expectedEnded')
+            logger.info(f'task_code({TASK_CODE_GOLD_HAMMER}) is busy, excepted_ended: {excepted_ended}')
+        else:
+            if not self._building_farmer_worker(speedup):
+                logger.info('no building to upgrade, sleep for 2h')
+                threading.Timer(7200, self.building_farmer_thread).start()
+                return
+
+        self.building_queue_available.wait()  # wait for building queue available from `sock_thread`
+        self.building_queue_available.clear()
+        threading.Thread(target=self.building_farmer_thread, args=[speedup]).start()
 
     def academy_farmer_thread(self, to_max_level=False, speedup=False):
         """
         research farmer
         :param to_max_level:
+        :param speedup:
         :return:
         """
         current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
@@ -932,11 +972,9 @@ class LokFarmer:
 
         if worker_used:
             if worker_used[0].get('status') != STATUS_CLAIMED:
-                threading.Timer(
-                    self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')),
-                    self.academy_farmer_thread,
-                    [to_max_level]
-                ).start()
+                self.research_queue_available.wait()  # wait for research queue available from `sock_thread`
+                self.research_queue_available.clear()
+                threading.Thread(target=self.academy_farmer_thread, args=[to_max_level, speedup]).start()
                 return
 
             # 如果已完成, 则领取奖励并继续
@@ -963,11 +1001,12 @@ class LokFarmer:
                     logger.info(f'research failed, try next one, current: {research_name}({research_code})')
                     continue
 
-                threading.Timer(
-                    self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')),
-                    self.academy_farmer_thread,
-                    [to_max_level]
-                ).start()
+                if speedup:
+                    self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'))
+
+                self.research_queue_available.wait()  # wait for research queue available from `sock_thread`
+                self.research_queue_available.clear()
+                threading.Thread(target=self.academy_farmer_thread, args=[to_max_level, speedup]).start()
                 return
 
         logger.info('academy_farmer: no research to do, sleep for 2h')
@@ -1010,6 +1049,12 @@ class LokFarmer:
         return random.choice([building for building in buildings if building['code'] == building_code])
 
     def train_troop_thread(self, troop_code, speedup=False):
+        """
+        train troop
+        :param troop_code:
+        :param speedup:
+        :return:
+        """
         current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
         worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_CAMP]
@@ -1023,16 +1068,14 @@ class LokFarmer:
                 threading.Timer(
                     3 * 3600,
                     self.train_troop_thread,
-                    [troop_code]
+                    [troop_code, speedup]
                 ).start()
                 return
 
             if worker_used[0].get('status') == STATUS_PENDING:
-                threading.Timer(
-                    self.calc_time_diff_in_seconds(worker_used[0].get('expectedEnded')) + 5,
-                    self.train_troop_thread,
-                    [troop_code]
-                ).start()
+                self.train_queue_available.wait()  # wait for train queue available from `sock_thread`
+                self.train_queue_available.clear()
+                threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup]).start()
                 return
 
         # if there is not enough resource, train how much possible
@@ -1040,13 +1083,10 @@ class LokFarmer:
         if troop_training_capacity > total_troops_capacity_according_to_resources:
             troop_training_capacity = total_troops_capacity_according_to_resources
 
-        res = self.api.train_troop(troop_code, troop_training_capacity)
-        threading.Timer(
-            self.calc_time_diff_in_seconds(res.get('newTask').get('expectedEnded')) + 5,
-            self.train_troop_thread,
-            [troop_code]
-        ).start()
-        return
+        self.api.train_troop(troop_code, troop_training_capacity)
+        self.train_queue_available.wait()  # wait for train queue available from `sock_thread`
+        self.train_queue_available.clear()
+        threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup]).start()
 
     def free_chest_farmer_thread(self, _type=0):
         """
@@ -1085,7 +1125,6 @@ class LokFarmer:
 
         for each_item in usable_item_list:
             self.api.item_use(each_item.get('code'), each_item.get('amount'))
-            self.api.item_list()  # dummy call to prevent `not_online` issue
             time.sleep(random.randint(1, 3))
 
     def vip_chest_claim(self):

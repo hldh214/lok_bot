@@ -356,6 +356,18 @@ class LokBotApi:
         """
         return self.post('kingdom/task/claim', {'position': position})
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=2)
+    def kingdom_task_speedup(self, task_id, code, amount, is_buy=0):
+        """
+        加速任务
+        :return:
+        """
+        return self.post('kingdom/task/speedup', {'taskId': task_id, 'code': code, 'amount': amount, 'isBuy': is_buy})
+
     def kingdom_tutorial_finish(self, code):
         """
         完成教程
