@@ -256,24 +256,23 @@ class LokFarmer:
                 counts[each.get('code')] += 1
                 used_seconds += each.get('second')
 
-        if used_seconds - need_seconds > 60 * 10:
-            # 10 minutes max waste tolerance
-            # seems never happen since we have `remaining_seconds >= each.get('second')` check
-            # will remove it later
+        counts = {k: v for k, v in counts.items() if v > 0}
+
+        if not counts:
             logger.info(f'cannot find optimal speedups for {speedup_type}')
             return False
 
         return {
-            'counts': {k: v for k, v in counts.items() if v > 0},
+            'counts': counts,
             'used_seconds': used_seconds
         }
 
-    def _do_speedup(self, expected_ended, task_id):
+    def _do_speedup(self, expected_ended, task_id, speedup_type):
         need_seconds = self.calc_time_diff_in_seconds(expected_ended)
 
         if need_seconds > 60 * 5:
             # try speedup only when need_seconds > 5 minutes
-            speedups = self._get_optimal_speedups(need_seconds, 'building')
+            speedups = self._get_optimal_speedups(need_seconds, speedup_type)
             if speedups:
                 counts = speedups.get('counts')
                 used_seconds = speedups.get('used_seconds')
@@ -307,7 +306,7 @@ class LokFarmer:
         self._update_kingdom_enter_building(building)
 
         if speedup:
-            self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'))
+            self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'building')
 
     def _alliance_gift_claim_all(self):
         try:
@@ -659,6 +658,8 @@ class LokFarmer:
             if data.get('status') == STATUS_FINISHED:
                 if data.get('code') in (TASK_CODE_SILVER_HAMMER, TASK_CODE_GOLD_HAMMER):
                     self.building_queue_available.set()
+
+            if data.get('status') == STATUS_CLAIMED:
                 if data.get('code') == TASK_CODE_ACADEMY:
                     self.research_queue_available.set()
                 if data.get('code') == TASK_CODE_CAMP:
@@ -937,21 +938,9 @@ class LokFarmer:
         silver_in_use = [t for t in kingdom_tasks if t.get('code') == TASK_CODE_SILVER_HAMMER]
         gold_in_use = [t for t in kingdom_tasks if t.get('code') == TASK_CODE_GOLD_HAMMER]
 
-        if silver_in_use:
-            excepted_ended = silver_in_use[0].get('expectedEnded')
-            logger.info(f'task_code({TASK_CODE_SILVER_HAMMER}) is busy, excepted_ended: {excepted_ended}')
-        else:
+        if not silver_in_use or (self.has_additional_building_queue and not gold_in_use):
             if not self._building_farmer_worker(speedup):
-                logger.info('no building to upgrade, sleep for 2h')
-                threading.Timer(7200, self.building_farmer_thread).start()
-                return
-
-        if gold_in_use:
-            excepted_ended = gold_in_use[0].get('expectedEnded')
-            logger.info(f'task_code({TASK_CODE_GOLD_HAMMER}) is busy, excepted_ended: {excepted_ended}')
-        else:
-            if not self._building_farmer_worker(speedup):
-                logger.info('no building to upgrade, sleep for 2h')
+                logger.info(f'no building to upgrade, sleep for 2h')
                 threading.Timer(7200, self.building_farmer_thread).start()
                 return
 
@@ -1002,7 +991,7 @@ class LokFarmer:
                     continue
 
                 if speedup:
-                    self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'))
+                    self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'research')
 
                 self.research_queue_available.wait()  # wait for research queue available from `sock_thread`
                 self.research_queue_available.clear()
@@ -1083,7 +1072,16 @@ class LokFarmer:
         if troop_training_capacity > total_troops_capacity_according_to_resources:
             troop_training_capacity = total_troops_capacity_according_to_resources
 
-        self.api.train_troop(troop_code, troop_training_capacity)
+        if not troop_training_capacity:
+            logger.info('train_troop: no resource, sleep for 3h')
+            threading.Timer(3 * 3600, self.train_troop_thread, [troop_code, speedup]).start()
+            return
+
+        res = self.api.train_troop(troop_code, troop_training_capacity)
+
+        if speedup:
+            self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'train')
+
         self.train_queue_available.wait()  # wait for train queue available from `sock_thread`
         self.train_queue_available.clear()
         threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup]).start()
