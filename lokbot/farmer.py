@@ -85,6 +85,7 @@ class LokFarmer:
         project_root.joinpath(f'data/{self._id}.token').write_text(self.token)
 
         self.kingdom_enter = self.api.kingdom_enter()
+        self.alliance_id = self.kingdom_enter.get('kingdom', {}).get('allianceId')
 
         self.api.auth_set_device_info({
             "build": "global",
@@ -97,8 +98,9 @@ class LokFarmer:
             "pushId": ""
         })
 
-        # todo: {"chatChannel":"???"}
-        # self.api.chat_logs(f'w{self.kingdom_enter.get("kingdom").get("worldId")}')
+        self.api.chat_logs(f'w{self.kingdom_enter.get("kingdom").get("worldId")}')
+        if self.alliance_id:
+            self.api.chat_logs(f'a{self.alliance_id}')
 
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
@@ -107,7 +109,6 @@ class LokFarmer:
         self.troop_queue = []
         self.march_limit = 2
         self.march_size = 10000
-        self._update_march_limit()
         self.level = self.kingdom_enter.get('kingdom').get('level')
         self.socf_entered = False
         self.socf_world_id = None
@@ -689,6 +690,8 @@ class LokFarmer:
             logger.info(f'last requested at {arrow.get(self.api.last_requested_at).humanize()}, waiting...')
             time.sleep(4)
 
+        self._update_march_limit()
+
         while self._is_march_limit_exceeded():
             nearest_end_time = sorted(
                 self.troop_queue,
@@ -1139,7 +1142,7 @@ class LokFarmer:
         self.api.kingdom_vip_claim()
 
     def alliance_farmer(self, gift_claim=True, help_all=True, research_donate=True, shop_auto_buy_item_code_list=None):
-        if not self.kingdom_enter.get('kingdom', {}).get('allianceId'):
+        if not self.alliance_id:
             return
 
         if gift_claim:

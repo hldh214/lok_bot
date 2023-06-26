@@ -17,25 +17,19 @@ class LokBotApi:
     def __init__(self, token, captcha_solver_config, request_callback=None):
         self.opener = httpx.Client(
             headers={
+                'Accept': '*/*',
                 'Accept-Encoding': 'gzip, deflate, br',
                 'Accept-Language': 'en-US,en;q=0.9',
-                'Cache-Control': 'no-cache',
-                'Dnt': '1',
                 'Origin': 'https://play.leagueofkingdoms.com',
-                'Pragma': 'no-cache',
                 'Referer': 'https://play.leagueofkingdoms.com/',
-                'Sec-Ch-Ua': '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"',
-                'Sec-Ch-Ua-Mobile': '?0',
-                'Sec-Ch-Ua-Platform': '"Windows"',
                 'Sec-Fetch-Dest': 'empty',
                 'Sec-Fetch-Mode': 'cors',
                 'Sec-Fetch-Site': 'same-site',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                              'Chrome/114.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0',
                 'X-Access-Token': token
             },
             http2=True,
-            base_url=lokbot.enum.API_BASE_URL
+            base_url=lokbot.enum.API_BASE_URL,
         )
         self.token = token
         self.request_callback = request_callback
@@ -87,6 +81,9 @@ class LokBotApi:
         api_path = str(url).split('/api/').pop()
         if api_path in self.protected_api_list:
             post_data = base64.b64encode(self.xor_enc(post_data.encode())).decode()
+
+        # remove request cookie since it's not needed and may cause account ban
+        self.opener.cookies.clear()
 
         response = self.opener.post(url, data={'json': post_data})
         self.last_requested_at = time.time()
