@@ -117,6 +117,7 @@ class LokFarmer:
         self.building_queue_available = threading.Event()
         self.research_queue_available = threading.Event()
         self.train_queue_available = threading.Event()
+        self.kingdom_tasks = []
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -133,8 +134,7 @@ class LokFarmer:
             return False
 
         if building.get('code') == BUILDING_CODE_MAP['barrack']:
-            current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
-            for t in current_tasks:
+            for t in self.kingdom_tasks:
                 if t.get('code') == TASK_CODE_CAMP:
                     return False
 
@@ -936,10 +936,10 @@ class LokFarmer:
         :param speedup:
         :return:
         """
-        kingdom_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
+        self.kingdom_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
-        silver_in_use = [t for t in kingdom_tasks if t.get('code') == TASK_CODE_SILVER_HAMMER]
-        gold_in_use = [t for t in kingdom_tasks if t.get('code') == TASK_CODE_GOLD_HAMMER]
+        silver_in_use = [t for t in self.kingdom_tasks if t.get('code') == TASK_CODE_SILVER_HAMMER]
+        gold_in_use = [t for t in self.kingdom_tasks if t.get('code') == TASK_CODE_GOLD_HAMMER]
 
         if not silver_in_use or (self.has_additional_building_queue and not gold_in_use):
             if not self._building_farmer_worker(speedup):
@@ -958,9 +958,9 @@ class LokFarmer:
         :param speedup:
         :return:
         """
-        current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
+        self.kingdom_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
-        worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_ACADEMY]
+        worker_used = [t for t in self.kingdom_tasks if t.get('code') == TASK_CODE_ACADEMY]
 
         if worker_used:
             if worker_used[0].get('status') != STATUS_CLAIMED:
@@ -1047,9 +1047,9 @@ class LokFarmer:
         :param speedup:
         :return:
         """
-        current_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
+        self.kingdom_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
-        worker_used = [t for t in current_tasks if t.get('code') == TASK_CODE_CAMP]
+        worker_used = [t for t in self.kingdom_tasks if t.get('code') == TASK_CODE_CAMP]
 
         troop_training_capacity = self._troop_training_capacity()
 
