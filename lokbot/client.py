@@ -2,6 +2,7 @@ import base64
 import gzip
 import json
 import time
+import typing
 
 import httpx
 import ratelimit
@@ -45,13 +46,19 @@ class LokBotApi:
             from lokbot.captcha_solver import Ttshitu
             self.captcha_solver = Ttshitu(**captcha_solver_config['ttshitu'])
 
-    def xor_enc(self, plain: bytes) -> bytes:
+    def xor(self, plain: bytes) -> bytes:
         assert self.xor_password is not None
 
         return bytearray([
             each_plain ^ ord(self.xor_password[index % len(self.xor_password)])
             for index, each_plain in enumerate(plain)
         ])
+
+    def b64xor_enc(self, d: dict) -> str:
+        return base64.b64encode(self.xor(json.dumps(d, separators=(',', ':')).encode())).decode()
+
+    def b64xor_dec(self, s: typing.Union[str, bytes]) -> dict:
+        return json.loads(self.xor(base64.b64decode(s)))
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(2),
@@ -80,7 +87,7 @@ class LokBotApi:
         post_data = json.dumps(json_data, separators=(',', ':'))
         api_path = str(url).split('/api/').pop()
         if api_path in self.protected_api_list:
-            post_data = base64.b64encode(self.xor_enc(post_data.encode())).decode()
+            post_data = self.b64xor_enc(json_data)
 
         # remove request cookie since it's not needed and may cause account ban
         self.opener.cookies.clear()
@@ -96,7 +103,7 @@ class LokBotApi:
 
         try:
             if api_path in self.protected_api_list:
-                json_response = json.loads(self.xor_enc(base64.b64decode(response.text)).decode())
+                json_response = self.b64xor_dec(response.text)
             else:
                 json_response = response.json()
         except json.JSONDecodeError:

@@ -18,13 +18,13 @@ from lokbot.enum import *
 from lokbot.exceptions import OtherException, FatalApiException
 
 ws_headers = {
+    'Accept': '*/*',
     'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'en-US,en;q=0.9',
     'Cache-Control': 'no-cache',
     'Origin': 'https://play.leagueofkingdoms.com',
     'Pragma': 'no-cache',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                  'Chrome/114.0.0.0 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0'
 }
 
 
@@ -715,7 +715,7 @@ class LokFarmer:
         def on_field_objects(data):
             packs = data.get('packs')
             gzip_decompress = gzip.decompress(bytearray(packs))
-            data_decoded = json.loads(self.api.xor_enc(base64.b64decode(gzip_decompress)))
+            data_decoded = self.api.b64xor_dec(gzip_decompress)
             objects = data_decoded.get('objects')
 
             logger.debug(f'Processing {len(objects)} objects')
@@ -745,37 +745,36 @@ class LokFarmer:
 
         @sio.on('/field/enter/v3')
         def on_field_enter(data):
-            data = json.loads(self.api.xor_enc(base64.b64decode(data.encode())).decode())
-            logger.debug(data)
+            data_decoded = self.api.b64xor_dec(data)
+            logger.debug(data_decoded)
+            self.socf_world_id = data_decoded.get('loc')[0]  # in case of cvc event world map
+
+            # knock
+            sio.emit('/zone/leave/list/v2', {'world': self.socf_world_id, 'zones': '[]'})
+            default_zones = '[0,64,1,65]'
+            sio.emit('/zone/enter/list/v4', self.api.b64xor_enc({'world': self.socf_world_id, 'zones': default_zones}))
+            sio.emit('/zone/leave/list/v2', {'world': self.socf_world_id, 'zones': default_zones})
+
             self.socf_entered = True
-            self.socf_world_id = data.get('loc')[0]  # in case of cvc event world map
 
         sio.connect(url, transports=["websocket"], headers=ws_headers)
         logger.debug(f'entering field: {zones}')
-        sio.emit(
-            '/field/enter/v3',
-            base64.b64encode(self.api.xor_enc(json.dumps(
-                {'token': self.token}, separators=(',', ':')
-            ).encode())).decode()
-        )
+        sio.emit('/field/enter/v3', self.api.b64xor_enc({'token': self.token}))
 
         while not self.socf_entered:
             time.sleep(1)
 
-        zone_ids = []
-        for zone_id in zones:
-            if len(zone_ids) < 9:
-                zone_ids.append(zone_id)
-                continue
+        # TODO: change this to 9zones for enter and 3zones for leave
+        step = 9
+        for i in range(0, len(zones), step):
+            zone_ids = zones[i:i + step]
 
             if not sio.connected:
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
             message = {'world': self.socf_world_id, 'zones': json.dumps(zone_ids, separators=(',', ':'))}
-            encoded_message = base64.b64encode(self.api.xor_enc(json.dumps(
-                message, separators=(',', ':')
-            ).encode())).decode()
+            encoded_message = self.api.b64xor_enc(message)
 
             sio.emit('/zone/enter/list/v4', encoded_message)
             self.field_object_processed = False
@@ -783,7 +782,7 @@ class LokFarmer:
             while not self.field_object_processed:
                 time.sleep(4)
             sio.emit('/zone/leave/list/v2', message)
-            zone_ids = []
+            time.sleep(random.randint(4, 8))
 
         logger.info('a loop is finished')
         sio.disconnect()
