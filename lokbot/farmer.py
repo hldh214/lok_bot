@@ -757,6 +757,13 @@ class LokFarmer:
 
             self.socf_entered = True
 
+        def find_sequences(lst, length, step):
+            sequences = []
+            for i in range(0, len(lst) - length + 1, step):
+                sequence_list = [lst[i + j] for j in range(length)]
+                sequences.append(sequence_list)
+            return sequences
+
         sio.connect(url, transports=["websocket"], headers=ws_headers)
         logger.debug(f'entering field: {zones}')
         sio.emit('/field/enter/v3', self.api.b64xor_enc({'token': self.token}))
@@ -764,24 +771,25 @@ class LokFarmer:
         while not self.socf_entered:
             time.sleep(1)
 
-        # TODO: change this to 9zones for enter and 3zones for leave
-        step = 9
-        for i in range(0, len(zones), step):
-            zone_ids = zones[i:i + step]
-
+        # TODO: real 3x3 zone array
+        length = 9
+        step = 3
+        seq = find_sequences(zones, length, step)
+        for zone_ids in seq:
             if not sio.connected:
                 logger.warning('socf_thread disconnected, reconnecting')
                 raise tenacity.TryAgain()
 
-            message = {'world': self.socf_world_id, 'zones': json.dumps(zone_ids, separators=(',', ':'))}
-            encoded_message = self.api.b64xor_enc(message)
+            enter_message = {'world': self.socf_world_id, 'zones': json.dumps(zone_ids, separators=(',', ':'))}
+            leave_message = {'world': self.socf_world_id, 'zones': json.dumps(zone_ids[0:step], separators=(',', ':'))}
+            encoded_enter_message = self.api.b64xor_enc(enter_message)
 
-            sio.emit('/zone/enter/list/v4', encoded_message)
+            sio.emit('/zone/enter/list/v4', encoded_enter_message)
             self.field_object_processed = False
             logger.debug(f'entering zone: {zone_ids} and waiting for processing')
             while not self.field_object_processed:
                 time.sleep(4)
-            sio.emit('/zone/leave/list/v2', message)
+            sio.emit('/zone/leave/list/v2', leave_message)
             time.sleep(random.randint(4, 8))
 
         logger.info('a loop is finished')
