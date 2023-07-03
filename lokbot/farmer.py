@@ -764,10 +764,14 @@ class LokFarmer:
         while not self.socf_entered:
             time.sleep(1)
 
-        # TODO: change this to 9zones for enter and 3zones for leave
         step = 9
-        for i in range(0, len(zones), step):
-            zone_ids = zones[i:i + step]
+        grace = 7  # 9 times enter-leave action will cause ban
+        for key, value in enumerate(range(0, len(zones), step)):
+            if key >= grace:
+                logger.info('socf_thread grace exceeded, break')
+                break
+
+            zone_ids = zones[value:value + step]
 
             if not sio.connected:
                 logger.warning('socf_thread disconnected, reconnecting')
@@ -780,9 +784,8 @@ class LokFarmer:
             self.field_object_processed = False
             logger.debug(f'entering zone: {zone_ids} and waiting for processing')
             while not self.field_object_processed:
-                time.sleep(4)
+                time.sleep(1)
             sio.emit('/zone/leave/list/v2', message)
-            time.sleep(random.randint(4, 8))
 
         logger.info('a loop is finished')
         sio.disconnect()
@@ -1196,6 +1199,7 @@ class LokFarmer:
         durability = wall_info.get('wall', {}).get('durability')
         last_repair_date = wall_info.get('wall', {}).get('lastRepairDate')
 
+        # todo: seems `lastRepairDate` disappeared, need to check
         if not last_repair_date:
             return
 
