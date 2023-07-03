@@ -1025,15 +1025,15 @@ class LokFarmer:
         """
         req_resources = TRAIN_TROOP_RESOURCE_REQUIREMENT[troop_code]
 
-        amount = 0
+        amount = None
         for req_resource, resource in zip(req_resources, self.resources):
             if req_resource == 0:
                 continue
 
-            if amount == 0 or resource // req_resource <= amount:
+            if amount is None or resource // req_resource <= amount:
                 amount = resource // req_resource
 
-        return amount
+        return amount if amount is not None else 0
 
     def _random_choice_building(self, building_code):
         """
