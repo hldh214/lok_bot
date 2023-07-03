@@ -118,7 +118,8 @@
         "enabled": true,
         "kwargs": {
           "troop_code": 50100101,
-          "speedup": true
+          "speedup": true,
+          "interval": 3600
         }
       }
     ]

@@ -611,7 +611,7 @@ class LokBotApi:
 
 def get_version():
     first = 1
-    second = 1630
+    second = 1652
     third = httpx.get('https://play.leagueofkingdoms.com/json/version-live.json').json().get('table')
     fourth = httpx.get(f'https://play.leagueofkingdoms.com/bundles/webgl/kingdominfo_{second}').json()
     fourth = [each for each in fourth if each.get('name') == 'ui'][0].get('version')

@@ -93,7 +93,7 @@ class LokFarmer:
             "country": "USA",
             "language": "English",
             "bundle": "",
-            "version": "1.1630.136.218",
+            "version": "1.1652.138.219",
             "platform": "web",
             "pushId": ""
         })
@@ -1042,9 +1042,10 @@ class LokFarmer:
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
         return random.choice([building for building in buildings if building['code'] == building_code])
 
-    def train_troop_thread(self, troop_code, speedup=False):
+    def train_troop_thread(self, troop_code, speedup=False, interval=3600):
         """
         train troop
+        :param interval:
         :param troop_code:
         :param speedup:
         :return:
@@ -1058,18 +1059,14 @@ class LokFarmer:
         if worker_used:
             if worker_used[0].get('status') == STATUS_CLAIMED:
                 self.api.kingdom_task_claim(self._random_choice_building(BUILDING_CODE_MAP['barrack'])['position'])
-                logger.info('train_troop: one loop completed, sleep for 3h')
-                threading.Timer(
-                    3 * 3600,
-                    self.train_troop_thread,
-                    [troop_code, speedup]
-                ).start()
+                logger.info(f'train_troop: one loop completed, sleep for {interval} seconds')
+                threading.Timer(interval, self.train_troop_thread, [troop_code, speedup, interval]).start()
                 return
 
             if worker_used[0].get('status') == STATUS_PENDING:
                 self.train_queue_available.wait()  # wait for train queue available from `sock_thread`
                 self.train_queue_available.clear()
-                threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup]).start()
+                threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup, interval]).start()
                 return
 
         # if there is not enough resource, train how much possible
@@ -1078,8 +1075,8 @@ class LokFarmer:
             troop_training_capacity = total_troops_capacity_according_to_resources
 
         if not troop_training_capacity:
-            logger.info('train_troop: no resource, sleep for 3h')
-            threading.Timer(3 * 3600, self.train_troop_thread, [troop_code, speedup]).start()
+            logger.info('train_troop: no resource, sleep for 1h')
+            threading.Timer(3600, self.train_troop_thread, [troop_code, speedup, interval]).start()
             return
 
         res = self.api.train_troop(troop_code, troop_training_capacity)
@@ -1089,7 +1086,7 @@ class LokFarmer:
 
         self.train_queue_available.wait()  # wait for train queue available from `sock_thread`
         self.train_queue_available.clear()
-        threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup]).start()
+        threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup, interval]).start()
 
     def free_chest_farmer_thread(self, _type=0):
         """
