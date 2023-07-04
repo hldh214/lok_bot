@@ -93,7 +93,7 @@ class LokFarmer:
             "country": "USA",
             "language": "English",
             "bundle": "",
-            "version": "1.1652.138.220",
+            "version": "1.1652.139.220",
             "platform": "web",
             "pushId": ""
         })
@@ -666,7 +666,7 @@ class LokFarmer:
                 if data.get('code') == TASK_CODE_CAMP:
                     self.train_queue_available.set()
 
-        sio.connect(url, transports=["websocket"], headers=ws_headers)
+        sio.connect(f'{url}?token={self.token}', transports=["websocket"], headers=ws_headers)
         sio.emit('/kingdom/enter', {'token': self.token})
 
         sio.wait()
@@ -757,7 +757,7 @@ class LokFarmer:
 
             self.socf_entered = True
 
-        sio.connect(url, transports=["websocket"], headers=ws_headers)
+        sio.connect(f'{url}?token={self.token}', transports=["websocket"], headers=ws_headers)
         logger.debug(f'entering field: {zones}')
         sio.emit('/field/enter/v3', self.api.b64xor_enc({'token': self.token}))
 
@@ -806,6 +806,7 @@ class LokFarmer:
 
         sio = socketio.Client(reconnection=False, logger=socc_logger, engineio_logger=socc_logger)
 
+        # no token needed in query string, yet
         sio.connect(url, transports=["websocket"], headers=ws_headers)
         sio.emit('/chat/enter', {'token': self.token})
 
