@@ -1103,13 +1103,17 @@ class LokFarmer:
 
             raise
 
-        next_gold = arrow.get(res.get('freeChest', {}).get('gold', {}).get('next'))
-        next_silver = arrow.get(res.get('freeChest', {}).get('silver', {}).get('next'))
+        next_dict = {
+            0: arrow.get(res.get('freeChest', {}).get('silver', {}).get('next')),
+            1: arrow.get(res.get('freeChest', {}).get('gold', {}).get('next')),
+            2: arrow.get(res.get('freeChest', {}).get('platinum', {}).get('next')),
+        }
+        next_type = min(next_dict, key=next_dict.get)
 
-        if next_gold < next_silver:
-            threading.Timer(self.calc_time_diff_in_seconds(next_gold), self.free_chest_farmer_thread, [1]).start()
-        else:
-            threading.Timer(self.calc_time_diff_in_seconds(next_silver), self.free_chest_farmer_thread, [0]).start()
+        threading.Timer(
+            self.calc_time_diff_in_seconds(next_dict[next_type]),
+            self.free_chest_farmer_thread, [next_type]
+        ).start()
 
     def use_resource_in_item_list(self):
         """
