@@ -684,8 +684,8 @@ class LokFarmer:
         websocket connection of the field
         :return:
         """
-        while self.api.last_requested_at + 6 > time.time():
-            # if last request is less than 6 seconds ago, wait
+        while self.api.last_requested_at + 16 > time.time():
+            # if last request is less than 16 seconds ago, wait
             # when we are in the field, we should not be doing anything else
             logger.info(f'last requested at {arrow.get(self.api.last_requested_at).humanize()}, waiting...')
             time.sleep(4)
@@ -1051,6 +1051,11 @@ class LokFarmer:
         :param speedup:
         :return:
         """
+        while self.api.last_requested_at + 4 > time.time():
+            # attempt to prevent `insufficient_resources` due to race conditions
+            logger.info(f'last requested at {arrow.get(self.api.last_requested_at).humanize()}, waiting...')
+            time.sleep(4)
+
         self.kingdom_tasks = self.api.kingdom_task_all().get('kingdomTasks', [])
 
         worker_used = [t for t in self.kingdom_tasks if t.get('code') == TASK_CODE_CAMP]
