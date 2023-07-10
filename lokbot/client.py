@@ -541,7 +541,7 @@ class LokBotApi:
         wait=tenacity.wait_fixed(1),
         retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
     )
-    @ratelimit.limits(calls=1, period=4)
+    @ratelimit.limits(calls=1, period=2)
     def item_use(self, code, amount=1):
         """
         使用道具
@@ -549,7 +549,20 @@ class LokBotApi:
         :param amount:
         :return:
         """
-        return self.post('item/use', {'code': code, 'amount': amount})
+        res = self.post('item/use', {'code': code, 'amount': amount})
+
+        self.auth_analytics('item/use', f'{code}|{amount}')
+
+        return res
+
+    def auth_analytics(self, url, param):
+        """
+        Unknown API added in 1.1660.143.221
+        :param url:
+        :param param:
+        :return:
+        """
+        return self.post('auth/analytics', {'url': url, 'param': param})
 
     @tenacity.retry(
         wait=tenacity.wait_fixed(1),
