@@ -74,7 +74,7 @@ class LokFarmer:
         self.token = token
         self.api = LokBotApi(token, captcha_solver_config, self._request_callback)
 
-        auth_res = self.api.auth_connect()
+        auth_res = self.api.auth_connect({"deviceInfo": {"build": "global"}})
         self.api.protected_api_list = json.loads(base64.b64decode(auth_res.get('lstProtect')).decode())
         self.api.protected_api_list = [str(api).split('/api/').pop() for api in self.api.protected_api_list]
         logger.debug(f'protected_api_list: {self.api.protected_api_list}')

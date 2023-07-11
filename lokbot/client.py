@@ -178,9 +178,9 @@ class LokBotApi:
     def auth_captcha_confirm(self, value):
         return self.post('auth/captcha/confirm', {'value': value})
 
-    def auth_connect(self):
+    def auth_connect(self, json_data=None):
         try:
-            res = self.post('https://lok-api-live.leagueofkingdoms.com/api/auth/connect')
+            res = self.post('https://lok-api-live.leagueofkingdoms.com/api/auth/connect', json_data)
         except OtherException:
             # {"result":false,"err":{}} when no auth
             project_root.joinpath(f'data/{self._id}.token').unlink(missing_ok=True)
