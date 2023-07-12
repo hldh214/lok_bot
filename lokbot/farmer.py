@@ -118,6 +118,7 @@ class LokFarmer:
         self.research_queue_available = threading.Event()
         self.train_queue_available = threading.Event()
         self.kingdom_tasks = []
+        self.zones = []
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -439,7 +440,6 @@ class LokFarmer:
 
         return zones
 
-    @functools.lru_cache()
     def _get_nearest_zone_ng(self, x, y, radius=8):
         current_zone_id = lokbot.util.get_zone_id_by_coords(x, y)
 
@@ -707,7 +707,9 @@ class LokFarmer:
         url = self.kingdom_enter.get('networks').get('fields')[0]
         from_loc = self.kingdom_enter.get('kingdom').get('loc')
 
-        zones = self._get_nearest_zone_ng(from_loc[1], from_loc[2], radius)
+        if not self.zones:
+            logger.info('getting nearest zone')
+            self.zones = self._get_nearest_zone_ng(from_loc[1], from_loc[2], radius)
 
         sio = socketio.Client(reconnection=False, logger=socf_logger, engineio_logger=socf_logger)
 
@@ -758,7 +760,7 @@ class LokFarmer:
             self.socf_entered = True
 
         sio.connect(f'{url}?token={self.token}', transports=["websocket"], headers=ws_headers)
-        logger.debug(f'entering field: {zones}')
+        logger.debug(f'entering field: {self.zones}')
         sio.emit('/field/enter/v3', self.api.b64xor_enc({'token': self.token}))
 
         while not self.socf_entered:
@@ -766,12 +768,24 @@ class LokFarmer:
 
         step = 9
         grace = 7  # 9 times enter-leave action will cause ban
-        for key, value in enumerate(range(0, len(zones), step)):
-            if key >= grace:
+        index = 0
+        while self.zones:
+            if index >= grace:
                 logger.info('socf_thread grace exceeded, break')
                 break
 
-            zone_ids = zones[value:value + step]
+            index += 1
+            zone_ids = []
+            for _ in range(step):
+                if not self.zones:
+                    break
+
+                zone_ids.append(self.zones.pop(0))
+
+            if len(zone_ids) < step:
+                logger.info(f'len(zone_ids) < {step}, break')
+                self.zones = []
+                break
 
             if not sio.connected:
                 logger.warning('socf_thread disconnected, reconnecting')
