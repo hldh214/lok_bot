@@ -360,6 +360,7 @@ class LokFarmer:
                 continue
 
             self.api.alliance_shop_buy(code, amount if amount < minimum_buy_amount else minimum_buy_amount)
+            alliance_point -= cost * amount
 
     @functools.lru_cache()
     def _get_land_with_level(self):
