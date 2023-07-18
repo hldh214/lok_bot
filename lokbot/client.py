@@ -370,7 +370,11 @@ class LokBotApi:
         加速任务
         :return:
         """
-        return self.post('kingdom/task/speedup', {'taskId': task_id, 'code': code, 'amount': amount, 'isBuy': is_buy})
+        res = self.post('kingdom/task/speedup', {'taskId': task_id, 'code': code, 'amount': amount, 'isBuy': is_buy})
+
+        self.auth_analytics('item/use', f'{code}|{amount}')
+
+        return res
 
     def kingdom_tutorial_finish(self, code):
         """
