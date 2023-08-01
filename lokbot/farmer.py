@@ -467,13 +467,18 @@ class LokFarmer:
     def _calc_distance(from_loc, to_loc):
         return math.ceil(math.sqrt(math.pow(from_loc[1] - to_loc[1], 2) + math.pow(from_loc[2] - to_loc[2], 2)))
 
-    def _start_march(self, to_loc, march_troops, march_type=MARCH_TYPE_GATHER):
-        res = self.api.field_march_start({
+    def _start_march(self, to_loc, march_troops, march_type=MARCH_TYPE_GATHER, drago_id=None):
+        data = {
             'fromId': self.kingdom_enter.get('kingdom').get('fieldObjectId'),
             'marchType': march_type,
             'toLoc': to_loc,
             'marchTroops': march_troops
-        })
+        }
+
+        if drago_id:
+            data['dragoId'] = drago_id
+
+        res = self.api.field_march_start(data)
 
         new_task = res.get('newTask')
         new_task['endTime'] = new_task['expectedEnded']
@@ -570,6 +575,17 @@ class LokFarmer:
 
         if not march_troops:
             return
+
+        if each_obj.get('code') == OBJECT_CODE_DRAGON_SOUL_CAVERN:
+            drago_lair_list = self.api.drago_lair_list()
+            dragos = drago_lair_list.get('dragos')
+            available_dragos = [each for each in dragos if each['lair']['status'] == DRAGO_LAIR_STATUS_STANDBY]
+
+            if not available_dragos:
+                logger.warning('No available dragos')
+                return
+
+            self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER, available_dragos[0]['_id'])
 
         self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER)
 
