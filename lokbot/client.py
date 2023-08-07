@@ -102,7 +102,7 @@ class LokBotApi:
         }
 
         try:
-            if api_path in self.protected_api_list:
+            if api_path in self.protected_api_list and response.text[0] != '{':
                 json_response = self.b64xor_dec(response.text)
             else:
                 json_response = response.json()
