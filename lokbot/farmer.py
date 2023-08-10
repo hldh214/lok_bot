@@ -1237,7 +1237,6 @@ class LokFarmer:
         durability = wall_info.get('wall', {}).get('durability')
         last_repair_date = wall_info.get('wall', {}).get('lastRepairDate')
 
-        # todo: seems `lastRepairDate` disappeared, need to check
         if not last_repair_date:
             return
 
