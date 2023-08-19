@@ -120,6 +120,7 @@ class LokFarmer:
         self.train_queue_available = threading.Event()
         self.kingdom_tasks = []
         self.zones = []
+        self.available_dragos = self._get_available_dragos()
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -583,6 +584,13 @@ class LokFarmer:
 
         return march_troops
 
+    def _get_available_dragos(self):
+        drago_lair_list = self.api.drago_lair_list()
+        dragos = drago_lair_list.get('dragos')
+        available_dragos = [each for each in dragos if each['lair']['status'] == DRAGO_LAIR_STATUS_STANDBY]
+
+        return available_dragos
+
     def _on_field_objects_gather(self, each_obj):
         if each_obj.get('occupied'):
             return
@@ -597,15 +605,11 @@ class LokFarmer:
             return
 
         if each_obj.get('code') == OBJECT_CODE_DRAGON_SOUL_CAVERN:
-            drago_lair_list = self.api.drago_lair_list()
-            dragos = drago_lair_list.get('dragos')
-            available_dragos = [each for each in dragos if each['lair']['status'] == DRAGO_LAIR_STATUS_STANDBY]
-
-            if not available_dragos:
+            if not self.available_dragos:
                 logger.warning('No available dragos')
                 return
 
-            self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER, available_dragos[0]['_id'])
+            self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER, self.available_dragos[0]['_id'])
 
         self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER)
 
@@ -715,7 +719,7 @@ class LokFarmer:
         retry=tenacity.retry_if_not_exception_type(FatalApiException),
         reraise=True
     )
-    def socf_thread(self, radius, object_code_list=(OBJECT_CODE_CRYSTAL_MINE, OBJECT_CODE_GOBLIN)):
+    def socf_thread(self, radius, targets):
         """
         websocket connection of the field
         :return:
@@ -755,6 +759,7 @@ class LokFarmer:
             gzip_decompress = gzip.decompress(bytearray(packs))
             data_decoded = self.api.b64xor_dec(gzip_decompress)
             objects = data_decoded.get('objects')
+            target_code_set = set([target['code'] for target in targets])
 
             logger.debug(f'Processing {len(objects)} objects')
             for each_obj in objects:
@@ -763,11 +768,21 @@ class LokFarmer:
 
                 code = each_obj.get('code')
 
+                level_whitelist = [target['level'] for target in targets if target['code'] == code]
+                if not level_whitelist:
+                    # not the one we are looking for
+                    continue
+
+                level_whitelist = level_whitelist[0]
+                if level_whitelist and each_obj.get('level') not in level_whitelist:
+                    logger.info(f'ignore: {each_obj}, level not in whitelist: {level_whitelist}')
+                    continue
+
                 try:
-                    if code in set(OBJECT_MINE_CODE_LIST).intersection(set(object_code_list)):
+                    if code in set(OBJECT_MINE_CODE_LIST).intersection(target_code_set):
                         self._on_field_objects_gather(each_obj)
 
-                    if code in set(OBJECT_MONSTER_CODE_LIST).intersection(set(object_code_list)):
+                    if code in set(OBJECT_MONSTER_CODE_LIST).intersection(target_code_set):
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
                     if str(error_code) in (
