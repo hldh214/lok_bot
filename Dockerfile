@@ -20,4 +20,6 @@ ENV PATH="/app/.venv/bin:$PATH"
 HEALTHCHECK --retries=1 \
     CMD if grep -q Exception /app/data/output.log; then exit 1; else exit 0; fi
 
-ENTRYPOINT ["/bin/sh", "-c", "python -m lokbot $TOKEN $CAPTCHA_SOLVER_CONFIG 2>&1 | tee -a data/output.log"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
+CMD ["/bin/sh", "-c", "python -m lokbot $TOKEN $CAPTCHA_SOLVER_CONFIG 2>&1 | tee -a /app/data/output.log"]
