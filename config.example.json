@@ -77,9 +77,17 @@
         "name": "socf_thread",
         "enabled": true,
         "kwargs": {
-          "object_code_list": [
-            20100105,
-            20200104
+          "targets": [
+            {
+              "code": 20100105,
+              "level": [
+                1
+              ]
+            },
+            {
+              "code": 20100106,
+              "level": []
+            }
           ],
           "radius": 8
         },
