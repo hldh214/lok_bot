@@ -104,7 +104,8 @@ class LokFarmer:
 
         # [food, lumber, stone, gold]
         self.resources = self.kingdom_enter.get('kingdom').get('resources')
-        self.buff_item_use_lock = threading.RLock()
+        self.buff_item_use_lock = threading.Lock()
+        self.hospital_recover_lock = threading.Lock()
         self.has_additional_building_queue = self.kingdom_enter.get('kingdom').get('vip', {}).get('level') >= 5
         self.troop_queue = []
         self.march_limit = 2
@@ -212,6 +213,11 @@ class LokFarmer:
         return True
 
     def _update_kingdom_enter_building(self, building):
+        if building.get('code') == BUILDING_CODE_MAP['hospital']:
+            if building.get('param', {}).get('wounded', []):
+                logger.info('hospital has wounded troops, try to recover')
+                self.hospital_recover()
+
         buildings = self.kingdom_enter.get('kingdom', {}).get('buildings', [])
 
         self.kingdom_enter['kingdom']['buildings'] = [
@@ -228,6 +234,8 @@ class LokFarmer:
 
     def _get_optimal_speedups(self, need_seconds, speedup_type):
         current_map = ITEM_CODE_SPEEDUP_MAP.get(speedup_type)
+
+        assert current_map, f'invalid speedup type: {speedup_type}'
 
         items = self.api.item_list().get('items', [])
         items = [item for item in items if item.get('code') in current_map.keys()]
@@ -258,6 +266,15 @@ class LokFarmer:
                 counts[each.get('code')] += 1
                 used_seconds += each.get('second')
 
+        if speedup_type == 'recover':
+            # greedy mode
+            speedups_asc = sorted(speedups, key=lambda x: x.get('second'))
+            for each in speedups_asc:
+                while remaining_seconds >= 0 and counts.get(each.get('code')) < each.get('amount'):
+                    remaining_seconds -= each.get('second')
+                    counts[each.get('code')] += 1
+                    used_seconds += each.get('second')
+
         counts = {k: v for k, v in counts.items() if v > 0}
 
         if not counts:
@@ -269,10 +286,10 @@ class LokFarmer:
             'used_seconds': used_seconds
         }
 
-    def _do_speedup(self, expected_ended, task_id, speedup_type):
+    def do_speedup(self, expected_ended, task_id, speedup_type):
         need_seconds = self.calc_time_diff_in_seconds(expected_ended)
 
-        if need_seconds > 60 * 5:
+        if need_seconds > 60 * 5 or speedup_type == 'recover':
             # try speedup only when need_seconds > 5 minutes
             speedups = self._get_optimal_speedups(need_seconds, speedup_type)
             if speedups:
@@ -282,7 +299,10 @@ class LokFarmer:
                 # using speedup items
                 logger.info(f'need_seconds: {need_seconds}, using speedups: {counts}, saved {used_seconds} seconds')
                 for code, count in counts.items():
-                    self.api.kingdom_task_speedup(task_id, code, count)
+                    if speedup_type == 'recover':
+                        self.api.kingdom_heal_speedup(code, count)
+                    else:
+                        self.api.kingdom_task_speedup(task_id, code, count)
                     time.sleep(random.randint(1, 3))
 
     def _upgrade_building(self, building, buildings, speedup):
@@ -308,7 +328,7 @@ class LokFarmer:
         self._update_kingdom_enter_building(building)
 
         if speedup:
-            self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'building')
+            self.do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'building')
 
     def _alliance_gift_claim_all(self):
         try:
@@ -648,17 +668,16 @@ class LokFarmer:
                 if not item_in_inventory:
                     continue
 
-                if not self.buff_item_use_lock.acquire(blocking=False):
+                if self.buff_item_use_lock.locked():
                     return
 
-                code = item_in_inventory[0].get('code')
-                logger.info(f'activating buff: {buff_type}, code: {code}')
-                self.api.item_use(code)
+                with self.buff_item_use_lock:
+                    code = item_in_inventory[0].get('code')
+                    logger.info(f'activating buff: {buff_type}, code: {code}')
+                    self.api.item_use(code)
 
-                if code == ITEM_CODE_GOLDEN_HAMMER:
-                    self.has_additional_building_queue = True
-
-                self.buff_item_use_lock.release()
+                    if code == ITEM_CODE_GOLDEN_HAMMER:
+                        self.has_additional_building_queue = True
 
         @sio.on('/alliance/rally/new')
         def on_alliance_rally_new(data):
@@ -1028,7 +1047,7 @@ class LokFarmer:
                     continue
 
                 if speedup:
-                    self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'research')
+                    self.do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'research')
 
                 self.research_queue_available.wait()  # wait for research queue available from `sock_thread`
                 self.research_queue_available.clear()
@@ -1119,7 +1138,7 @@ class LokFarmer:
         res = self.api.train_troop(troop_code, troop_training_capacity)
 
         if speedup:
-            self._do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'train')
+            self.do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'train')
 
         self.train_queue_available.wait()  # wait for train queue available from `sock_thread`
         self.train_queue_available.clear()
@@ -1253,10 +1272,24 @@ class LokFarmer:
         self.api.kingdom_wall_repair()
 
     def hospital_recover(self):
-        try:
+        if self.hospital_recover_lock.locked():
+            logger.info('another hospital_recover is running, skip')
+            return
+
+        with self.hospital_recover_lock:
+            wounded = self.api.kingdom_hospital_wounded().get('wounded', [])
+
+            estimated_end_time = None
+            for each_batch in wounded:
+                if estimated_end_time is None:
+                    estimated_end_time = arrow.get(each_batch[0].get('startTime'))
+                time_total = sum([each.get('time') for each in each_batch])
+                estimated_end_time = estimated_end_time.shift(seconds=time_total)
+
+            if estimated_end_time and estimated_end_time > arrow.utcnow():
+                self.do_speedup(estimated_end_time, 'dummy_task_id', 'recover')
+
             self.api.kingdom_hospital_recover()
-        except OtherException:
-            pass
 
     def keepalive_request(self):
         try:

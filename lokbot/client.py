@@ -376,6 +376,22 @@ class LokBotApi:
 
         return res
 
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(1),
+        retry=tenacity.retry_if_exception_type(ratelimit.RateLimitException),
+    )
+    @ratelimit.limits(calls=1, period=2)
+    def kingdom_heal_speedup(self, code, amount, is_buy=0):
+        """
+        加速治疗
+        :return:
+        """
+        res = self.post('kingdom/heal/speedup', {'code': code, 'amount': amount, 'isBuy': is_buy})
+
+        self.auth_analytics('item/use', f'{code}|{amount}')
+
+        return res
+
     def kingdom_tutorial_finish(self, code):
         """
         完成教程
