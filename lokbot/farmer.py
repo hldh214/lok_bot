@@ -719,7 +719,7 @@ class LokFarmer:
         retry=tenacity.retry_if_not_exception_type(FatalApiException),
         reraise=True
     )
-    def socf_thread(self, radius, targets):
+    def socf_thread(self, radius, targets, share_to=None):
         """
         websocket connection of the field
         :return:
@@ -767,14 +767,20 @@ class LokFarmer:
                     continue
 
                 code = each_obj.get('code')
+                level = each_obj.get('level')
+                loc = each_obj.get('loc')
 
                 level_whitelist = [target['level'] for target in targets if target['code'] == code]
                 if not level_whitelist:
                     # not the one we are looking for
                     continue
 
+                if share_to and share_to.get('chat_channels'):
+                    for chat_channel in share_to.get('chat_channels'):
+                        self.api.chat_new(chat_channel, CHAT_TYPE_LOC, f'Lv.{level}?fo_{code}', {'loc': loc})
+
                 level_whitelist = level_whitelist[0]
-                if level_whitelist and each_obj.get('level') not in level_whitelist:
+                if level_whitelist and level not in level_whitelist:
                     logger.info(f'ignore: {each_obj}, level not in whitelist: {level_whitelist}')
                     continue
 
@@ -786,7 +792,8 @@ class LokFarmer:
                         self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
                     if str(error_code) in (
-                            'full_task', 'not_enough_troop', 'insufficient_actionpoint', 'not_open_gate'
+                            'full_task', 'not_enough_troop', 'insufficient_actionpoint', 'not_open_gate',
+                            'no_drago_action_point'
                     ):
                         logger.warning(f'on_field_objects: {error_code}, skip')
                         self.field_object_processed = True

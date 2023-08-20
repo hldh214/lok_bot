@@ -89,7 +89,13 @@
               "level": []
             }
           ],
-          "radius": 8
+          "radius": 8,
+          "share_to": {
+            "chat_channels": [
+              1,
+              2
+            ]
+          }
         },
         "interval": {
           "start": 1,

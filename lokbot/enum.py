@@ -28,6 +28,15 @@ DRAGO_LAIR_STATUS_STANDBY = 1  # 待命中
 DRAGO_LAIR_STATUS_DEFENDING = 2  # 防守中
 DRAGO_LAIR_STATUS_ATTACKING = 3  # 出击中
 
+# 聊天: 频道类型
+CHAT_CHANNEL_WORLD = 1  # 世界频道
+CHAT_CHANNEL_ALLIANCE = 2  # 联盟频道
+
+# 聊天: 消息类型
+CHAT_TYPE_TEXT = 1  # 文字
+CHAT_TYPE_LOC = 2  # 位置
+CHAT_TYPE_STICKER = 7  # 贴纸
+
 BUILDING_POSITION_MAP = {
     'academy': 5,
     'castle': 1,

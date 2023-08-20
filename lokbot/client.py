@@ -641,6 +641,18 @@ class LokBotApi:
     def field_march_start(self, data):
         return self.post('field/march/start', data)
 
+    def chat_new(self, chat_channel, chat_type, text, param=None):
+        data = {
+            'chatChannel': chat_channel,
+            'chatType': chat_type,
+            'text': text,
+        }
+
+        if param:
+            data['param'] = param
+
+        return self.post('chat/new', data)
+
 
 def get_version():
     first = 1
