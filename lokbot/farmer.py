@@ -794,7 +794,7 @@ class LokFarmer:
                 except OtherException as error_code:
                     if str(error_code) in (
                             'full_task', 'not_enough_troop', 'insufficient_actionpoint', 'not_open_gate',
-                            'no_drago_action_point', 'no_drago'
+                            'no_drago_action_point', 'no_drago', 'exceed_crystal_daily_quota'
                     ):
                         logger.warning(f'on_field_objects: {error_code}, skip')
                         self.field_object_processed = True
