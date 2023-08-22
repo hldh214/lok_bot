@@ -121,6 +121,7 @@ class LokFarmer:
         self.kingdom_tasks = []
         self.zones = []
         self.available_dragos = self._get_available_dragos()
+        self.drago_action_point = self.kingdom_enter.get('kingdom').get('dragoActionPoint', {}).get('value', 0)
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -605,10 +606,6 @@ class LokFarmer:
             return
 
         if each_obj.get('code') == OBJECT_CODE_DRAGON_SOUL_CAVERN:
-            if not self.available_dragos:
-                logger.warning('No available dragos')
-                return
-
             self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER, self.available_dragos[0]['_id'])
             return
 
@@ -780,9 +777,17 @@ class LokFarmer:
                     for chat_channel in share_to.get('chat_channels'):
                         self.api.chat_new(chat_channel, CHAT_TYPE_LOC, f'Lv.{level}?fo_{code}', {'loc': loc})
 
+                if code == OBJECT_CODE_DRAGON_SOUL_CAVERN:
+                    if self.drago_action_point < 1:
+                        logger.info(f'no_drago_action_point, ignore: {each_obj}')
+                        continue
+                    if not self.available_dragos:
+                        logger.info(f'not_available_drago, ignore: {each_obj}')
+                        continue
+
                 level_whitelist = level_whitelist[0]
                 if level_whitelist and level not in level_whitelist:
-                    logger.info(f'ignore: {each_obj}, level not in whitelist: {level_whitelist}')
+                    logger.info(f'level not in whitelist, ignore: {each_obj}')
                     continue
 
                 try:
