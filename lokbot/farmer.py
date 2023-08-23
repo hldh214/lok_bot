@@ -805,8 +805,9 @@ class LokFarmer:
                         logger.warning(f'on_field_objects: {error_code}, skip')
                         self.field_object_processed = True
                         return
-
                     raise
+                else:
+                    logger.info(f'march_started {code}({level}): {each_obj}')
 
             self.field_object_processed = True
 
