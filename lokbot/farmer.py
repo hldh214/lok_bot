@@ -122,6 +122,7 @@ class LokFarmer:
         self.zones = []
         self.available_dragos = self._get_available_dragos()
         self.drago_action_point = self.kingdom_enter.get('kingdom').get('dragoActionPoint', {}).get('value', 0)
+        self.shared_objects = set()
 
     @staticmethod
     def calc_time_diff_in_seconds(expected_ended):
@@ -777,7 +778,13 @@ class LokFarmer:
 
                 if share_to and share_to.get('chat_channels'):
                     for chat_channel in share_to.get('chat_channels'):
-                        self.api.chat_new(chat_channel, CHAT_TYPE_LOC, f'Lv.{level}?fo_{code}', {'loc': loc})
+                        text = f'Lv.{level}?fo_{code}'
+                        if text in self.shared_objects:
+                            # already shared
+                            continue
+
+                        self.shared_objects.add(text)
+                        self.api.chat_new(chat_channel, CHAT_TYPE_LOC, text, {'loc': loc})
 
                 if code == OBJECT_CODE_DRAGON_SOUL_CAVERN:
                     if self.drago_action_point < 1:
