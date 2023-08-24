@@ -780,7 +780,7 @@ class LokFarmer:
                 if share_to and share_to.get('chat_channels'):
                     for chat_channel in share_to.get('chat_channels'):
                         text = f'Lv.{level}?fo_{code}'
-                        obj_hash = f'{text}_{json.dumps(loc)}'
+                        obj_hash = f'{text}_' + json.dumps(loc)
                         if obj_hash in self.shared_objects:
                             # already shared
                             continue
