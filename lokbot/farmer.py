@@ -594,31 +594,33 @@ class LokFarmer:
 
     def _on_field_objects_gather(self, each_obj):
         if each_obj.get('occupied'):
-            return
+            return False
 
         if each_obj.get('code') == OBJECT_CODE_CRYSTAL_MINE and self.level < 11:
-            return
+            return False
 
         to_loc = each_obj.get('loc')
         march_troops = self._prepare_march_troops(each_obj, MARCH_TYPE_GATHER)
 
         if not march_troops:
-            return
+            return False
 
         if each_obj.get('code') == OBJECT_CODE_DRAGON_SOUL_CAVERN:
             self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER, self.available_dragos[0]['_id'])
-            return
+            return True
 
         self._start_march(to_loc, march_troops, MARCH_TYPE_GATHER)
+        return True
 
     def _on_field_objects_monster(self, each_obj):
         to_loc = each_obj.get('loc')
         march_troops = self._prepare_march_troops(each_obj, MARCH_TYPE_MONSTER)
 
         if not march_troops:
-            return
+            return False
 
         self._start_march(to_loc, march_troops, MARCH_TYPE_MONSTER)
+        return True
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(4),
@@ -790,12 +792,13 @@ class LokFarmer:
                     logger.info(f'level not in whitelist, ignore: {each_obj}')
                     continue
 
+                res = False
                 try:
                     if code in set(OBJECT_MINE_CODE_LIST).intersection(target_code_set):
-                        self._on_field_objects_gather(each_obj)
+                        res = self._on_field_objects_gather(each_obj)
 
                     if code in set(OBJECT_MONSTER_CODE_LIST).intersection(target_code_set):
-                        self._on_field_objects_monster(each_obj)
+                        res = self._on_field_objects_monster(each_obj)
                 except OtherException as error_code:
                     if str(error_code) in (
                             'full_task', 'not_enough_troop', 'insufficient_actionpoint', 'not_open_gate',
@@ -807,7 +810,8 @@ class LokFarmer:
                         return
                     raise
                 else:
-                    logger.info(f'march_started {code}({level}): {each_obj}')
+                    if res is True:
+                        logger.info(f'march_started {code}({level}): {each_obj}')
 
             self.field_object_processed = True
 
