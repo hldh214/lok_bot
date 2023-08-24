@@ -1,7 +1,6 @@
 import base64
 import functools
 import gzip
-import json
 import math
 import random
 import threading
@@ -780,7 +779,7 @@ class LokFarmer:
                 if share_to and share_to.get('chat_channels'):
                     for chat_channel in share_to.get('chat_channels'):
                         text = f'Lv.{level}?fo_{code}'
-                        obj_hash = f'{text}_' + json.dumps(loc)
+                        obj_hash = f'{text}_{loc[0]}_{loc[1]}_{loc[2]}'
                         if obj_hash in self.shared_objects:
                             # already shared
                             continue
