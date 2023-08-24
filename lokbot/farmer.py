@@ -1,6 +1,7 @@
 import base64
 import functools
 import gzip
+import json
 import math
 import random
 import threading
@@ -779,11 +780,12 @@ class LokFarmer:
                 if share_to and share_to.get('chat_channels'):
                     for chat_channel in share_to.get('chat_channels'):
                         text = f'Lv.{level}?fo_{code}'
-                        if text in self.shared_objects:
+                        obj_hash = f'{text}_{json.dumps(loc)}'
+                        if obj_hash in self.shared_objects:
                             # already shared
                             continue
 
-                        self.shared_objects.add(text)
+                        self.shared_objects.add(obj_hash)
                         self.api.chat_new(chat_channel, CHAT_TYPE_LOC, text, {'loc': loc})
 
                 if code == OBJECT_CODE_DRAGON_SOUL_CAVERN:
