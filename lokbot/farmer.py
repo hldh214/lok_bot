@@ -376,13 +376,14 @@ class LokFarmer:
                 continue
 
             cost = each_shop_item.get('ap_1')  # or 'ap_2'?
-            amount = each_shop_item.get('amount')
+            amount_available = each_shop_item.get('amount')
 
             minimum_buy_amount = int(alliance_point / cost)
             if minimum_buy_amount < 1:
                 continue
 
-            self.api.alliance_shop_buy(code, amount if amount < minimum_buy_amount else minimum_buy_amount)
+            amount = minimum_buy_amount if minimum_buy_amount < amount_available else amount_available
+            self.api.alliance_shop_buy(code, amount)
             alliance_point -= cost * amount
 
     @functools.lru_cache()
