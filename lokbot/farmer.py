@@ -383,7 +383,13 @@ class LokFarmer:
                 continue
 
             amount = minimum_buy_amount if minimum_buy_amount < amount_available else amount_available
-            self.api.alliance_shop_buy(code, amount)
+
+            try:
+                self.api.alliance_shop_buy(code, amount)
+            except OtherException as error_code:
+                logger.warning(f'alliance_shop_buy failed({str(error_code)}): {code}, {amount}')
+                return
+
             alliance_point -= cost * amount
 
     @functools.lru_cache()
