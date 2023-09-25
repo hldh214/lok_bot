@@ -93,7 +93,7 @@ class LokFarmer:
             "country": "USA",
             "language": "English",
             "bundle": "",
-            "version": "1.1673.146.224",
+            "version": "1.1682.148.225",
             "platform": "web",
             "pushId": ""
         })
