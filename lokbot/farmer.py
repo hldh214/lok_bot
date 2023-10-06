@@ -237,6 +237,7 @@ class LokFarmer:
 
     def _get_optimal_speedups(self, need_seconds, speedup_type):
         current_map = ITEM_CODE_SPEEDUP_MAP.get(speedup_type)
+        current_map.update(ITEM_CODE_SPEEDUP_MAP.get('universal'))
 
         assert current_map, f'invalid speedup type: {speedup_type}'
 
