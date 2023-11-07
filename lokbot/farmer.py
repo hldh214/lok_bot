@@ -1175,7 +1175,7 @@ class LokFarmer:
                 threading.Thread(target=self.train_troop_thread, args=[troop_code, speedup, interval]).start()
                 return
 
-        # if there is not enough resource, train how much possible
+        # if there are not enough resources, train how much possible
         total_troops_capacity_according_to_resources = self._total_troops_capacity_according_to_resources(troop_code)
         if troop_training_capacity > total_troops_capacity_according_to_resources:
             troop_training_capacity = total_troops_capacity_according_to_resources
@@ -1185,7 +1185,12 @@ class LokFarmer:
             threading.Timer(3600, self.train_troop_thread, [troop_code, speedup, interval]).start()
             return
 
-        res = self.api.train_troop(troop_code, troop_training_capacity)
+        try:
+            res = self.api.train_troop(troop_code, troop_training_capacity)
+        except OtherException as error_code:
+            logger.info(f'train_troop: {error_code}, sleep for 1h')
+            threading.Timer(3600, self.train_troop_thread, [troop_code, speedup, interval]).start()
+            return
 
         if speedup:
             self.do_speedup(res.get('newTask').get('expectedEnded'), res.get('newTask').get('_id'), 'train')
@@ -1263,7 +1268,7 @@ class LokFarmer:
         if research_donate:
             self._alliance_research_donate_all()
 
-        if shop_auto_buy_item_code_list and type(shop_auto_buy_item_code_list) == list:
+        if shop_auto_buy_item_code_list and type(shop_auto_buy_item_code_list) is list:
             self._alliance_shop_autobuy(shop_auto_buy_item_code_list)
 
     def caravan_farmer(self):
